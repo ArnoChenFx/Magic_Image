@@ -15,11 +15,11 @@ public:
     VI_graphics_view(QWidget *parent = nullptr);
 
 protected:
-    void wheelEvent(QWheelEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void keyPressEvent(QKeyEvent *event);
+	virtual void wheelEvent(QWheelEvent *event) override;
+	virtual void mousePressEvent(QMouseEvent *event) override;
+	virtual void mouseMoveEvent(QMouseEvent *event) override;
+	virtual void mouseReleaseEvent(QMouseEvent *event) override;
+	virtual void keyPressEvent(QKeyEvent *event) override;
     void _focus();
 
 private:

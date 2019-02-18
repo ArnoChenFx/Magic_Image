@@ -33,9 +33,9 @@ public:
     void updatePosition();
 
 protected:
-    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
-    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
-    void hoverMoveEvent(QGraphicsSceneHoverEvent *event) override;
+	virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
+	virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
+	virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *event) override;
 
 private:
     qreal radius;

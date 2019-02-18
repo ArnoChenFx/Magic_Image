@@ -56,7 +56,6 @@ protected:
     virtual void dragMoveEvent(QDragMoveEvent *event) override;
     virtual void dropEvent(QDropEvent *event) override;
 
-    QRectF _getSelectionBoundingbox();
 private:
     //attribute
     int state = 0;//default state
@@ -92,14 +91,13 @@ private:
     void clearSelected();
     void deleteOneLine(NODE_line *line);
 
+	QRectF _getSelectionBoundingbox();
+
     QList<NODE_item*> getSelectedNodes();
     QList<NODE_line*> getSelectedLines();
 
     bool canChangeDrag=false;
     QPointF prePos;
 
-signals:
-
-public slots:
 };
 

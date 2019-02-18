@@ -14,9 +14,9 @@ public:
     VI_image_viever(QWidget *parent = nullptr);
 
 protected:
-    void mousePressEvent(QMouseEvent *event) override;
+	virtual void mousePressEvent(QMouseEvent *event) override;
     void leftMousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event) override;
+	virtual void mouseMoveEvent(QMouseEvent *event) override;
     void leftMouseMoveEvent(QMouseEvent *event);
 
 signals:
