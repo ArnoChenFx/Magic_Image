@@ -1,0 +1,37 @@
+﻿{
+    "-----------socket item--------------":"",
+    "socket_color_color"           :[220,70,100],
+    "socket_color_output"          :[77,180,220],
+    "socket_color_value"           :[150,150,150],
+    "socket_color_outline"         :[50,50,50],
+
+    "-----------line item--------------":"",
+    "line_color_default"           :[70, 100, 130],
+    "line_color_selected"          :[120, 150, 250],
+
+    "-----------node item--------------":"",
+    "nd_color_default"             :[150,150,150],
+    "nd_color_selected"            :[250,150,150],
+    "nd_color_disable"             :[250,50,50],
+    "nd_color_title_selected"      :[230,230,230],
+    "nd_color_background"          :[70, 70, 70],
+    "nd_color_background_disable"  :[150,150,150],
+    "nd_color_title_bar"           :[70, 120,70],
+    "nd_title_font"                :"Arial",
+    "nd_attrib_font"               :"Arial",
+
+    "nd_color_drag_default"        :[150,150,150],
+    "nd_color_drag_selected"       :[250,255,160],
+    "nd_color_attribute"           :[200,200,200],
+
+    "-----------scene--------------":"",
+    "color_background"             :[40,40,40],
+    "color_background2"             :[50,50,50],
+    "color_background3"             :[70,70,70],
+
+    "-----------file format--------------":"",
+    "imageFormats"                 : ["jpg","jpeg","png","exr","tif","tiff",
+                                     "pbm","pgm","ppm","sr","ras","bmp","dib",
+                                     "jpe"]
+
+}
