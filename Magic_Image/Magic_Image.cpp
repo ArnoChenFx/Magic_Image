@@ -21,6 +21,12 @@ MagicImage::MagicImage(QWidget *parent)
 
     initUI();
     initSingalConnection();
+
+	//TEST
+	size_t size = Menus.size();
+	qDebug() <<"NODE1 NAME" << QString::fromStdString(Menus[0]["name"]);
+	qDebug() <<"NODE2 NAME" << QString::fromStdString(Menus[1]["name"]);
+
 }
 
 void MagicImage::initUI()

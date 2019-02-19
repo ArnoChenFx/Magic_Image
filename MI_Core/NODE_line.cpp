@@ -121,8 +121,8 @@ json NODE_line::save()
     json lineInfo;
     lineInfo["inputNode"] = inputSock->node->id;
     lineInfo["outputNode"] = outputSock->node->id;
-    lineInfo["inputSocket"] = inputSock->name.toStdString();
-    lineInfo["outputSocket"] = outputSock->name.toStdString();
+    lineInfo["inputSocket"] = inputSock->id;
+    lineInfo["outputSocket"] = outputSock->id;
     return lineInfo;
 }
 

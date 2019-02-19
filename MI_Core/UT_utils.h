@@ -16,6 +16,7 @@ MI_CORE_EXPORT extern json clipboard;
 MI_CORE_EXPORT extern json history;
 MI_CORE_EXPORT extern int history_index;
 MI_CORE_EXPORT extern int history_max_index;
+MI_CORE_EXPORT extern json Menus;
 
 MI_CORE_EXPORT QColor getColor(string name);
 

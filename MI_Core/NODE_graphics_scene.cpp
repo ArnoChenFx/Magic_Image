@@ -60,8 +60,8 @@ void NODE_graphics_scene::loadLine(json liInfo)
 {
     size_t inNode = liInfo["inputNode"];
     size_t outNode = liInfo["outputNode"];
-    QString inSocketName = QString::fromStdString(liInfo["inputSocket"]);
-    QString outSocketName = QString::fromStdString(liInfo["outputSocket"]);
+    int inSocketID = liInfo["inputSocket"];
+    int outSocketID = liInfo["outputSocket"];
     NODE_socket *inSocket = nullptr;
     NODE_socket *outSocket = nullptr;
     int count=0;
@@ -70,14 +70,14 @@ void NODE_graphics_scene::loadLine(json liInfo)
         if(count==2) break;
         else if(node->id==inNode){
             foreach(NODE_socket *socket,node->output_sockets){
-                if(socket->name==inSocketName) inSocket = socket;
+                if(socket->id==inSocketID) inSocket = socket;
                 count ++;
                 //break;
             }
         }
         else if(node->id==outNode){
             foreach(NODE_socket *socket,node->input_sockets){
-                if(socket->name==outSocketName) outSocket = socket;
+                if(socket->id==outSocketID) outSocket = socket;
                 count ++;
                 //break;
             }

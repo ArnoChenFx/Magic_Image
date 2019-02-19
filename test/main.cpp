@@ -4,6 +4,10 @@
 #include <opencv2/opencv.hpp>
 #include <QtDebug>
 
+#include <my_node1.h>
+#include <my_node2.h>
+#include <string>
+
 using namespace cv;
 
 void testCV()
@@ -19,7 +23,6 @@ void testCV()
 
 	//不加此语句图片会一闪而过
 	waitKey(0);
-
 }
 
 void testCUDA() {
@@ -41,11 +44,27 @@ void testCUDA() {
 	
 }
 
+
+void test_Fac() {
+	my_node1 *n1 = new my_node1;
+	qDebug() << n1->name;
+
+	auto *n2 = static_cast<my_node1*>(FACTORY_NODE::produce("my_node1"));
+	qDebug() << n2->name;
+
+	string aa = "my_node2";
+	auto n3 = factory::get().produce("NODE2");
+	qDebug() << QString::fromStdString(n3->getName());
+
+}
 int main(int argc, char *argv[])
 {
-	std::cout << "hello cv!" << std::endl;
-	qDebug() << "hello cv!!";
+	//std::cout << "hello cv!" << std::endl;
+	//qDebug() << "hello cv!!";
 	//testCUDA();
-	//system("pause");
+	
+
+	test_Fac();
+	system("pause");
 	return 0;
 }

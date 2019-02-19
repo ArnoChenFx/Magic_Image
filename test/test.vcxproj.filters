@@ -27,6 +27,12 @@
     <ClCompile Include="test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="my_node1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="my_node2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="test.qrc">
@@ -38,6 +44,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="test.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="factory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="node_test.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="my_node1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="my_node2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="factory2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="node_base.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

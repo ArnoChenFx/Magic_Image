@@ -32,10 +32,6 @@ NODE_graphics_view::NODE_graphics_view() : QGraphicsView()
 
     prePos = mousePos;
 
-    //add node
-    new NODE_item(this,"Node A");
-    new NODE_item(this,"Node B",QPointF(400,0));
-
     this->setStyleSheet("background-color:rgb(30,30,30)");
 }
 

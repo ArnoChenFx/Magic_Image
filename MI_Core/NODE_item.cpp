@@ -25,9 +25,12 @@ NODE_item::NODE_item(NODE_graphics_view* NODE_v,QString title,QPointF pos,qreal 
     this->width = width;
     this->height = height;
     this->title = title;
-    this->nodeView = NODE_v;
-    nodeView->NODE_scene->addItem(this);
-    nodeView->NODE_scene->sceneNodes.append(this);
+    
+	if (NODE_v != nullptr) {
+		this->nodeView = NODE_v;
+		loadToScene();
+	}
+
     this->setPos(pos);
 
 	//INIT
@@ -68,6 +71,12 @@ NODE_item::NODE_item(NODE_graphics_view* NODE_v,QString title,QPointF pos,qreal 
 
     initWidget();
     initChildren();
+}
+
+void NODE_item::loadToScene()
+{
+	nodeView->NODE_scene->addItem(this);
+	nodeView->NODE_scene->sceneNodes.append(this);
 }
 
 QRectF NODE_item::boundingRect() const
@@ -161,13 +170,11 @@ void NODE_item::initChildren()
     });
 
     //socket output
-    int index = 0;
-    NODE_socket *s0 = new NODE_socket(this,index,true);
+    NODE_socket *s0 = new NODE_socket(this,0,true);
     output_sockets.append(s0);
 
     //socket input
-    int in_index = 0;
-    NODE_socket *p0 = new NODE_socket(this,in_index);
+    NODE_socket *p0 = new NODE_socket(this,1);
     input_sockets.append(p0);
 }
 
@@ -329,6 +336,10 @@ void NODE_item::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsItem::mouseMoveEvent(event);
 }
 
+json NODE_item::getMenuSet() {
+	json a;
+	return a;
+}
 //void NODE_item::mousePressEvent(QGraphicsSceneMouseEvent *event)
 //{
 //    if(event->button() == Qt::LeftButton){

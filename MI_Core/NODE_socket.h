@@ -14,6 +14,7 @@ public:
     bool socketType;//false:left,true:right
     NODE_item *node;
     QString name;
+	int id;
 
     QGraphicsTextItem *nameItem;
 
@@ -26,7 +27,6 @@ public:
     void updateLines();
 
     NODE_socket(QGraphicsItem *parent = nullptr,int index=0,bool sType=false);
-    ~NODE_socket() override;
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter,const QStyleOptionGraphicsItem *options,QWidget *widget) override;

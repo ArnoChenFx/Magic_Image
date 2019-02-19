@@ -12,6 +12,8 @@ json config = config_Load();
 size_t global_id = 0;
 json clipboard = json::array();
 json history = json::array();
+json Menus = json::array();
+
 int history_index = 0;
 int history_max_index = 10;
 

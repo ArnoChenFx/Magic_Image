@@ -10,6 +10,8 @@
 #include <UT_utils.h>
 #include <json.hpp>
 #include "mi_core_global.h"
+//#include <json.hpp>
+//using json = nlohmann::json;
 
 class NODE_graphics_view;
 
@@ -56,6 +58,11 @@ public:
     void load(json nodeInfo);
     void refreshId();
     void appendHistory(QString name);
+	void loadToScene();
+
+	//virtual
+	virtual json getMenuSet();
+
 protected:
     void initChildren();
 

@@ -16,6 +16,7 @@ NODE_socket::NODE_socket(QGraphicsItem *parent,int index,bool sType):QGraphicsIt
     setFlags(QGraphicsItem::ItemIsSelectable);
 	nameItem = new QGraphicsTextItem(this);
 
+	id = index;
     name = "Image";
 
     updatePosition();
@@ -46,10 +47,6 @@ NODE_socket::NODE_socket(QGraphicsItem *parent,int index,bool sType):QGraphicsIt
     }
 }
 
-NODE_socket::~NODE_socket()
-{
-    qDebug()<<"release socket";
-}
 
 QRectF NODE_socket::boundingRect() const
 {

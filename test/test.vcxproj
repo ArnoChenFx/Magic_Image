@@ -68,7 +68,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>E:\Software\CPPlib\opencv\opencv _4.01_cuda\x64\vc15\lib;$(QTDIR)\lib;D:\Code_Project\Magic_Image_VS2017\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>qtmaind.lib;MI_Core_d.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;opencv_aruco401d.lib;opencv_bgsegm401d.lib;opencv_bioinspired401d.lib;opencv_calib3d401d.lib;opencv_ccalib401d.lib;opencv_core401d.lib;opencv_cudaarithm401d.lib;opencv_cudabgsegm401d.lib;opencv_cudacodec401d.lib;opencv_cudafeatures2d401d.lib;opencv_cudafilters401d.lib;opencv_cudaimgproc401d.lib;opencv_cudalegacy401d.lib;opencv_cudaobjdetect401d.lib;opencv_cudaoptflow401d.lib;opencv_cudastereo401d.lib;opencv_cudawarping401d.lib;opencv_cudev401d.lib;opencv_datasets401d.lib;opencv_dnn401d.lib;opencv_dnn_objdetect401d.lib;opencv_dpm401d.lib;opencv_face401d.lib;opencv_features2d401d.lib;opencv_flann401d.lib;opencv_fuzzy401d.lib;opencv_gapi401d.lib;opencv_hfs401d.lib;opencv_highgui401d.lib;opencv_imgcodecs401d.lib;opencv_imgproc401d.lib;opencv_img_hash401d.lib;opencv_line_descriptor401d.lib;opencv_ml401d.lib;opencv_objdetect401d.lib;opencv_optflow401d.lib;opencv_phase_unwrapping401d.lib;opencv_photo401d.lib;opencv_plot401d.lib;opencv_reg401d.lib;opencv_rgbd401d.lib;opencv_saliency401d.lib;opencv_shape401d.lib;opencv_stereo401d.lib;opencv_stitching401d.lib;opencv_structured_light401d.lib;opencv_superres401d.lib;opencv_surface_matching401d.lib;opencv_tracking401d.lib;opencv_video401d.lib;opencv_videoio401d.lib;opencv_videostab401d.lib;opencv_xfeatures2d401d.lib;opencv_ximgproc401d.lib;opencv_xobjdetect401d.lib;opencv_xphoto401d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmaind.lib;MI_Core.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;opencv_aruco401d.lib;opencv_bgsegm401d.lib;opencv_bioinspired401d.lib;opencv_calib3d401d.lib;opencv_ccalib401d.lib;opencv_core401d.lib;opencv_cudaarithm401d.lib;opencv_cudabgsegm401d.lib;opencv_cudacodec401d.lib;opencv_cudafeatures2d401d.lib;opencv_cudafilters401d.lib;opencv_cudaimgproc401d.lib;opencv_cudalegacy401d.lib;opencv_cudaobjdetect401d.lib;opencv_cudaoptflow401d.lib;opencv_cudastereo401d.lib;opencv_cudawarping401d.lib;opencv_cudev401d.lib;opencv_datasets401d.lib;opencv_dnn401d.lib;opencv_dnn_objdetect401d.lib;opencv_dpm401d.lib;opencv_face401d.lib;opencv_features2d401d.lib;opencv_flann401d.lib;opencv_fuzzy401d.lib;opencv_gapi401d.lib;opencv_hfs401d.lib;opencv_highgui401d.lib;opencv_imgcodecs401d.lib;opencv_imgproc401d.lib;opencv_img_hash401d.lib;opencv_line_descriptor401d.lib;opencv_ml401d.lib;opencv_objdetect401d.lib;opencv_optflow401d.lib;opencv_phase_unwrapping401d.lib;opencv_photo401d.lib;opencv_plot401d.lib;opencv_reg401d.lib;opencv_rgbd401d.lib;opencv_saliency401d.lib;opencv_shape401d.lib;opencv_stereo401d.lib;opencv_stitching401d.lib;opencv_structured_light401d.lib;opencv_superres401d.lib;opencv_surface_matching401d.lib;opencv_tracking401d.lib;opencv_video401d.lib;opencv_videoio401d.lib;opencv_videostab401d.lib;opencv_xfeatures2d401d.lib;opencv_ximgproc401d.lib;opencv_xobjdetect401d.lib;opencv_xphoto401d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <QtMoc>
       <OutputFile>.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
@@ -118,9 +118,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="my_node1.cpp" />
+    <ClCompile Include="my_node2.cpp" />
     <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="factory.h" />
+    <ClInclude Include="factory2.h" />
+    <ClInclude Include="my_node1.h" />
+    <ClInclude Include="my_node2.h" />
+    <ClInclude Include="node_base.h" />
+    <ClInclude Include="node_test.h" />
     <ClInclude Include="test.h" />
   </ItemGroup>
   <ItemGroup>
