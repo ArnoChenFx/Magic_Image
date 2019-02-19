@@ -32,6 +32,7 @@ struct NODE_EXPORT factory
 			qDebug() << QString::fromStdString(key);
 			qDebug() << QString::fromStdString(menuName);
 			qDebug() << QString::fromStdString(keyW);
+
 			json menu;
 			menu["name"] = key;
 			menu["menuName"] = menuName;

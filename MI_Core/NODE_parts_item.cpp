@@ -71,8 +71,8 @@ QVariant NODE_Drag_item::itemChange(GraphicsItemChange change, const QVariant &v
 
     if(change==ItemPositionHasChanged){
         QPointF eventPos = value.toPointF();
-        if(eventPos.x()<20) eventPos = QPointF(20,eventPos.y());
-        if(eventPos.y()<40) eventPos = QPointF(eventPos.x(),40);
+        if(eventPos.x()<40) eventPos = QPointF(40,eventPos.y());
+        if(eventPos.y()<(node->minHeight-10)) eventPos = QPointF(eventPos.x(), node->minHeight - 10);
         position = eventPos + QPointF(10,10);
         setPos(eventPos);
         emit positionChange();

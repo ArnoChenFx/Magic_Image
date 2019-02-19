@@ -1,25 +1,21 @@
 #include "node_Viewport.h"
-#include <NODE_graphics_view.h>
-#include <NODE_item.h>
-#include <Register.h>
 #include <qdebug.h>
 
 node_Viewport::node_Viewport(NODE_graphics_view* NODE_v):
-	NODE_item(NODE_v)
+	NODE_item(NODE_v, "Viewport")
 {
-	qDebug() << "start";
+	initSocket();
 }
 
-
-node_Viewport::~node_Viewport()
+void node_Viewport::initSocket()
 {
+	//socket input
+	NODE_socket *s0 = new NODE_socket(this, 0);
+	input_sockets.append(s0);
+}
+void node_Viewport::cook()
+{
+
 }
 
-json node_Viewport::getMenuSet()
-{
-	json a;
-	//menu.hotKey
-	return a;
-}
-//REGISTER_NODE(node_Viewport, "Viewport", 2);
 REGISTER_NODE(node_Viewport, "Viewport","Export","V");

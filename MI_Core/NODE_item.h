@@ -10,8 +10,6 @@
 #include <UT_utils.h>
 #include <json.hpp>
 #include "mi_core_global.h"
-//#include <json.hpp>
-//using json = nlohmann::json;
 
 class NODE_graphics_view;
 
@@ -31,7 +29,9 @@ public:
     QString name;
     QColor color_title_bar;
     size_t id = global_id;
-
+	QPointF mapSize;
+	qreal title_height;
+	qreal minHeight;
     //list
     QList<NODE_socket*> input_sockets;
     QList<NODE_socket*> output_sockets;
@@ -61,13 +61,14 @@ public:
 	void loadToScene();
 
 	//virtual
-	virtual json getMenuSet();
+	virtual void initSocket();
+	virtual void cook();
 
 protected:
     void initChildren();
 
+	virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 //    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 //    virtual void leftMousePressEvent(QGraphicsSceneMouseEvent *event);
 //    virtual void rightMousePressEvent(QGraphicsSceneMouseEvent *event);
 //    virtual void leftMouseReleaseEvent(QGraphicsSceneMouseEvent *event);
@@ -92,12 +93,10 @@ private:
     QBrush _brush_title_item;
     QBrush _brush_background;
 
-    qreal edge_size = 10.0;
-    qreal title_height = 24.0;
-    qreal _padding = 4.0;
+    qreal edge_size;
+    qreal _padding;
     QFont nodeTitleFont;
     QFont nodeAttribFont;
 
-    QPointF mapSize;
     QPointF prePos;
 };

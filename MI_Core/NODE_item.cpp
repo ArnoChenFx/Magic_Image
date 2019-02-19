@@ -25,7 +25,8 @@ NODE_item::NODE_item(NODE_graphics_view* NODE_v,QString title,QPointF pos,qreal 
     this->width = width;
     this->height = height;
     this->title = title;
-    
+	this->name = title;
+
 	if (NODE_v != nullptr) {
 		this->nodeView = NODE_v;
 		loadToScene();
@@ -42,8 +43,6 @@ NODE_item::NODE_item(NODE_graphics_view* NODE_v,QString title,QPointF pos,qreal 
     this->setFlags(ItemIsSelectable|ItemIsMovable);
     //|ItemIsFocusable
     this->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-
-    this->name = "node_base";
 
     QGraphicsDropShadowEffect *dropShadowEffect=new QGraphicsDropShadowEffect;
     dropShadowEffect->setColor(QColor(63,63,63,100));
@@ -68,6 +67,9 @@ NODE_item::NODE_item(NODE_graphics_view* NODE_v,QString title,QPointF pos,qreal 
     nodeTitleFont = QFont(getString("nd_title_font"),12,QFont::Bold);
     nodeAttribFont = QFont(getString("nd_attrib_font"),10,QFont::Normal);
     color_title_bar = getColor("nd_color_title_bar");
+	title_height = 24.0;
+	edge_size = 10.0;
+	_padding = 4.0;
 
     initWidget();
     initChildren();
@@ -128,9 +130,6 @@ void NODE_item::removeLine()
     foreach(NODE_socket *socket,output_sockets){
         socket->removeAll();
     }
-    //nodeView->NODE_scene->removeItem(this);
-    //nodeView->sceneSelectedNodes.removeOne(this);
-    //delete this;
 }
 
 void NODE_item::initChildren()
@@ -144,7 +143,7 @@ void NODE_item::initChildren()
     });
 
     //drag item
-
+	drag_item->node = this;
     drag_item->setPos(width-10,height-10);
     connect(drag_item,&NODE_Drag_item::positionChange,this,[=]() {
         width = drag_item->position.x();
@@ -165,17 +164,22 @@ void NODE_item::initChildren()
             imagePrevier->setVisible(false);
             height = height - delta;
         }
-        drag_item->setPos(width-10,height-10);
         updateUI();
+		drag_item->setPos(width - 10, height - 10);
     });
 
-    //socket output
-    NODE_socket *s0 = new NODE_socket(this,0,true);
-    output_sockets.append(s0);
+    
+}
 
-    //socket input
-    NODE_socket *p0 = new NODE_socket(this,1);
-    input_sockets.append(p0);
+void NODE_item::initSocket()
+{
+	//socket output
+	NODE_socket *s0 = new NODE_socket(this, 0, true);
+	output_sockets.append(s0);
+
+	//socket input
+	NODE_socket *p0 = new NODE_socket(this, 0);
+	input_sockets.append(p0);
 }
 
 void NODE_item::initWidget()
@@ -204,6 +208,7 @@ void NODE_item::initWidget()
 
 void NODE_item::updateUI()
 {
+	minHeight = 0;
     foreach(NODE_socket *sock,output_sockets){
         sock->updatePosition();
     }
@@ -336,10 +341,7 @@ void NODE_item::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsItem::mouseMoveEvent(event);
 }
 
-json NODE_item::getMenuSet() {
-	json a;
-	return a;
-}
+void NODE_item::cook() {}
 //void NODE_item::mousePressEvent(QGraphicsSceneMouseEvent *event)
 //{
 //    if(event->button() == Qt::LeftButton){

@@ -11,20 +11,17 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="NODE.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="node_Viewport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="noed_Image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="node_Render.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="NODE.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="node_Viewport.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -32,6 +29,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="noed_Image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="node_Render.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

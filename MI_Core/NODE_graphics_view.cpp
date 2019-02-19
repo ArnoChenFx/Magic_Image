@@ -17,6 +17,7 @@
 #include <NODE_cutline.h>
 #include <UT_utils.h>
 #include <iostream>
+#include <qwidgetaction.h>
 
 NODE_graphics_view::NODE_graphics_view() : QGraphicsView()
 {
@@ -33,6 +34,13 @@ NODE_graphics_view::NODE_graphics_view() : QGraphicsView()
     prePos = mousePos;
 
     this->setStyleSheet("background-color:rgb(30,30,30)");
+
+	contextMenu = new QMenu();
+	searchLine = new QLineEdit();
+	connect(searchLine, &QLineEdit::textChanged,[=]() {searchNode();});
+	connect(searchLine, &QLineEdit::returnPressed,[=](){applySearch();});
+	searchLine->setContextMenuPolicy(Qt::NoContextMenu);
+	
 }
 
 void NODE_graphics_view::onCopy()
@@ -159,9 +167,19 @@ void NODE_graphics_view::onDisable()
 
 void NODE_graphics_view::onConnectToViewport()
 {
-    if(canUseKey){
-        //
-    }
+	if (NODE_scene->selectedItems().length()>0) {
+		auto item = NODE_scene->selectedItems()[0];
+		NODE_item *currentNode = dynamic_cast<NODE_item*>(item);
+
+		if (viewportNode != nullptr && currentNode) {
+			if (currentNode->output_sockets.length() > 0) {
+				NODE_socket *inSocket = currentNode->output_sockets[0];
+				NODE_socket *outSocket = viewportNode->input_sockets[0];
+				new NODE_line(this, inSocket, outSocket);
+			}
+
+		}
+	}
 }
 
 void NODE_graphics_view::onFocus()
@@ -214,7 +232,9 @@ void NODE_graphics_view::mousePressEvent(QMouseEvent *event)
         state = 1;//zoom state
         initMousePos = event->pos();
         zoomInitialPos = event->pos();
-        //tab menu
+
+        //show tab menu
+		showContextMenu();
         QGraphicsView::mousePressEvent(event);
     }
     else if (event->button() == Qt::MiddleButton){
@@ -338,12 +358,9 @@ void NODE_graphics_view::mouseReleaseEvent(QMouseEvent *event)
 
 void NODE_graphics_view::keyPressEvent(QKeyEvent *event)
 {
-    if(event->key()==Qt::Key_A){
+    if(event->key()==Qt::Key_1){
         if(canUseKey){
-            qDebug()<<"create new node "<<mousePos;
-            NODE_item *node = new NODE_item(this,"NODE_new",mousePos);
-            //this->viewport()->update();
-            node->appendHistory("create_node");
+			onConnectToViewport();
         }
     }
     else if(event->key()==Qt::Key_F){
@@ -708,9 +725,48 @@ void NODE_graphics_view::deleteLine(NODE_line *line)
 
 void NODE_graphics_view::deleteNode(NODE_item *node)
 {
+	if (node->name == "Viewport") {
+		this->viewportNode = nullptr;
+	}
     node->appendHistory("delete_node");
     NODE_scene->removeItem(node);
     NODE_scene->sceneNodes.removeOne(node);
     qDebug()<<"delete node"<<node->title;
 
+	if (viewportNode == nullptr) {
+		foreach(auto node, NODE_scene->sceneNodes) {
+			if (node->name == "Viewport") {
+				viewportNode = node;
+				return;
+			}
+		}
+	}
 }
+
+void NODE_graphics_view::createContextMenu()
+{
+	//setContextMenuPolicy(Qt::CustomContextMenu);
+	//customContextMenuRequested.connect(showContextMenu());
+	QWidgetAction *search = new QWidgetAction(contextMenu);
+	search->setDefaultWidget(searchLine);
+	contextMenu->addAction(search);
+	//contextMenu->setStyleSheet(QString("background-color:%1;color:rgb(220,220,220);}").arg(getRGB("color_background2")));
+}
+
+void NODE_graphics_view::showContextMenu()
+{
+	searchLine->setText("");
+	searchLine->setFocus();
+	contextMenu->exec(QCursor::pos());
+}
+
+void NODE_graphics_view::searchNode()
+{
+
+}
+
+void NODE_graphics_view::applySearch()
+{
+
+}
+

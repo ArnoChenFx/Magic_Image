@@ -99,13 +99,13 @@
     </QtMoc>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="NODE.cpp" />
+    <ClCompile Include="node_Render.cpp" />
     <ClCompile Include="node_Viewport.cpp" />
     <ClCompile Include="noed_Image.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="NODE.h" />
     <ClInclude Include="node_global.h" />
+    <ClInclude Include="node_Render.h" />
     <ClInclude Include="node_Viewport.h" />
     <ClInclude Include="noed_Image.h" />
     <ClInclude Include="Register.h" />

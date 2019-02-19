@@ -10,7 +10,8 @@
 #include <NODE_line.h>
 #include <NODE_cutline.h>
 #include "mi_core_global.h"
-
+#include <qlineedit.h>
+#include <qmenu.h>
 
 class MI_CORE_EXPORT NODE_graphics_view : public QGraphicsView
 {
@@ -22,6 +23,7 @@ public:
     explicit NODE_graphics_view();
 
     QPointF mousePos = QPointF(0,0);
+	NODE_item *viewportNode=nullptr;
 
     QList<NODE_item*> sceneSelectedNodes;
     QList<NODE_line*> sceneSelectedLines;
@@ -43,6 +45,13 @@ public:
 
     bool canUseKey = true;
 
+	void showContextMenu();
+	void createContextMenu();
+
+	QLineEdit *searchLine;
+	QMenu *contextMenu;
+	int state = 0;//default state
+
 protected:
     virtual void wheelEvent(QWheelEvent *event) override;
     virtual void mousePressEvent(QMouseEvent *event)override;
@@ -58,7 +67,6 @@ protected:
 
 private:
     //attribute
-    int state = 0;//default state
     const qreal zoomInFactor = 1.15;
     bool zoomClamp = false;
     qreal zoom = 10;
@@ -99,5 +107,7 @@ private:
     bool canChangeDrag=false;
     QPointF prePos;
 
+	void searchNode();
+	void applySearch();
+	QList<QMenu*> searchedMenu;
 };
-

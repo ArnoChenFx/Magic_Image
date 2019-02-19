@@ -10,6 +10,9 @@
 #include "MI_utils.hpp"
 #include <iostream>
 #include <fstream>
+#include <NODE_line.h>
+#include <Register.h>
+#include <node_Viewport.h>
 #include <json.hpp>
 using json = nlohmann::json;
 using namespace std;
@@ -21,11 +24,6 @@ MagicImage::MagicImage(QWidget *parent)
 
     initUI();
     initSingalConnection();
-
-	//TEST
-	size_t size = Menus.size();
-	qDebug() <<"NODE1 NAME" << QString::fromStdString(Menus[0]["name"]);
-	qDebug() <<"NODE2 NAME" << QString::fromStdString(Menus[1]["name"]);
 
 }
 
@@ -40,6 +38,7 @@ void MagicImage::initUI()
     initNodeWindow();
     initViewerWindow();
     initDock();
+	onNew();
 
 }
 
@@ -116,6 +115,8 @@ void MagicImage::initNodeWindow()
 {
     //nodeView
     nodeWindow->setCentralWidget(nodeView);
+	nodeView->createContextMenu();
+
     //菜单栏
     QMenuBar *nodeMenuBar = new QMenuBar();
     nodeWindow->setMenuBar(nodeMenuBar);
@@ -144,12 +145,46 @@ void MagicImage::initNodeWindow()
     connect(CtoV,&QAction::triggered,this,[=](){nodeView->onConnectToViewport();});
     //connect(Focus,&QAction::triggered,this,[=](){nodeView->onFocus();});
 
-    //add menu
+    
+	nodeMenuBar->setStyleSheet(QString("QMenuBar::item {background-color:%1;color:rgb(220,220,220);}"
+		"QMenuBar {background-color:%1;}"
+		"QMenuBar::item::selected {background-color: %2;}"
+	).arg(getRGB("color_background2")).arg(getRGB("color_background3")));
 
-    nodeMenuBar->setStyleSheet(QString("QMenuBar::item {background-color:%1;color:rgb(220,220,220);}"
-                                       "QMenuBar {background-color:%1;}"
-                                       "QMenuBar::item::selected {background-color: %2;}"
-                                       ).arg(getRGB("color_background2")).arg(getRGB("color_background3")));
+
+	//add menu
+	QList<QString > menuNames;
+	QList<QMenu *> menuObjects;
+	for (auto& info : Menus.items())
+	{
+		auto ndInfo = info.value();
+		QString name = QString::fromStdString(ndInfo["name"]);
+		QString menuName = QString::fromStdString(ndInfo["menuName"]);
+		QString key = QString::fromStdString(ndInfo["key"]);
+
+		QAction *newAction;
+		if (!menuNames.contains(menuName)) {
+			menuNames.append(menuName);
+			QMenu *newMenu = addMenu->addMenu(menuName);
+			newAction = createAct(newMenu, name, "", key);
+			connect(newAction, &QAction::triggered,this,[=]() {this->onCreateNode(name.toStdString());});
+			nodeView->contextMenu->addMenu(newMenu);
+			menuObjects.append(newMenu);
+			newMenu->setObjectName(menuName);
+		}
+		else {
+			foreach(QMenu *mn, menuObjects) {
+				if (mn->objectName() == menuName) {
+					newAction = createAct(mn, name, "", key);
+					connect(newAction, &QAction::triggered, this, [=]() {this->onCreateNode(name.toStdString()); });
+					break;
+				}
+			}
+		}
+
+	}
+	menuNames.clear();
+	menuObjects.clear();
 }
 
 void MagicImage::initViewerWindow()
@@ -208,6 +243,7 @@ bool MagicImage::eventFilter(QObject *target, QEvent *event)
             QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
             if (keyEvent->key() == Qt::Key_Tab)
             {
+				nodeView->showContextMenu();
                 qDebug()<<"TAB";
                 return true;
             }
@@ -261,7 +297,7 @@ void MagicImage::save()
 {
     qDebug()<<projectName;
     json projectInfo;
-    projectInfo["sceneInfo"] = nodeView->NODE_scene->save();
+    projectInfo["sceneInfo"] = saveScene();
     qDebug()<<"all saved";
     std::ofstream file(projectName.toStdString());
     file << projectInfo.dump(4);
@@ -269,7 +305,7 @@ void MagicImage::save()
     IMstatusBar->showMessage("Save Successfully!");
 }
 
-void MagicImage::onNew()
+void MagicImage::onNew(bool loadProject)
 {
     nodeView->NODE_scene->clear();
     nodeView->NODE_scene->sceneNodes.clear();
@@ -277,8 +313,10 @@ void MagicImage::onNew()
     nodeView->sceneTempLines.clear();
     nodeView->sceneSelectedLines.clear();
     nodeView->sceneSelectedNodes.clear();
+	if(!loadProject) onCreateNode("Viewport");
     history.clear();
     history_index = 0;
+	//Menus.clear();
 }
 
 void MagicImage::onOpen()
@@ -293,14 +331,14 @@ void MagicImage::onOpen()
                                    path,
                                    tr("Project File (*.mag)"));
     if (!fileName.isEmpty()){
-        onNew();
+        onNew(true);
         std::fstream ifs(fileName.toStdString());
         if (!ifs) {
             std::cout << "*ERROR** Could not read input file " << "defalut_config" << "\n"<<std::endl;;
           }
         json project = json::parse(ifs);
         json sceneInfo = project["sceneInfo"];
-        nodeView->NODE_scene->load(sceneInfo);
+        load(sceneInfo);
         projectName = fileName;
         changeTitle();
     }
@@ -342,7 +380,7 @@ void MagicImage::onUndo()
         qDebug()<<"undo not create_node";
     }
     else if(history_name == "delete_node"){
-        nodeView->NODE_scene->loadNode(history_content);
+		loadNode(history_content);
         history.erase(history.size()-1);
         qDebug()<<"undo not delete_node";
     }
@@ -364,7 +402,7 @@ void MagicImage::onUndo()
         qDebug()<<"undo not create_line";
     }
     else if(history_name == "delete_line"){
-        nodeView->NODE_scene->loadLine(history_content);
+        loadLine(history_content);
         history.erase(history.size()-1);
         qDebug()<<"undo not delete_line";
     }
@@ -397,7 +435,7 @@ void MagicImage::onRedo()
         qDebug()<<"redo move item";
     }
     else if(history_name=="create_node"){
-        nodeView->NODE_scene->loadNode(history_content);
+		loadNode(history_content);
         history.erase(history.size()-1);
         qDebug()<<"redo create_node";
     }
@@ -415,7 +453,7 @@ void MagicImage::onRedo()
         qDebug()<<"redo delete_node";
     }
     else if(history_name == "create_line"){
-        nodeView->NODE_scene->loadLine(history_content);
+        loadLine(history_content);
         history.erase(history.size()-1);
         qDebug()<<"redo create_line";
     }
@@ -440,6 +478,102 @@ void MagicImage::onRedo()
     qDebug()<<history_name;
     cout<<"history index: "<<history_index<<endl;
     history_index= index + 1;
+}
+
+NODE_item* MagicImage::onCreateNode(string name)
+{
+	auto node = factory::get().produce(name);
+	node->nodeView = nodeView;
+	node->loadToScene();
+	nodeView->state = 0;
+	node->setPos(nodeView->mousePos);
+	qDebug() << "create node: " << QString::fromStdString(name);
+
+	if (name == "Viewport") {
+		node_Viewport *vp = static_cast<node_Viewport *>(node);
+		nodeView->viewportNode = vp;
+		vp->viewer = viewer;
+	}
+	return node;
+}
+
+json MagicImage::saveScene()
+{
+	qDebug() << "start save";
+	json sceneInfo = json::object();
+	json nodeInfo = json::array();
+	json lineInfo = json::array();
+
+	foreach(NODE_item* node, nodeView->NODE_scene->sceneNodes) {
+		json nodeJson = node->save();
+		nodeInfo.push_back(nodeJson);
+	}
+	qDebug() << "nodes saved";
+	foreach(NODE_line* line, nodeView->NODE_scene->sceneLines) {
+		json lineJson = line->save();
+		lineInfo.push_back(lineJson);
+	}
+	qDebug() << "lines saved";
+	sceneInfo["Nodes"] = nodeInfo;
+	sceneInfo["Lines"] = lineInfo;
+	return sceneInfo;
+}
+
+void MagicImage::load(json sceneInfo)
+{
+	json nodeInfo = sceneInfo["Nodes"];
+	json lineInfo = sceneInfo["Lines"];
+
+	for (auto& info : nodeInfo.items())
+	{
+		auto ndInfo = info.value();
+		loadNode(ndInfo);
+	}
+
+	for (auto& info : lineInfo.items())
+	{
+		auto liInfo = info.value();
+		loadLine(liInfo);
+	}
+}
+
+void MagicImage::loadNode(json ndInfo)
+{
+	string name = ndInfo["name"];
+	auto node = onCreateNode(name);
+	node->load(ndInfo);
+}
+
+void MagicImage::loadLine(json liInfo)
+{
+	size_t inNode = liInfo["inputNode"];
+	size_t outNode = liInfo["outputNode"];
+	int inSocketID = liInfo["inputSocket"];
+	int outSocketID = liInfo["outputSocket"];
+	NODE_socket *inSocket = nullptr;
+	NODE_socket *outSocket = nullptr;
+	int count = 0;
+
+	foreach(NODE_item* node, nodeView->NODE_scene->sceneNodes) {
+		if (count == 2) break;
+		else if (node->id == inNode) {
+			foreach(NODE_socket *socket, node->output_sockets) {
+				if (socket->id == inSocketID) inSocket = socket;
+				count++;
+				//break;
+			}
+		}
+		else if (node->id == outNode) {
+			foreach(NODE_socket *socket, node->input_sockets) {
+				if (socket->id == outSocketID) outSocket = socket;
+				count++;
+				//break;
+			}
+		}
+
+	}
+	if (count == 2) new NODE_line(nodeView, inSocket, outSocket);
+	else qDebug() << "create Line error!!";
 }
 
 void MagicImage::initStyle()
@@ -479,5 +613,9 @@ void MagicImage::initStyle()
 
     viewer->setStyleSheet("QLabel{background-color:rgb(30,30,30);border: 0px solid #32414B;padding: 0px;margin: 0px;color: black}");
 
+	nodeView->contextMenu->setStyleSheet(QString("background-color:%2;selection-background-color:%1;color:rgb(220,220,220);"
+	).arg(getRGB("color_background")).arg(getRGB("color_background3")));
+
+	nodeView->searchLine->setStyleSheet("border: 0.5px solid rgb(100,100,100);border-radius: 0px;font-size:12px;");
 }
 

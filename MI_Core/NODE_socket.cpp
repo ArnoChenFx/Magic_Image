@@ -69,14 +69,19 @@ void NODE_socket::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 
 void NODE_socket::updatePosition()
 {
+	bool state = node->viewerState_item->state;
+	qreal delta = state ? node->mapSize.y() : 0;
+	delta += node->title_height+30;
+
     if(socketType)//output
     {
-        setPos(node->width,node->height*0.7);
+		setPos(node->width, delta);
     }
     else{//input
-        setPos(0,node->height*0.7);
+        setPos(0, delta);
     }
-
+	node->minHeight= max(delta+30, node->minHeight);
+	node->height = max(node->minHeight, node->height);
 }
 
 void NODE_socket::removeAll()

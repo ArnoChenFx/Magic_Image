@@ -20,10 +20,6 @@ public:
     QList<NODE_line*> sceneLines;
     QList<NODE_item*> sceneNodes;
 
-    json save();
-    void load(json sceneInfo);
-    void loadLine(json lineInfo);
-    void loadNode(json nodeInfo);
 protected:
     virtual void drawBackground(QPainter *painter, const QRectF &rect) override;
 

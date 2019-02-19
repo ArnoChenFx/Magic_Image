@@ -17,12 +17,14 @@ private:
 
 };
 
+class NODE_item;
 class MI_CORE_EXPORT NODE_Drag_item :public QObject,public QGraphicsItem
 {
     Q_OBJECT
 
 public:
     QPointF position;
+	NODE_item *node;
 
     NODE_Drag_item(QGraphicsItem *parent = nullptr,qreal width=0,qreal height=0);
     virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;

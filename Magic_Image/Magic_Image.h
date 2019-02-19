@@ -42,10 +42,11 @@ private:
     void onSave();
     void onSaveAs();
     void save();
-    void onNew();
+    void onNew(bool loadProject=false);
     void onOpen();
     void onUndo();
     void onRedo();
+	NODE_item* onCreateNode(string name);
 
     QDockWidget *paramDock = new QDockWidget("Parameters", this);
     QDockWidget *viewerDock = new QDockWidget("Viewer", this);
@@ -58,5 +59,10 @@ private:
     QLabel *aLabel = new QLabel();
 
     void initStyle();
+	
+	json saveScene();
+	void load(json sceneInfo);
+	void loadLine(json lineInfo);
+	void loadNode(json nodeInfo);
 };
 

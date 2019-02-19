@@ -1,25 +1,24 @@
 #include "noed_Image.h"
-#include <NODE_graphics_view.h>
-#include <NODE_item.h>
-#include <Register.h>
 #include <qdebug.h>
 
 noed_Image::noed_Image(NODE_graphics_view* NODE_v) :
-	NODE_item(NODE_v)
+	NODE_item(NODE_v, "Image")
 {
-	qDebug() << "start";
+	initSocket();
+}
+
+void noed_Image::initSocket()
+{
+	//socket output
+	NODE_socket *s0 = new NODE_socket(this, 0, true);
+	output_sockets.append(s0);
 }
 
 
-noed_Image::~noed_Image()
+
+void noed_Image::cook()
 {
+
 }
 
-json noed_Image::getMenuSet()
-{
-	json a;
-	//menu.hotKey
-	return a;
-}
-//REGISTER_NODE(node_Viewport, "Viewport", 2);
 REGISTER_NODE(noed_Image, "Image", "Import","I");
