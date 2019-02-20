@@ -53,6 +53,7 @@ public:
 	QList<QMenu*> allMenus;
 	QList<QAction*> allActions;
 	int state = 0;//default state
+	bool lineType = true;////false:linear;true:cubic
 
 protected:
     virtual void wheelEvent(QWheelEvent *event) override;

@@ -1,5 +1,4 @@
 ﻿#include "VI_image_viever.h"
-#include <QImage>
 #include <QMouseEvent>
 #include <QDebug>
 

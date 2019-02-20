@@ -14,22 +14,21 @@ class MagicImage : public QMainWindow
     Q_OBJECT
 
 public:
-    VI_image_viever *viewer = new VI_image_viever;
-    VI_graphics_view *viewerGraphicsview = new VI_graphics_view;
-    NODE_graphics_view *nodeView = new NODE_graphics_view();
-
-    QMainWindow *nodeWindow = new QMainWindow;
-    QMainWindow *viewerWindow = new QMainWindow;
-
-    QStatusBar *IMstatusBar =new QStatusBar;
-    QFrame *IMparam = new QFrame;
-
     MagicImage(QWidget *parent = nullptr);
-    ~MagicImage();
 
 	virtual void closeEvent(QCloseEvent *event) override;
 
 private:
+	VI_image_viever *viewer = new VI_image_viever;
+	VI_graphics_view *viewerGraphicsview = new VI_graphics_view;
+	NODE_graphics_view *nodeView = new NODE_graphics_view();
+
+	QMainWindow *nodeWindow = new QMainWindow;
+	QMainWindow *viewerWindow = new QMainWindow;
+
+	QStatusBar *IMstatusBar = new QStatusBar;
+	QFrame *IMparam = new QFrame;
+
     QString projectName=nullptr;
 
     void initUI();

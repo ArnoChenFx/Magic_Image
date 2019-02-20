@@ -52,17 +52,17 @@ void MagicImage::initDock()
     IMparam->setFrameShape(QFrame::StyledPanel);
     //self.setStyle(self.paramDock, "dock")
     paramDock->setWidget(IMparam);
-    paramDock->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetClosable);
+    //paramDock->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetClosable);
     this->addDockWidget(Qt::RightDockWidgetArea, paramDock);
 
     //viewer
     viewerDock->setWidget(viewerWindow);
-    viewerDock->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetClosable);
+    //viewerDock->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetClosable);
     this->addDockWidget(Qt::LeftDockWidgetArea, viewerDock);
 
     //node editor
     nodeDock->setWidget(nodeWindow);
-    nodeDock->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetClosable);
+    //nodeDock->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetClosable);
     this->addDockWidget(Qt::BottomDockWidgetArea, nodeDock);
 }
 
@@ -125,8 +125,17 @@ void MagicImage::initNodeWindow()
     //菜单栏
     QMenuBar *nodeMenuBar = new QMenuBar();
     nodeWindow->setMenuBar(nodeMenuBar);
+	QMenu *viewMenu = nodeMenuBar->addMenu("View");
     QMenu *nodeMenu =  nodeMenuBar->addMenu("Node");
     QMenu *addMenu =  nodeMenuBar->addMenu("Add");
+
+	//view menu
+	QAction *Toggle = createAct(viewMenu, "Toggle Line Type", "", "");
+	connect(Toggle, &QAction::triggered, this, [=]() {
+		bool tp = nodeView->lineType;
+		nodeView->lineType = !tp;
+		nodeView->update();
+		; });
 
     //node menu
     QAction *Copy = createAct(nodeMenu,"Copy","","Ctrl+C");
@@ -240,11 +249,6 @@ void MagicImage::initSingalConnection()
         QString msg = QString("click:(%1,%2)").arg(event->pos().x()).arg(event->pos().y());
         this->IMstatusBar->showMessage(msg);
     });
-}
-
-MagicImage::~MagicImage()
-{
-
 }
 
 bool MagicImage::eventFilter(QObject *target, QEvent *event)
@@ -557,8 +561,13 @@ json MagicImage::saveScene()
 		lineInfo.push_back(lineJson);
 	}
 	qDebug() << "lines saved";
+
+	json nodeEditorInfo = json::object();
+	nodeEditorInfo["lineType"] = nodeView->lineType;
+
 	sceneInfo["Nodes"] = nodeInfo;
 	sceneInfo["Lines"] = lineInfo;
+	sceneInfo["nodeEditor"] = nodeEditorInfo;
 	return sceneInfo;
 }
 
@@ -566,6 +575,9 @@ void MagicImage::load(json sceneInfo)
 {
 	json nodeInfo = sceneInfo["Nodes"];
 	json lineInfo = sceneInfo["Lines"];
+	json nodeEditorInfo = sceneInfo["nodeEditor"];
+	bool lType = nodeEditorInfo["lineType"];
+	nodeView->lineType = lType;
 
 	for (auto& info : nodeInfo.items())
 	{
@@ -648,7 +660,7 @@ void MagicImage::initStyle()
                                         .arg(getRGB("color_background_dark")));
 
     viewerGraphicsview->scene()->setBackgroundBrush(getColor("color_background"));
-    nodeView->NODE_scene->setBackgroundBrush(getColor("color_background"));
+    nodeView->scene()->setBackgroundBrush(getColor("color_background"));
 
     paramDock->setStyleSheet(QString("background-color:%1;color:rgb(200,200,200);").arg(getRGB("color_background_light")));
     viewerDock->setStyleSheet(QString("background-color:%1;color:rgb(200,200,200);").arg(getRGB("color_background_light")));

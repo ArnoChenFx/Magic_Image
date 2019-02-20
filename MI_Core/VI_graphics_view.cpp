@@ -1,7 +1,6 @@
 ﻿#include "VI_graphics_view.h"
 #include <QGraphicsItem>
 #include <QWheelEvent>
-#include <QMouseEvent>
 #include <QGraphicsView>
 #include <QScrollBar>
 #include <QGraphicsView>

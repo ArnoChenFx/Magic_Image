@@ -2,11 +2,8 @@
 #include <QPainter>
 #include <QtDebug>
 #include <QStyle>
-#include <NODE_item.h>
-#include <NODE_line.h>
 #include <string>
-#include <json.hpp>
-using json = nlohmann::json;
+
 
 NODE_graphics_scene::NODE_graphics_scene(NODE_graphics_view *nodeV):QGraphicsScene ()
 {

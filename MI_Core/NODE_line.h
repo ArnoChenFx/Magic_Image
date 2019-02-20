@@ -20,7 +20,6 @@ public:
     QPainterPath currentPath;
     QPointF startPos;
     QPointF endPos;
-    bool lineType = true;//false:linear;true:cubic
     bool isDrag;
     bool isDeleted = false;
 

@@ -40,6 +40,7 @@ NODE_line::NODE_line(NODE_graphics_view *nodeV,NODE_socket *startS,NODE_socket *
     //Node_scene->update();
     //update();
     qDebug()<<"line Created";
+	
 }
 
 
@@ -136,7 +137,7 @@ void NODE_line::appendHistory(QString name)
 
 QPainterPath NODE_line::calPath()
 {
-    currentPath = lineType?calCubicPath():calLinearPath();
+    currentPath = nodeView->lineType?calCubicPath():calLinearPath();
     return currentPath;
 }
 

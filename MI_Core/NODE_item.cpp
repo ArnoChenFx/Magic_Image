@@ -4,18 +4,14 @@
 #include <QMouseEvent>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsEffect>
-#include <NODE_parts_item.h>
 #include <QTextDocument>
 #include <QFont>
-#include <NODE_socket.h>
-#include <UT_utils.h>
 #include <NODE_graphics_view.h>
 #include <NODE_line.h>
 #include <QGraphicsProxyWidget>
 #include <QtWidgets>
 #include <QVBoxLayout>
-#include <UT_utils.h>
-#include <json.hpp>
+
 using json = nlohmann::json;
 
 NODE_item::NODE_item(NODE_graphics_view* NODE_v,QString title,QPointF pos,qreal width,qreal height):QGraphicsItem()
