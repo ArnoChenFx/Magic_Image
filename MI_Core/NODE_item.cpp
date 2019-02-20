@@ -39,6 +39,7 @@ NODE_item::NODE_item(NODE_graphics_view* NODE_v,QString title,QPointF pos,qreal 
 	title_item = new NODE_title_item(this);
 	viewerState_item = new NODE_Shift_item(this);
 	drag_item = new NODE_Drag_item(this, width, height);
+	name_item = new QGraphicsTextItem(this);
 
     this->setFlags(ItemIsSelectable|ItemIsMovable);
     //|ItemIsFocusable
@@ -66,6 +67,7 @@ NODE_item::NODE_item(NODE_graphics_view* NODE_v,QString title,QPointF pos,qreal 
 
     nodeTitleFont = QFont(getString("nd_title_font"),12,QFont::Bold);
     nodeAttribFont = QFont(getString("nd_attrib_font"),10,QFont::Normal);
+	nodeNameFont = QFont(getString("nd_attrib_font"), 9, QFont::Normal);
     color_title_bar = getColor("nd_color_title_bar");
 	title_height = 24.0;
 	edge_size = 10.0;
@@ -134,13 +136,20 @@ void NODE_item::removeLine()
 
 void NODE_item::initChildren()
 {
-    //title
+    //title item
     title_item->setPlainText(title);
     title_item->setFont(nodeTitleFont);
     title_item->setPos(0,-30);
     connect(title_item->document(),&QTextDocument::contentsChanged, [=]() {
         title = title_item->toPlainText();
     });
+
+	//name item
+	name_item->setPlainText(name);
+	name_item->setFont(nodeNameFont);
+	name_item->setPos(25, 0);
+	name_item->setTextWidth(width - 2 * _padding);
+	name_item->setDefaultTextColor(QColor(200,200,200));
 
     //drag item
 	drag_item->node = this;
@@ -167,7 +176,6 @@ void NODE_item::initChildren()
         updateUI();
 		drag_item->setPos(width - 10, height - 10);
     });
-
     
 }
 

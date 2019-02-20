@@ -17,8 +17,6 @@ VI_graphics_view::VI_graphics_view(QWidget *parent) : QGraphicsView(parent)
 
     this->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     this->setCacheMode(QGraphicsView::CacheBackground);
-//    this->verticalScrollBar()->blockSignals(true);
-//    this->horizontalScrollBar()->blockSignals(true);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setRenderHint(QPainter::Antialiasing);
@@ -73,6 +71,7 @@ void VI_graphics_view::mouseMoveEvent(QMouseEvent *event)
 {
     //zoom
     if (state == 1){
+		this->viewport()->setCursor(Qt::SizeVerCursor);
         qreal offset = zoomInitialPos.x() - event->pos().x();
         if(offset >previousMouseOffset){
             previousMouseOffset = offset;
@@ -93,8 +92,8 @@ void VI_graphics_view::mouseMoveEvent(QMouseEvent *event)
         }
 
         qreal zoomFactor;
-        if(zoomDirection == 1.0) zoomFactor = 1.03;
-        else zoomFactor = 1 / 1.03;
+        if(zoomDirection == 1.0) zoomFactor = 1.05;
+        else zoomFactor = 1 / 1.05;
 
         //Perform zoom and re-center on initial click position.
         QPointF pBefore = this->mapToScene(initMousePos);
@@ -122,6 +121,7 @@ void VI_graphics_view::mouseReleaseEvent(QMouseEvent *event)
 {
     //zoom
     if(state == 1){
+		this->viewport()->setCursor(Qt::ArrowCursor);
         zoomDirection = 0;
         zoomIncr = 0;
         setInteractive(true);

@@ -27,6 +27,8 @@ public:
     MagicImage(QWidget *parent = nullptr);
     ~MagicImage();
 
+	virtual void closeEvent(QCloseEvent *event) override;
+
 private:
     QString projectName=nullptr;
 
@@ -64,5 +66,6 @@ private:
 	void load(json sceneInfo);
 	void loadLine(json lineInfo);
 	void loadNode(json nodeInfo);
+
 };
 

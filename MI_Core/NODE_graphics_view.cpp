@@ -199,7 +199,16 @@ void NODE_graphics_view::onIndependent()
         foreach(QGraphicsItem* item,NODE_scene->selectedItems()){
             NODE_item* node= dynamic_cast<NODE_item*>(item);
             if(node){
-                node->removeLine();
+				if (node->input_sockets.length() > 0 && node->output_sockets.length() > 0
+					&& node->input_sockets[0]->inputLines.length() > 0
+					&& node->output_sockets[0]->outputLines.length() > 0) {
+					NODE_socket *inS = node->input_sockets[0]->inputLines[0]->inputSock;
+					NODE_socket *outS = node->output_sockets[0]->outputLines[0]->outputSock;
+					node->removeLine();
+					new NODE_line(this, inS, outS);
+				}
+				else node->removeLine();
+				return;
             }
         }
     }
@@ -229,13 +238,10 @@ void NODE_graphics_view::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::RightButton){
         //&&event->modifiers() == Qt::AltModifier){
-        state = 1;//zoom state
+        state = 4;//zoom state pre
         initMousePos = event->pos();
         zoomInitialPos = event->pos();
-
-        //show tab menu
-		showContextMenu();
-        QGraphicsView::mousePressEvent(event);
+		QGraphicsView::mousePressEvent(event);
     }
     else if (event->button() == Qt::MiddleButton){
         //Drag view
@@ -247,13 +253,13 @@ void NODE_graphics_view::mousePressEvent(QMouseEvent *event)
 
     else if (event->button() == Qt::LeftButton) leftMousePressEvent(event);
 
-
 }
 
 void NODE_graphics_view::mouseMoveEvent(QMouseEvent *event)
 {
     mousePos = mapToScene(event->pos());
-    if(MODE==MODE_lINE_DRAG){
+    if(MODE==MODE_LINE_DRAG){
+		//change drag
         if(canChangeDrag && event->buttons() & Qt::LeftButton){
             NODE_socket *startS = dragLine->startSock;
             NODE_socket *endS = nullptr;
@@ -279,51 +285,89 @@ void NODE_graphics_view::mouseMoveEvent(QMouseEvent *event)
             }
             qDebug()<<"change line";
         }
+
+		//normal drag
         dragLine->endPos = mapToScene(event->pos());
+
+		//auto adsorb drag
+		QPointF range = QPointF(50, 50);
+		NODE_socket * nearestScoekt = nullptr;
+		qreal len = 200;
+		QPointF nearestPos;
+		foreach(QGraphicsItem* item, NODE_scene->items(QRectF(mousePos - range, mousePos + range))) {
+			NODE_socket * socket = dynamic_cast<NODE_socket*>(item);
+			if (socket && socket->node!= startSocket->node && socket->socketType != startSocket->socketType) {
+				QPointF pos = socket->pos();
+				pos += socket->node->pos();
+				qreal dist = Qdistance(mousePos, pos);
+				if (dist < len) {
+					len = dist;
+					nearestPos = pos;
+					nearestScoekt = socket;
+				}
+			}
+		}
+		if (nearestScoekt != nullptr) {
+			dragLine->endPos = nearestPos;
+			adsorbSocket = nearestScoekt;
+			adsorb = true;
+		}
+		else {
+			adsorb = false;
+			adsorbSocket = nullptr;
+		}
+
+		//update
         dragLine->update();
         update();
     }
+
+
     else if(MODE==MODE_LINE_CUT){
         cutline->line_points.append(mapToScene(event->pos()));
         cutline->update();
     }
 
     //zoom
-    if (state == 1){
-        setDragMode(QGraphicsView::NoDrag);
-        qreal offset = zoomInitialPos.x() - event->pos().x();
-        if(offset >previousMouseOffset){
-            previousMouseOffset = offset;
-            zoomDirection = -1;
-            zoomIncr -= 1;
-        }
-        else if(abs(offset-previousMouseOffset)<0.0001){
-            previousMouseOffset = offset;
-            if(zoomDirection == -1){
-                zoomDirection = -1;
-            }
-            else zoomDirection = 1;
-        }
-        else{
-            previousMouseOffset = offset;
-            zoomDirection = 1;
-            zoomIncr += 1;
-        }
+	if (state==4 || state ==1) {
+		state = 1;//zoom state
+		setDragMode(QGraphicsView::NoDrag);
+		this->viewport()->setCursor(Qt::SizeVerCursor);
 
-        qreal zoomFactor;
-        if(zoomDirection == 1.0) zoomFactor = 1.03;
-        else zoomFactor = 1 / 1.03;
+		qreal offset = zoomInitialPos.x() - event->pos().x();
+		if (offset > previousMouseOffset) {
+			previousMouseOffset = offset;
+			zoomDirection = -1;
+			zoomIncr -= 1;
+		}
+		else if (abs(offset - previousMouseOffset) < 0.0001) {
+			previousMouseOffset = offset;
+			if (zoomDirection == -1) {
+				zoomDirection = -1;
+			}
+			else zoomDirection = 1;
+		}
+		else {
+			previousMouseOffset = offset;
+			zoomDirection = 1;
+			zoomIncr += 1;
+		}
 
-        //Perform zoom and re-center on initial click position.
-        QPointF pBefore = this->mapToScene(initMousePos);
-        setTransformationAnchor(QGraphicsView::AnchorViewCenter);
-        scale(zoomFactor, zoomFactor);
-        QPointF pAfter = mapToScene(initMousePos);
-        QPointF diff = pAfter - pBefore;
+		qreal zoomFactor;
+		if (zoomDirection == 1.0) zoomFactor = 1.05;
+		else zoomFactor = 1 / 1.05;
 
-        setTransformationAnchor(QGraphicsView::NoAnchor);
-        translate(diff.x(), diff.y());
-    }
+		//Perform zoom and re-center on initial click position.
+		QPointF pBefore = this->mapToScene(initMousePos);
+		setTransformationAnchor(QGraphicsView::AnchorViewCenter);
+		scale(zoomFactor, zoomFactor);
+		QPointF pAfter = mapToScene(initMousePos);
+		QPointF diff = pAfter - pBefore;
+
+		setTransformationAnchor(QGraphicsView::NoAnchor);
+		translate(diff.x(), diff.y());
+		
+	}
     //Drag
     else if(state == 2){
         QPointF ofset = prevPos - event->pos();
@@ -338,8 +382,15 @@ void NODE_graphics_view::mouseMoveEvent(QMouseEvent *event)
 
 void NODE_graphics_view::mouseReleaseEvent(QMouseEvent *event)
 {
+	if (event->button() == Qt::LeftButton) leftMouseReleaseEvent(event);
+	else if (event->button() == Qt::RightButton && state != 1) {
+		//show tab menu
+		showContextMenu();
+	}
+
     //zoom
     if(state == 1){
+		this->viewport()->setCursor(Qt::ArrowCursor);
         zoomDirection = 0;
         zoomIncr = 0;
         setInteractive(true);
@@ -351,7 +402,6 @@ void NODE_graphics_view::mouseReleaseEvent(QMouseEvent *event)
         setInteractive(true);
     }
     state = 0;
-    if (event->button() == Qt::LeftButton) leftMouseReleaseEvent(event);
 
     QGraphicsView::mouseReleaseEvent(event);
 }
@@ -376,6 +426,7 @@ void NODE_graphics_view::leftMousePressEvent(QMouseEvent *event)
     //mousePos = mapToScene(event->pos());
     state = 0;
     setDragMode(QGraphicsView::RubberBandDrag);
+	this->viewport()->setCursor(Qt::ArrowCursor);
 
     //action
     bool hasItem = false;
@@ -404,21 +455,21 @@ void NODE_graphics_view::leftMousePressEvent(QMouseEvent *event)
 
     if(socket){
         if(MODE == MODE_NOOP){
-            MODE = MODE_lINE_DRAG;
+            MODE = MODE_LINE_DRAG;
             //edgeDragStart(item);
             dragLine = new NODE_line(this,socket,nullptr,true);
             canChangeDrag = true;
             startSocket = socket;
             return;
         }
-        else if(MODE == MODE_lINE_DRAG){
+        else if(MODE == MODE_LINE_DRAG){
             MODE = MODE_NOOP;
-            bool res = dragEnd(socket);
+			bool res = dragEnd(socket);
             if(res) return;
         }
     }
 
-    //delete line
+    //click delete line
     if(MODE == MODE_NOOP){
         NODE_line* line= dynamic_cast<NODE_line*>(item);
         if(line){
@@ -440,9 +491,16 @@ void NODE_graphics_view::leftMousePressEvent(QMouseEvent *event)
             }
         }
     }
-    if(MODE == MODE_lINE_DRAG){
-        MODE = MODE_NOOP;
-        NODE_scene->removeItem(dragLine);
+	if (MODE == MODE_LINE_DRAG) {
+		MODE = MODE_NOOP;
+		if (adsorb) {
+			dragEnd(adsorbSocket);
+		}
+		else {
+			NODE_scene->removeItem(dragLine);
+			delete dragLine;
+			dragLine = nullptr;
+		}
         NODE_scene->update();
         update();
     }
@@ -473,7 +531,7 @@ void NODE_graphics_view::leftMouseReleaseEvent(QMouseEvent *event)
 
     NODE_socket* socket= dynamic_cast<NODE_socket*>(item);
     if(socket && socket != startSocket){
-        if(MODE == MODE_lINE_DRAG){
+        if(MODE == MODE_LINE_DRAG){
             bool res = dragEnd(socket);
             MODE = MODE_NOOP;
             if(res) return;
@@ -710,7 +768,7 @@ void NODE_graphics_view::deleteTempLine()
 
 void NODE_graphics_view::deleteLine(NODE_line *line)
 {
-    if(MODE!=MODE_lINE_DRAG) line->appendHistory("delete_line");
+    if(MODE!=MODE_LINE_DRAG) line->appendHistory("delete_line");
     if(NODE_scene->sceneLines.contains(line)) NODE_scene->sceneLines.removeOne(line);
     if(line->inputSock!=nullptr) line->inputSock->outputLines.removeOne(line);
     if(line->outputSock!=nullptr) line->outputSock->inputLines.removeOne(line);
@@ -746,11 +804,13 @@ void NODE_graphics_view::deleteNode(NODE_item *node)
 void NODE_graphics_view::createContextMenu()
 {
 	//setContextMenuPolicy(Qt::CustomContextMenu);
-	//customContextMenuRequested.connect(showContextMenu());
+	//connect(this, &QWidget::customContextMenuRequested, this, [=]() {showContextMenu(); });
+
 	QWidgetAction *search = new QWidgetAction(contextMenu);
 	search->setDefaultWidget(searchLine);
 	contextMenu->addAction(search);
-	//contextMenu->setStyleSheet(QString("background-color:%1;color:rgb(220,220,220);}").arg(getRGB("color_background2")));
+	connect(searchLine, &QLineEdit::textChanged, this, [=]() {searchNode(); });
+	connect(searchLine, &QLineEdit::returnPressed, this, [=]() {applySearch(); });
 }
 
 void NODE_graphics_view::showContextMenu()
@@ -762,11 +822,41 @@ void NODE_graphics_view::showContextMenu()
 
 void NODE_graphics_view::searchNode()
 {
+	QString text = searchLine->text();
+	if (text == "") {
+		clearSearch();
+		foreach(QMenu *menu, allMenus) {
+			menu->menuAction()->setVisible(true);
+		}
+	}
+	else {
+		foreach(QMenu *menu, allMenus) {
+			menu->menuAction()->setVisible(false);
+		}
 
+		clearSearch();
+
+		foreach(QAction *action, allActions) {
+			if (action->objectName().toLower().startsWith(text.toLower())) {//if text in i :
+				searchedActions.append(action);
+				contextMenu->addAction(action);
+			}
+		}
+	}
 }
 
 void NODE_graphics_view::applySearch()
 {
-
+	if (searchedActions.length() > 0) {
+		QAction *action = searchedActions[0];
+		contextMenu->setActiveAction(action);
+	}
 }
 
+void NODE_graphics_view::clearSearch()
+{
+	foreach(QAction *action, searchedActions) {
+		contextMenu->removeAction(action);
+	}
+	searchedActions.clear();
+}

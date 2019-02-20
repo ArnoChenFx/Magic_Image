@@ -50,6 +50,8 @@ public:
 
 	QLineEdit *searchLine;
 	QMenu *contextMenu;
+	QList<QMenu*> allMenus;
+	QList<QAction*> allActions;
 	int state = 0;//default state
 
 protected:
@@ -84,7 +86,7 @@ private:
 
     int MODE = 0;
     int MODE_NOOP = 0;
-    int MODE_lINE_DRAG = 1;
+    int MODE_LINE_DRAG = 1;
     int MODE_LINE_CUT = 2;
 
     NODE_socket *startSocket;
@@ -109,5 +111,10 @@ private:
 
 	void searchNode();
 	void applySearch();
-	QList<QMenu*> searchedMenu;
+	void clearSearch();
+
+	QList<QAction*> searchedActions;
+
+	bool adsorb = false;
+	NODE_socket *adsorbSocket=nullptr;
 };

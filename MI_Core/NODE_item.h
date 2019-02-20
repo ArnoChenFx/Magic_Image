@@ -97,6 +97,9 @@ private:
     qreal _padding;
     QFont nodeTitleFont;
     QFont nodeAttribFont;
+	QFont nodeNameFont;
 
     QPointF prePos;
+
+	QGraphicsTextItem *name_item;
 };

@@ -11,6 +11,7 @@
 #include <iostream>
 #include <fstream>
 #include <NODE_line.h>
+#include <qmessagebox.h>
 #include <Register.h>
 #include <node_Viewport.h>
 #include <json.hpp>
@@ -73,6 +74,7 @@ void MagicImage::initMenuBar()
     QMenu *fileMenu =  mainMenuBar->addMenu("File");
     QMenu *editMenu =  mainMenuBar->addMenu("Edit");
     QMenu *windowsMenu =  mainMenuBar->addMenu("Windows");
+	QMenu *helpMenu = mainMenuBar->addMenu("Help");
 
     //fileMenu
     QAction *New = createAct(fileMenu,"New","","Ctrl+N");
@@ -101,6 +103,9 @@ void MagicImage::initMenuBar()
     QAction *Redo = createAct(editMenu,"Redo","","Ctrl+Shift+Z");
     connect(Undo,&QAction::triggered,this,[=](){onUndo();});
     connect(Redo,&QAction::triggered,this,[=](){onRedo();});
+
+	//help Menu
+	QAction *About = createAct(helpMenu, "About", "", "");
 
     //状态栏
     this->setStatusBar(IMstatusBar);
@@ -131,7 +136,7 @@ void MagicImage::initNodeWindow()
     nodeMenu->addSeparator();
     QAction *Delete = createAct(nodeMenu,"Delete Selected","","Del");
     QAction *Disable = createAct(nodeMenu,"Disable Selected","","D");
-    QAction *Independent = createAct(nodeMenu,"Independent Selected","","Shift+X");
+    QAction *Independent = createAct(nodeMenu,"Independent Selected","","X");
     nodeMenu->addSeparator();
     QAction *CtoV = createAct(nodeMenu,"Connect to viewport","","1");
     //QAction *Focus = createAct(nodeMenu,"Focus","","F");
@@ -149,7 +154,7 @@ void MagicImage::initNodeWindow()
 	nodeMenuBar->setStyleSheet(QString("QMenuBar::item {background-color:%1;color:rgb(220,220,220);}"
 		"QMenuBar {background-color:%1;}"
 		"QMenuBar::item::selected {background-color: %2;}"
-	).arg(getRGB("color_background2")).arg(getRGB("color_background3")));
+	).arg(getRGB("color_background_dark")).arg(getRGB("color_background_orange")));
 
 
 	//add menu
@@ -168,15 +173,22 @@ void MagicImage::initNodeWindow()
 			QMenu *newMenu = addMenu->addMenu(menuName);
 			newAction = createAct(newMenu, name, "", key);
 			connect(newAction, &QAction::triggered,this,[=]() {this->onCreateNode(name.toStdString());});
+
 			nodeView->contextMenu->addMenu(newMenu);
 			menuObjects.append(newMenu);
 			newMenu->setObjectName(menuName);
+			newAction->setObjectName(name);
+
+			nodeView->allMenus.append(newMenu);
+			nodeView->allActions.append(newAction);
 		}
 		else {
 			foreach(QMenu *mn, menuObjects) {
 				if (mn->objectName() == menuName) {
 					newAction = createAct(mn, name, "", key);
 					connect(newAction, &QAction::triggered, this, [=]() {this->onCreateNode(name.toStdString()); });
+					newAction->setObjectName(name);
+					nodeView->allActions.append(newAction);
 					break;
 				}
 			}
@@ -244,7 +256,6 @@ bool MagicImage::eventFilter(QObject *target, QEvent *event)
             if (keyEvent->key() == Qt::Key_Tab)
             {
 				nodeView->showContextMenu();
-                qDebug()<<"TAB";
                 return true;
             }
         }
@@ -290,6 +301,7 @@ void MagicImage::onSaveAs()
         projectName = fileName;
         save();
         changeTitle();
+		isModified = false;
     }
 }
 
@@ -302,6 +314,7 @@ void MagicImage::save()
     std::ofstream file(projectName.toStdString());
     file << projectInfo.dump(4);
 
+	isModified = false;
     IMstatusBar->showMessage("Save Successfully!");
 }
 
@@ -316,7 +329,8 @@ void MagicImage::onNew(bool loadProject)
 	if(!loadProject) onCreateNode("Viewport");
     history.clear();
     history_index = 0;
-	//Menus.clear();
+	if(Menus.size()>0) Menus.clear();
+	isModified = false;
 }
 
 void MagicImage::onOpen()
@@ -341,6 +355,7 @@ void MagicImage::onOpen()
         load(sceneInfo);
         projectName = fileName;
         changeTitle();
+		isModified = false;
     }
 }
 
@@ -480,6 +495,34 @@ void MagicImage::onRedo()
     history_index= index + 1;
 }
 
+void MagicImage::closeEvent(QCloseEvent *event)
+{
+	if (isModified) {
+		QMessageBox *msg = new QMessageBox();
+		msg->setStyleSheet(QString("QLabel{min-width:600 px; font-size: 18px;background-color:%3;color:rgb(230,230,230)}"
+			"QPushButton{ width:100px; font-size: 18px;background-color:%2;color:rgb(230,230,230)}"
+			"QPushButton:hover{ width:100px; font-size: 18px;background-color:%1;color:rgb(230,230,230)}"
+			"QPushButton:pressed{ width:100px; font-size: 18px;background-color:%4;color:rgb(230,230,230)}"
+			"QMessageBox{background-color:%3;color:rgb(230,230,230)}"
+		).arg(getRGB("color_background_light")).arg(getRGB("color_background")).arg(getRGB("color_background_dark"))
+	    .arg(getRGB("color_background_orange")));
+
+		msg->setWindowTitle("Magic Image Information");
+		msg->setInformativeText("The current project has changed.Would you like to save change?");
+		msg->setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+		int res = msg->exec();
+		if (res == QMessageBox::Yes) {
+			onSave();
+			event->accept();
+		}
+		else if (res == QMessageBox::Cancel) {
+			event->ignore();
+			return;
+		}
+		event->accept();
+	}
+}
+
 NODE_item* MagicImage::onCreateNode(string name)
 {
 	auto node = factory::get().produce(name);
@@ -584,12 +627,12 @@ void MagicImage::initStyle()
      "QTabBar::tab{background-color:%3;color:rgb(230,230,230)}"
      "QTabBar::tab:selected, QTabBar::tab:hover {background-color:%2;}"
      "QMenu{background-color:%2;color:rgb(230,230,230);}"
-     "QMenu::item::selected {background-color: %3;}"
+     "QMenu::item::selected {background-color: %4;}"
      "QMenuBar::item {background-color:%1;color:rgb(220,220,220);}"
      "QMenuBar {background-color:%1;}"
      "QMenuBar::item::selected {background-color: %2;}"
      )
-     .arg(getRGB("color_background2")).arg(getRGB("color_background3")).arg(getRGB("color_background")));
+     .arg(getRGB("color_background_dark")).arg(getRGB("color_background_light")).arg(getRGB("color_background")).arg(getRGB("color_background_orange")));
 
     rLabel->setStyleSheet("background-color:transparent;font-size:12px;color:red;border:0px");
     gLabel->setStyleSheet("background-color:transparent;font-size:12px;color:green;border:0px");
@@ -598,23 +641,23 @@ void MagicImage::initStyle()
 
     viewerStatusBar->setStyleSheet(QString("QStatusBar::item {border: None;}""QStatusBar{background-color:%1;color:rgb(230,230,230);border: 0px solid black;"
                                   "border-radius: 0px;font-size:12px;}")
-                                   .arg(getRGB("color_background2")));
+                                   .arg(getRGB("color_background_dark")));
 
     IMstatusBar->setStyleSheet(QString("background-color:%1;color:rgb(230,230,230);border: 0px solid black;"
                                        "border-radius: 0px;font-size:12px;")
-                                        .arg(getRGB("color_background2")));
+                                        .arg(getRGB("color_background_dark")));
 
     viewerGraphicsview->scene()->setBackgroundBrush(getColor("color_background"));
     nodeView->NODE_scene->setBackgroundBrush(getColor("color_background"));
 
-    paramDock->setStyleSheet(QString("background-color:%1;color:rgb(200,200,200);").arg(getRGB("color_background3")));
-    viewerDock->setStyleSheet(QString("background-color:%1;color:rgb(200,200,200);").arg(getRGB("color_background3")));
-    nodeDock->setStyleSheet(QString("background-color:%1;color:rgb(200,200,200);").arg(getRGB("color_background3")));
+    paramDock->setStyleSheet(QString("background-color:%1;color:rgb(200,200,200);").arg(getRGB("color_background_light")));
+    viewerDock->setStyleSheet(QString("background-color:%1;color:rgb(200,200,200);").arg(getRGB("color_background_light")));
+    nodeDock->setStyleSheet(QString("background-color:%1;color:rgb(200,200,200);").arg(getRGB("color_background_light")));
 
     viewer->setStyleSheet("QLabel{background-color:rgb(30,30,30);border: 0px solid #32414B;padding: 0px;margin: 0px;color: black}");
 
 	nodeView->contextMenu->setStyleSheet(QString("background-color:%2;selection-background-color:%1;color:rgb(220,220,220);"
-	).arg(getRGB("color_background")).arg(getRGB("color_background3")));
+	).arg(getRGB("color_background_orange")).arg(getRGB("color_background_light")));
 
 	nodeView->searchLine->setStyleSheet("border: 0.5px solid rgb(100,100,100);border-radius: 0px;font-size:12px;");
 }

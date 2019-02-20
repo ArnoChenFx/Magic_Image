@@ -13,6 +13,7 @@ size_t global_id = 0;
 json clipboard = json::array();
 json history = json::array();
 json Menus = json::array();
+bool isModified = false;
 
 int history_index = 0;
 int history_max_index = 10;
@@ -38,8 +39,8 @@ QString getRGB(string name)
 {
     auto a = config[name];
     int r = a[0];
-    int g = a[0];
-    int b = a[0];
+    int g = a[1];
+    int b = a[2];
     return QString("rgb(%1,%2,%3)").arg(r).arg(g).arg(b);
 }
 
@@ -116,4 +117,5 @@ void saveHistory(string name,json info)
     //json::iterator it = history.end();
     //--it;
     //json::iterator it = history.begin();
+	isModified = true;
 }

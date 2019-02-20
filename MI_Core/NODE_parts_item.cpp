@@ -100,7 +100,7 @@ NODE_Shift_item::NODE_Shift_item(QGraphicsItem *parent):QGraphicsItem(parent)
 {
     setFlags(ItemSendsGeometryChanges);
     colorDefault = getColor("nd_color_drag_default");
-    colorSelected = getColor("nd_color_drag_selected");
+    colorSelected = getColor("nd_color_shift_checked");
 }
 
 QRectF NODE_Shift_item::boundingRect() const
