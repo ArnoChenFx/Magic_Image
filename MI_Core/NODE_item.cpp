@@ -320,32 +320,27 @@ void NODE_item::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 void NODE_item::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    //nodeView->colliderNode = this;
-    //foreach(NODE_socket *inSocket,input_sockets) inSocket->updateLines();
+	collider = false;
+	if (colliderLine != nullptr) colliderLine->setSelected(false);
 
-    //foreach(NODE_socket *outSocket,output_sockets) outSocket->updateLines();
-
-    foreach(NODE_line *line,nodeView->NODE_scene->sceneLines){
-        collider = false;
-        if(this->collidesWithItem(line)){
-            if(line->inputSock->node!= this && line->outputSock->node!=this){
-                collider = true;
-                colliderLine = line;
-                line->setSelected(true);
-                collider = true;
-                event->accept();
-                QGraphicsItem::mouseMoveEvent(event);
-                break;
-            }
-        }
-        else{
-            line->setSelected(false);
-        }
-    }
+	foreach(QGraphicsItem* item, nodeView->NODE_scene->items(QRectF(this->pos().x(), this->pos().y(),width,height))) {
+		NODE_line *line = dynamic_cast<NODE_line*>(item);
+		if (line && line->inputSock->node != this && line->outputSock->node != this) {
+			collider = true;
+			colliderLine = line;
+			line->setSelected(true);
+			collider = true;
+			event->accept();
+			QGraphicsItem::mouseMoveEvent(event);
+			break;
+		}
+	}
     QGraphicsItem::mouseMoveEvent(event);
 }
 
 void NODE_item::cook() {}
+
+
 //void NODE_item::mousePressEvent(QGraphicsSceneMouseEvent *event)
 //{
 //    if(event->button() == Qt::LeftButton){

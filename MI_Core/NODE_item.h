@@ -74,7 +74,7 @@ protected:
 //    virtual void leftMouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 //    void keyPressEvent(QKeyEvent *event) override;
     bool collider = false;
-    NODE_line *colliderLine;
+    NODE_line *colliderLine=nullptr;
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
 
     void updateUI();

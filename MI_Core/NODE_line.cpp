@@ -77,13 +77,11 @@ bool NODE_line::intersectsWith(QPointF p1, QPointF p2)
 void NODE_line::updatePosition()
 {
     if(!isDeleted){
-        startPos = startSock->pos();
-        startPos += startSock->node->pos();
+        startPos = startSock->position();
         //qDebug()<<"startPos"<<startPos;
 
         if(!isDrag){
-            endPos = endSock->pos();
-            endPos += endSock->node->pos();
+            endPos = endSock->position();
             //qDebug()<<"endPos"<<endPos;
         }
     }
@@ -111,8 +109,7 @@ void NODE_line::updateSocket()
         saveHistory("create_line",save());
     }
     else{
-        startPos = startSock->pos();
-        startPos += startSock->node->pos();
+        startPos = startSock->position();
         endPos = startPos;
     }
 }
@@ -120,10 +117,10 @@ void NODE_line::updateSocket()
 json NODE_line::save()
 {
     json lineInfo;
-    lineInfo["inputNode"] = inputSock->node->id;
-    lineInfo["outputNode"] = outputSock->node->id;
-    lineInfo["inputSocket"] = inputSock->id;
-    lineInfo["outputSocket"] = outputSock->id;
+    lineInfo["inPos_x"] = inputSock->position().x();
+	lineInfo["inPos_y"] = inputSock->position().y();
+	lineInfo["outPos_x"] = outputSock->position().x();
+	lineInfo["outPos_y"] = outputSock->position().y();
     return lineInfo;
 }
 

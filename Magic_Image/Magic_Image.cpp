@@ -404,19 +404,15 @@ void MagicImage::onUndo()
         qDebug()<<"undo not delete_node";
     }
     else if(history_name == "create_line"){
-        QString outSocketName = QString::fromStdString(history_content["outputSocket"]);
-        size_t id = history_content["outputNode"];
-        foreach(NODE_item* node,nodeView->NODE_scene->sceneNodes){
-            if(node->id==id){
-                foreach(NODE_socket *socket,node->input_sockets){
-                    if(socket->name==outSocketName){
-                        socket->removeAll();
-                        goto end_cl;
-                    }
-                }
-            }
-        }
-        end_cl:
+		QPointF outPos = QPointF(history_content["outPos_x"], history_content["outPos_y"]);
+		foreach(QGraphicsItem* item1, nodeView->NODE_scene->items(outPos)) {
+			NODE_socket *socket = dynamic_cast<NODE_socket*>(item1);
+			if (socket) {
+				socket->removeAll();
+				break;
+			}
+		}
+
         history.erase(history.size()-1);
         qDebug()<<"undo not create_line";
     }
@@ -477,19 +473,14 @@ void MagicImage::onRedo()
         qDebug()<<"redo create_line";
     }
     else if(history_name == "delete_line"){
-        QString outSocketName = QString::fromStdString(history_content["outputSocket"]);
-        size_t id = history_content["outputNode"];
-        foreach(NODE_item* node,nodeView->NODE_scene->sceneNodes){
-            if(node->id==id){
-                foreach(NODE_socket *socket,node->input_sockets){
-                    if(socket->name==outSocketName){
-                        socket->removeAll();
-                        goto end_cl;
-                    }
-                }
-            }
-        }
-        end_cl:
+        QPointF outPos = QPointF(history_content["outPos_x"], history_content["outPos_y"]);
+		foreach(QGraphicsItem* item1, nodeView->NODE_scene->items(outPos)) {
+			NODE_socket *socket = dynamic_cast<NODE_socket*>(item1);
+			if (socket) {
+				socket->removeAll();
+				break;
+			}
+		}
         history.erase(history.size()-1);
         qDebug()<<"redo delete_line";
     }
@@ -601,34 +592,33 @@ void MagicImage::loadNode(json ndInfo)
 
 void MagicImage::loadLine(json liInfo)
 {
-	size_t inNode = liInfo["inputNode"];
-	size_t outNode = liInfo["outputNode"];
-	int inSocketID = liInfo["inputSocket"];
-	int outSocketID = liInfo["outputSocket"];
+	QPointF inPos = QPointF(liInfo["inPos_x"], liInfo["inPos_y"]);
+	QPointF outPos = QPointF(liInfo["outPos_x"], liInfo["outPos_y"]);
+	//QPointF range = QPointF(10,10);
+
+	int count = 0;
 	NODE_socket *inSocket = nullptr;
 	NODE_socket *outSocket = nullptr;
-	int count = 0;
 
-	foreach(NODE_item* node, nodeView->NODE_scene->sceneNodes) {
-		if (count == 2) break;
-		else if (node->id == inNode) {
-			foreach(NODE_socket *socket, node->output_sockets) {
-				if (socket->id == inSocketID) inSocket = socket;
-				count++;
-				//break;
-			}
+	foreach(QGraphicsItem* item1, nodeView->NODE_scene->items(inPos)) {//QRectF(inPos - range, inPos + range)
+		NODE_socket *socket1 = dynamic_cast<NODE_socket*>(item1);
+		if (socket1) {
+			count++;
+			inSocket = socket1;
+			break;
 		}
-		else if (node->id == outNode) {
-			foreach(NODE_socket *socket, node->input_sockets) {
-				if (socket->id == outSocketID) outSocket = socket;
-				count++;
-				//break;
-			}
-		}
-
 	}
+	foreach(QGraphicsItem* item2, nodeView->NODE_scene->items(outPos)) {//QRectF(outPos - range, outPos + range)
+		NODE_socket *socket2 = dynamic_cast<NODE_socket*>(item2);
+		if (socket2) {
+			count++;
+			outSocket = socket2;
+			break;
+		}
+	}
+
 	if (count == 2) new NODE_line(nodeView, inSocket, outSocket);
-	else qDebug() << "create Line error!!";
+	else qDebug() << "create Line error!!  "<<count;
 }
 
 void MagicImage::initStyle()

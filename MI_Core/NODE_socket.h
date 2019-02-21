@@ -31,6 +31,7 @@ public:
     QRectF boundingRect() const override;
     void paint(QPainter *painter,const QStyleOptionGraphicsItem *options,QWidget *widget) override;
     void updatePosition();
+	QPointF position();
 
 protected:
 	virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;

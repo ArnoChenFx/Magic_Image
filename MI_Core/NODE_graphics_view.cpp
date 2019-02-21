@@ -289,8 +289,7 @@ void NODE_graphics_view::mouseMoveEvent(QMouseEvent *event)
 		foreach(QGraphicsItem* item, NODE_scene->items(QRectF(mousePos - range, mousePos + range))) {
 			NODE_socket * socket = dynamic_cast<NODE_socket*>(item);
 			if (socket && socket->node!= startSocket->node && socket->socketType != startSocket->socketType) {
-				QPointF pos = socket->pos();
-				pos += socket->node->pos();
+				QPointF pos = socket->position();
 				qreal dist = Qdistance(mousePos, pos);
 				if (dist < len) {
 					len = dist;
@@ -465,17 +464,14 @@ void NODE_graphics_view::leftMousePressEvent(QMouseEvent *event)
     if(MODE == MODE_NOOP){
         NODE_line* line= dynamic_cast<NODE_line*>(item);
         if(line){
-            QPointF pos1 = line->inputSock->pos();
-            //pos1 = mapToScene(pos1.toPoint());
-            pos1 += line->inputSock->node->pos();
+            QPointF pos1 = line->inputSock->position();
             qDebug()<<"mousePos"<<mousePos;
             qDebug()<<"pos1"<<pos1;
             if(Qdistance(mousePos,pos1)<50){
                 deleteOneLine(line);
             }
             else{
-                QPointF pos2 = line->outputSock->pos();
-                pos2 += line->outputSock->node->pos();
+                QPointF pos2 = line->outputSock->position();
                 qDebug()<<"pos2"<<pos2;
                 if(Qdistance(mousePos,pos2)<50){
                     deleteOneLine(line);

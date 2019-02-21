@@ -152,3 +152,8 @@ void NODE_socket::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
     }
     QGraphicsItem::hoverMoveEvent(event);
 }
+
+QPointF NODE_socket::position()
+{
+	return (this->pos() + this->node->pos());
+}
