@@ -71,6 +71,10 @@ NODE_item::NODE_item(NODE_graphics_view* NODE_v,QString title,QPointF pos,qreal 
 
     initWidget();
     initChildren();
+
+	//init image
+	defaultImage = cv::Mat::zeros(1080,1920, CV_32FC3);
+	resultImage = cv::Mat::zeros(1080, 1920, CV_32FC3);
 }
 
 void NODE_item::loadToScene()
@@ -195,17 +199,16 @@ void NODE_item::initWidget()
     mainLayout =new QVBoxLayout;
     mainLayout->setContentsMargins(0,0,0,0);
     QRectF rect = QRectF(8, title_height+5,width-16, height-title_height-16);
-//           QRectF(edge_size, title_height + edge_size,
-//           width - 2*edge_size, height - 2*edge_size-title_height);
+
     nodeProxyWidget->setGeometry(rect);
     nodeMainWidget->setLayout(mainLayout);
 
     //picture viewer
     mainLayout->addWidget(imagePrevier);
     imagePrevier->setAlignment(Qt::AlignTop);
-    //imagePrevier->setStyleSheet("border-width: 1px;border-style: solid;border-color: rgb(255, 170, 0);");
-    //QPixmap *img = new QPixmap("D:/DATA/Picture/04.My_work/Co_plant.png");
-    img = new QPixmap("F:/FFOutput/Pictures/04.My_work/Co_plant.png");
+
+	image = new QImage(1280,720, QImage::Format_RGB888);
+	image->fill(QColor(40,40,40));
     updateViewer(rect);
 
 }
@@ -230,7 +233,8 @@ void NODE_item::updateViewer(QRectF rect)
 {
     if(!viewerState_item->state) return;
     imagePrevier->resize(rect.width(),rect.height());
-    QPixmap map= img->scaled(imagePrevier->size(), Qt::KeepAspectRatio);
+	QPixmap map = QPixmap::fromImage(*image);
+    map = map.scaled(imagePrevier->size(), Qt::KeepAspectRatio);
     imagePrevier->setPixmap(map);
     imagePrevier->resize(map.width(),map.height());
     mapSize = QPointF(map.width(),map.height());
@@ -338,8 +342,24 @@ void NODE_item::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsItem::mouseMoveEvent(event);
 }
 
-void NODE_item::cook() {}
+void NODE_item::updateImage()
+{
+	delete image;
+	//cv::Mat m = floatTo8Us(resultImage);
+	cv::Mat m;
+	resultImage.convertTo(m, CV_8UC3, 255.0);
 
+	image = new QImage(m.data, m.cols, m.rows, m.step, QImage::Format_RGB888);
+	*image = image->rgbSwapped();
+	*image = image->rgbSwapped();
+
+	QRectF rect = QRectF(8, title_height + 5, width - 16, height - title_height - 16);
+
+	updateUI();
+	//updateViewer(rect);
+}
+
+void NODE_item::cook() {}
 
 //void NODE_item::mousePressEvent(QGraphicsSceneMouseEvent *event)
 //{

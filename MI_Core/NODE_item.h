@@ -10,6 +10,7 @@
 #include <UT_utils.h>
 #include <json.hpp>
 #include "mi_core_global.h"
+#include <opencv.hpp>
 
 class NODE_graphics_view;
 
@@ -43,7 +44,7 @@ public:
     QGraphicsProxyWidget *nodeProxyWidget;
     QWidget *nodeMainWidget;
     QVBoxLayout *mainLayout;
-    QPixmap *img;
+    QImage *image;
 
     NODE_title_item *title_item;
     NODE_Shift_item *viewerState_item;
@@ -64,6 +65,11 @@ public:
 	virtual void initSocket();
 	virtual void cook();
 
+	//mat
+	cv::Mat defaultImage;
+	cv::Mat resultImage;
+	void updateImage();
+
 protected:
     void initChildren();
 
@@ -79,6 +85,7 @@ protected:
 
     void updateUI();
     void updateViewer(QRectF rect);
+
 private:
     //pen
     QColor colorDefault;
@@ -102,4 +109,7 @@ private:
     QPointF prePos;
 
 	QGraphicsTextItem *name_item;
+
+signals:
+	void cookImage();
 };

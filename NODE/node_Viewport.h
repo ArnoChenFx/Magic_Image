@@ -8,8 +8,6 @@ class NODE_EXPORT node_Viewport:public NODE_item
 public:
 	node_Viewport(NODE_graphics_view* NODE_v = nullptr);
 
-	VI_image_viever *viewer;
-
 	virtual void initSocket() override;
 	virtual void cook() override;
 	

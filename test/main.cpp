@@ -1,44 +1,70 @@
-#include "test.h"
-#include <QtWidgets/QApplication>
+ï»¿#include "test.h"
+//#include <QtWidgets/QApplication>
 #include <iostream>
 #include <opencv2/opencv.hpp>
 #include <QtDebug>
 #include <string>
-
+#include <omp.h>
+#include <time.h>  
+#include <Image_mix.h>
 using namespace cv;
+using namespace std;
+
+
+
 
 void testCV()
 {
-	//¶ÁÈ¡Í¼Æ¬£¨Ê¹ÓÃÍ¼Æ¬µÄ¾ø¶ÔÂ·¾¶£©
+	//è¯»å–å›¾ç‰‡ï¼ˆä½¿ç”¨å›¾ç‰‡çš„ç»å¯¹è·¯å¾„ï¼‰
 	Mat src = imread("F:/FFOutput/Download/Plant2.png");
-	//ÏÔÊ¾Í¼Æ¬
+	//æ˜¾ç¤ºå›¾ç‰‡
 	imshow("Output", src);
-	//ÏÔÊ¾»Ò¶ÈÍ¼
+	//æ˜¾ç¤ºç°åº¦å›¾
 	Mat Gray;
 	cvtColor(src, Gray, 6);
 	imshow("Gray", Gray);
 
-	//²»¼Ó´ËÓï¾äÍ¼Æ¬»áÒ»ÉÁ¶ø¹ı
+	//ä¸åŠ æ­¤è¯­å¥å›¾ç‰‡ä¼šä¸€é—ªè€Œè¿‡
 	waitKey(0);
 }
 
-void testCUDA() {
-	Mat image1 = imread("F:/FFOutput/Download/Plant2.png");
-	Mat image2 = imread("F:/FFOutput/Download/Plant2.png");
-	cuda::GpuMat DEVICEresult, DEVICEimage1,DEVICEimage2;
-	Mat result;
-	DEVICEimage1.upload(image1);
-	DEVICEimage2.upload(image2);
 
-	cuda::add(DEVICEimage1,DEVICEimage2,DEVICEresult);
-	DEVICEresult.download(result);
+void testCUDA() {
+	Mat m1 = imread("F:/FFOutput/Download/Plant2.png");
+	//cvtColor(m1, m1, COLOR_BGR2RGB);
+	Mat m2 = imread("F:/FFOutput/Pictures/04.My_work/mountain.png");
+	Mat m3 = imread("F:/FFOutput/Download/Compressed/RS/07.Car/B.png");
+	Mat image1, image2,image3;
+
+	//Mat<float> s;
+	m1.convertTo(image1, CV_32F, 1 / 255.0);
+	m2.convertTo(image2, CV_32F, 1 / 255.0);
+	m3.convertTo(image3, CV_32F, 1 / 255.0);
+	m1.release();
+	m2.release();
+	m3.release();
+
 	
-	cvtColor(result, image1, 3);
-	imshow("CUDA ADD", result);
-	Vec3f rgb_f = image1.at<Vec3b>(100, 100);
-	qDebug() << rgb_f.val[2];
+
+	//Mat image1 = imread("F:/FFOutput/Download/Plant2.png", IMREAD_UNCHANGED);
+	//Mat image2 = imread("F:/FFOutput/Download/Plant2.png", IMREAD_UNCHANGED);
+	//cuda::GpuMat DEVICEresult, DEVICEimage1,DEVICEimage2;
+	//Mat result;
+	//DEVICEimage1.upload(image1);
+	//DEVICEimage2.upload(image2);
+
+	//cuda::add(DEVICEimage1,DEVICEimage2,DEVICEresult);
+	//DEVICEresult.download(result);
+	
+	//cvtColor(result, image1, 3);
+
+	//Image_colorOver(image1,image2);
+	Image_gamma(image1, 1);
+
+	imshow("CUDA ADD", image1);
+	Vec3f rgb_f = image1.at<Vec3f>(100, 100);
+	cout << rgb_f<<endl;//rgb_f.val[2]
 	waitKey(0);
-	
 }
 
 
@@ -48,6 +74,7 @@ int main(int argc, char *argv[])
 	//qDebug() << "hello cv!!";
 	testCUDA();
 	
+	//testKDtree();
 	//system("pause");
 	return 0;
 }

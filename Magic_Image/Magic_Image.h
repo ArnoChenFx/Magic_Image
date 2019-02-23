@@ -65,6 +65,7 @@ private:
 	void load(json sceneInfo);
 	void loadLine(json lineInfo);
 	void loadNode(json nodeInfo);
-
+	
+	void cookImage();
 };
 

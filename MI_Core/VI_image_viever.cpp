@@ -4,17 +4,11 @@
 
 VI_image_viever::VI_image_viever(QWidget *parent):QLabel (parent)
 {
-    this->resize(1280,720);
+	mainImage = new QImage(1920,1080, QImage::Format_RGB888);
+	mainImage->fill(Qt::black);
+	updateImage();
 
-    mainImage->load("F:/FFOutput/Pictures/04.My_work/S (0-00-00-00).png");
-    this->setPixmap(QPixmap::fromImage(*mainImage));
-    this->resize(1920,1080);
-//    mainImage = QImage(self.output.data, self.output.shape[1], self.output.shape[0], QImage.Format_RGB888)
-//    height, width, channel = self.output.shape
-//    self.viewer.setGeometry(0, 0, width, height)
-//    self.viewer.setPixmap(QPixmap.fromImage(showimage))
     this->setMouseTracking(true);
-
 }
 
 void VI_image_viever::mousePressEvent(QMouseEvent *event)
@@ -51,3 +45,9 @@ void VI_image_viever::leftMouseMoveEvent(QMouseEvent *event)
 
 }
 
+void VI_image_viever::updateImage()
+{
+	this->setPixmap(QPixmap::fromImage(*mainImage));
+	this->setFixedHeight(mainImage->height());
+	this->setFixedWidth(mainImage->width());
+}

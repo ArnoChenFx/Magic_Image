@@ -9,10 +9,9 @@ class MI_CORE_EXPORT VI_image_viever:public QLabel
     Q_OBJECT
 
 public:
-    QImage *mainImage = new QImage;
-
+	QImage *mainImage = nullptr;
     VI_image_viever(QWidget *parent = nullptr);
-
+	void updateImage();
 protected:
 	virtual void mousePressEvent(QMouseEvent *event) override;
     void leftMousePressEvent(QMouseEvent *event);

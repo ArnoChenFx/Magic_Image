@@ -530,7 +530,7 @@ NODE_item* MagicImage::onCreateNode(string name)
 	if (name == "Viewport") {
 		node_Viewport *vp = static_cast<node_Viewport *>(node);
 		nodeView->viewportNode = vp;
-		vp->viewer = viewer;
+		connect(vp, &node_Viewport::cookImage, this, [=]() {cookImage(); });
 	}
 	return node;
 }
@@ -664,3 +664,8 @@ void MagicImage::initStyle()
 	nodeView->searchLine->setStyleSheet("border: 0.5px solid rgb(100,100,100);border-radius: 0px;font-size:12px;");
 }
 
+void MagicImage::cookImage()
+{
+	viewer->mainImage = nodeView->viewportNode->image;
+	viewer->updateImage();
+}

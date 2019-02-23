@@ -107,6 +107,9 @@ void NODE_line::updateSocket()
         inputSock->outputLines.append(this);
         nodeView->NODE_scene->sceneLines.append(this);
         saveHistory("create_line",save());
+
+		outputSock->node->cook();
+		qDebug() << "cook : " << outputSock->node->title;
     }
     else{
         startPos = startSock->position();

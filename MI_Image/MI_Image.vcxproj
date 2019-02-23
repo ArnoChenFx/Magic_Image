@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Imagc_basic.cpp" />
+    <ClCompile Include="Image_mix.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Imagc_basic.h" />
+    <ClInclude Include="Image_mix.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{99210D80-B82D-40DA-94F4-8FB7D7545871}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>MIImage</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <LibraryPath>E:\Software\CPPlib\opencv\opencv _4.01_cuda\x64\vc15\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>E:\Software\CPPlib\opencv\opencv _4.01_cuda\include\opencv2;E:\Software\CPPlib\opencv\opencv _4.01_cuda\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <LibraryPath>E:\Software\CPPlib\opencv\opencv _4.01_cuda\x64\vc15\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>E:\Software\CPPlib\opencv\opencv _4.01_cuda\include\opencv2;E:\Software\CPPlib\opencv\opencv _4.01_cuda\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;MIIMAGE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>E:\Software\CPPlib\opencv\opencv _4.01_cuda\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OpenMPSupport>true</OpenMPSupport>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>E:\Software\CPPlib\opencv\opencv _4.01_cuda\x64\vc15\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_aruco401d.lib;opencv_bgsegm401d.lib;opencv_bioinspired401d.lib;opencv_calib3d401d.lib;opencv_ccalib401d.lib;opencv_core401d.lib;opencv_cudaarithm401d.lib;opencv_cudabgsegm401d.lib;opencv_cudacodec401d.lib;opencv_cudafeatures2d401d.lib;opencv_cudafilters401d.lib;opencv_cudaimgproc401d.lib;opencv_cudalegacy401d.lib;opencv_cudaobjdetect401d.lib;opencv_cudaoptflow401d.lib;opencv_cudastereo401d.lib;opencv_cudawarping401d.lib;opencv_cudev401d.lib;opencv_datasets401d.lib;opencv_dnn401d.lib;opencv_dnn_objdetect401d.lib;opencv_dpm401d.lib;opencv_face401d.lib;opencv_features2d401d.lib;opencv_flann401d.lib;opencv_fuzzy401d.lib;opencv_gapi401d.lib;opencv_hfs401d.lib;opencv_highgui401d.lib;opencv_imgcodecs401d.lib;opencv_imgproc401d.lib;opencv_img_hash401d.lib;opencv_line_descriptor401d.lib;opencv_ml401d.lib;opencv_objdetect401d.lib;opencv_optflow401d.lib;opencv_phase_unwrapping401d.lib;opencv_photo401d.lib;opencv_plot401d.lib;opencv_reg401d.lib;opencv_rgbd401d.lib;opencv_saliency401d.lib;opencv_shape401d.lib;opencv_stereo401d.lib;opencv_stitching401d.lib;opencv_structured_light401d.lib;opencv_superres401d.lib;opencv_surface_matching401d.lib;opencv_tracking401d.lib;opencv_video401d.lib;opencv_videoio401d.lib;opencv_videostab401d.lib;opencv_xfeatures2d401d.lib;opencv_ximgproc401d.lib;opencv_xobjdetect401d.lib;opencv_xphoto401d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>D:\Code_Project\Magic_Image_VS2017\x64\MI_Image_d.dll</OutputFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;MIIMAGE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;MIIMAGE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;MIIMAGE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>E:\Software\CPPlib\opencv\opencv _4.01_cuda\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OpenMPSupport>true</OpenMPSupport>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>E:\Software\CPPlib\opencv\opencv _4.01_cuda\x64\vc15\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_aruco401.lib;opencv_bgsegm401.lib;opencv_bioinspired401.lib;opencv_calib3d401.lib;opencv_ccalib401.lib;opencv_core401.lib;opencv_cudaarithm401.lib;opencv_cudabgsegm401.lib;opencv_cudacodec401.lib;opencv_cudafeatures2d401.lib;opencv_cudafilters401.lib;opencv_cudaimgproc401.lib;opencv_cudalegacy401.lib;opencv_cudaobjdetect401.lib;opencv_cudaoptflow401.lib;opencv_cudastereo401.lib;opencv_cudawarping401.lib;opencv_cudev401.lib;opencv_datasets401.lib;opencv_dnn401.lib;opencv_dnn_objdetect401.lib;opencv_dpm401.lib;opencv_face401.lib;opencv_features2d401.lib;opencv_flann401.lib;opencv_fuzzy401.lib;opencv_gapi401.lib;opencv_hfs401.lib;opencv_highgui401.lib;opencv_imgcodecs401.lib;opencv_imgproc401.lib;opencv_img_hash401.lib;opencv_line_descriptor401.lib;opencv_ml401.lib;opencv_objdetect401.lib;opencv_optflow401.lib;opencv_phase_unwrapping401.lib;opencv_photo401.lib;opencv_plot401.lib;opencv_reg401.lib;opencv_rgbd401.lib;opencv_saliency401.lib;opencv_shape401.lib;opencv_stereo401.lib;opencv_stitching401.lib;opencv_structured_light401.lib;opencv_superres401.lib;opencv_surface_matching401.lib;opencv_tracking401.lib;opencv_video401.lib;opencv_videoio401.lib;opencv_videostab401.lib;opencv_xfeatures2d401.lib;opencv_ximgproc401.lib;opencv_xobjdetect401.lib;opencv_xphoto401.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>D:\Code_Project\Magic_Image_VS2017\x64\MI_Image.dll</OutputFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

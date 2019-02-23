@@ -29,9 +29,9 @@ struct NODE_EXPORT factory
 			auto&& tt = std::forward_as_tuple(args...);
 			string menuName = std::get<0>(tt);
 			string keyW = std::get<1>(tt);
-			qDebug() << QString::fromStdString(key);
-			qDebug() << QString::fromStdString(menuName);
-			qDebug() << QString::fromStdString(keyW);
+			//qDebug() << QString::fromStdString(key);
+			//qDebug() << QString::fromStdString(menuName);
+			//qDebug() << QString::fromStdString(keyW);
 
 			json menu;
 			menu["name"] = key;
@@ -86,8 +86,3 @@ private:
 
 #define REGISTER_NODE_VNAME(T) reg_msg_##T##_
 #define REGISTER_NODE(T, key, ...) static factory::register_t<T> REGISTER_NODE_VNAME(T)(key, ##__VA_ARGS__);
-
-/*
-Message* p = factory::get().produce("message1");
-p->foo();   //Message1
-*/
