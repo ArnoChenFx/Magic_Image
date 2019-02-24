@@ -11,6 +11,7 @@
 #include <QGraphicsProxyWidget>
 #include <QtWidgets>
 #include <QVBoxLayout>
+#include <time.h>  
 
 using json = nlohmann::json;
 
@@ -75,6 +76,19 @@ NODE_item::NODE_item(NODE_graphics_view* NODE_v,QString title,QPointF pos,qreal 
 	//init image
 	defaultImage = cv::Mat::zeros(1080,1920, CV_32FC3);
 	resultImage = cv::Mat::zeros(1080, 1920, CV_32FC3);
+
+	//init thread
+	threadIsrun = false;
+	//myThread = nullptr;
+
+	myThread = new Thread_node(this);
+	connect(myThread, &Thread_node::done, this, [=]() {
+		myThread->stopImmediately();
+		threadIsrun = false;
+		updateUI();
+		qDebug() << "thread finish";
+		emit cookImage();
+	});
 }
 
 void NODE_item::loadToScene()
@@ -155,28 +169,16 @@ void NODE_item::initChildren()
 	drag_item->node = this;
     drag_item->setPos(width-10,height-10);
     connect(drag_item,&NODE_Drag_item::positionChange,this,[=]() {
-        width = drag_item->position.x();
-        height = drag_item->position.y();
-        updateUI();
+		setScale(drag_item->position.x(), drag_item->position.y());
     });
 
     //shift item
     viewerState_item->setPos(10,13);
     connect(viewerState_item,&NODE_Shift_item::stateChange,this,[=]() {
-        bool state = viewerState_item->state;
-        qreal delta = mapSize.y();
-        if(state){
-            imagePrevier->setVisible(true);
-            height = height + delta;
-        }
-        else{
-            imagePrevier->setVisible(false);
-            height = height - delta;
-        }
-        updateUI();
-		drag_item->setPos(width - 10, height - 10);
+		onShiftState();
     });
     
+	viewerState_item->setState(false);
 }
 
 void NODE_item::initSocket()
@@ -327,7 +329,7 @@ void NODE_item::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 	collider = false;
 	if (colliderLine != nullptr) colliderLine->setSelected(false);
 
-	foreach(QGraphicsItem* item, nodeView->NODE_scene->items(QRectF(this->pos().x(), this->pos().y(),width,height))) {
+	foreach(QGraphicsItem* item, nodeView->NODE_scene->items(QRectF(pos().x(),pos().y(),width,height))) {
 		NODE_line *line = dynamic_cast<NODE_line*>(item);
 		if (line && line->inputSock->node != this && line->outputSock->node != this) {
 			collider = true;
@@ -342,21 +344,80 @@ void NODE_item::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsItem::mouseMoveEvent(event);
 }
 
+void NODE_item::setScale(qreal w, qreal h)
+{
+	width = w;
+	height = h;
+	updateUI();
+	drag_item->setPos(width - 10, height - 10);
+}
+
+void NODE_item::onShiftState()
+{
+	bool state = viewerState_item->state;
+	qreal delta = mapSize.y();
+	if (state) {
+		imagePrevier->setVisible(true);
+		setScale(width, height + delta);
+		updateImage();
+	}
+	else {
+		imagePrevier->setVisible(false);
+		setScale(width, height - delta);
+	}
+}
+
+void NODE_item::cookNext()
+{
+	if (output_sockets.length() > 0) {
+		foreach(NODE_socket *socket, output_sockets) {
+			foreach(NODE_line *line, socket->outputLines) {
+				line->outputSock->node->cook();
+				//if (line->outputSock->node->viewerState_item->state) {
+				//	line->outputSock->node->updateImage();
+				//}
+				//line->outputSock->node->cookNext();
+			}
+		}
+	}
+}
+
+void NODE_item::getPreImage()
+{
+	resultImage.release();
+	if (input_sockets.length() > 0) {
+		NODE_socket *socket = input_sockets[0];
+		if (socket->inputLines.length() > 0) {
+			resultImage = socket->inputLines[0]->inputSock->node->resultImage;
+		}
+		else resultImage = defaultImage;
+	}
+	else resultImage = defaultImage;
+}
+
 void NODE_item::updateImage()
 {
-	delete image;
-	//cv::Mat m = floatTo8Us(resultImage);
-	cv::Mat m;
-	resultImage.convertTo(m, CV_8UC3, 255.0);
+	if (!viewerState_item->state) return;
 
-	image = new QImage(m.data, m.cols, m.rows, m.step, QImage::Format_RGB888);
-	*image = image->rgbSwapped();
-	*image = image->rgbSwapped();
+	if (!threadIsrun) {
+		//delete image;
+		//image = nullptr;
+		myThread->start();
+	}
+	else {
+		myThread->stopImmediately();
+		myThread->start();
+	}
+}
 
-	QRectF rect = QRectF(8, title_height + 5, width - 16, height - title_height - 16);
-
-	updateUI();
-	//updateViewer(rect);
+bool NODE_item::checkActive()
+{
+	if (!active) {
+		getPreImage();
+		updateImage();
+		cookNext();
+	}
+	return active;
 }
 
 void NODE_item::cook() {}

@@ -124,3 +124,9 @@ void NODE_Shift_item::mousePressEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsItem::mousePressEvent(event); // zorgt ervoor dat de parents niet het klikken overriden
 }
 
+void NODE_Shift_item::setState(bool s)
+{
+	state = s;
+	emit stateChange();
+	update();
+}

@@ -44,6 +44,9 @@
     <ClCompile Include="NODE_graphics_scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Thread_node.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MI_Core.h">
@@ -87,6 +90,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="NODE_graphics_scene.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Thread_node.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

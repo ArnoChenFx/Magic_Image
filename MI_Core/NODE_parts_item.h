@@ -58,6 +58,8 @@ public:
 
     bool state = true;
 
+	void setState(bool s);
+
 protected:
     QRectF boundingRect() const override;
     virtual void paint(QPainter *painter,const QStyleOptionGraphicsItem *options,QWidget *widget) override;

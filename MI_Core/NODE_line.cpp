@@ -43,7 +43,6 @@ NODE_line::NODE_line(NODE_graphics_view *nodeV,NODE_socket *startS,NODE_socket *
 	
 }
 
-
 QRectF NODE_line::boundingRect() const
 {
     QRectF rect = QRectF(startPos,endPos);

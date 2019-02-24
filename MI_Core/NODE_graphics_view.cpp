@@ -151,6 +151,7 @@ void NODE_graphics_view::onDisable()
             if(node){
                 bool active = node->active;
                 node->active = !active;
+				node->cook();
                 node->update();
             }
         }
@@ -758,13 +759,18 @@ void NODE_graphics_view::deleteLine(NODE_line *line)
 {
     if(MODE!=MODE_LINE_DRAG) line->appendHistory("delete_line");
     if(NODE_scene->sceneLines.contains(line)) NODE_scene->sceneLines.removeOne(line);
-    if(line->inputSock!=nullptr) line->inputSock->outputLines.removeOne(line);
-    if(line->outputSock!=nullptr) line->outputSock->inputLines.removeOne(line);
+    if(line->inputSock != nullptr) line->inputSock->outputLines.removeOne(line);
+	if (line->outputSock != nullptr) {
+		line->outputSock->inputLines.removeOne(line);
+		line->outputSock->node->cook();
+	}
     qDebug()<<"delete line"<<line->pos();
 
     line->isDeleted = true;
     line->setVisible(false);
     line->setSelected(false);
+	//if(line.isD)
+	
     NODE_scene->removeItem(line);
     //(history)
 }

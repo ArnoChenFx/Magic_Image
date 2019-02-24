@@ -11,6 +11,7 @@
 #include <json.hpp>
 #include "mi_core_global.h"
 #include <opencv.hpp>
+#include <Thread_node.h>
 
 class NODE_graphics_view;
 
@@ -61,6 +62,12 @@ public:
     void appendHistory(QString name);
 	void loadToScene();
 
+	bool checkActive();
+	//ui
+	void updateUI();
+	void setScale(qreal w, qreal h);
+	void cookNext();
+
 	//virtual
 	virtual void initSocket();
 	virtual void cook();
@@ -69,6 +76,11 @@ public:
 	cv::Mat defaultImage;
 	cv::Mat resultImage;
 	void updateImage();
+	virtual void getPreImage();
+
+	//thread
+	Thread_node *myThread;
+	bool threadIsrun;
 
 protected:
     void initChildren();
@@ -83,7 +95,7 @@ protected:
     NODE_line *colliderLine=nullptr;
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
 
-    void updateUI();
+    
     void updateViewer(QRectF rect);
 
 private:
@@ -109,6 +121,8 @@ private:
     QPointF prePos;
 
 	QGraphicsTextItem *name_item;
+
+	void onShiftState();
 
 signals:
 	void cookImage();
