@@ -4,9 +4,10 @@
 #include <qdebug.h>
 
 
-Thread_node::Thread_node(NODE_item *nd):QThread()
+Thread_node::Thread_node(NODE_item *nd):QObject()
 {
 	node = nd;
+	stop = false;
 }
 
 
@@ -20,6 +21,10 @@ void Thread_node::stopImmediately()
 	m_isCanRun = false;
 }
 
+void Thread_node::setStop(bool flag)
+{
+	stop = true;
+}
 void Thread_node::updateImage()
 {
 	clock_t startTime, endTime;
@@ -70,13 +75,14 @@ void Thread_node::updateImage()
 
 void Thread_node::run()
 {
-	node->threadIsrun = true;
 	updateImage();
-	
-	QMutexLocker locker(&m_lock);
+
+	//QMutexLocker locker(&m_lock);
+	//return;
+	//while (1) {
+	//	QMutexLocker locker(&m_lock);
+	//	if (!m_isCanRun) return;
+	//}
 	return;
-	while (1) {
-		QMutexLocker locker(&m_lock);
-		if (!m_isCanRun) return;
-	}
+	while (stop) return;
 }

@@ -41,6 +41,9 @@ NODE_line::NODE_line(NODE_graphics_view *nodeV,NODE_socket *startS,NODE_socket *
     //update();
     qDebug()<<"line Created";
 	
+	nodeV->update();
+
+	if(!isDrag) outputSock->node->cook();
 }
 
 QRectF NODE_line::boundingRect() const
@@ -101,13 +104,9 @@ void NODE_line::updateSocket()
             inputSock = endSock;
             outputSock = startSock;
         }
-        outputSock->removeAll();
-        outputSock->inputLines.append(this);
-        inputSock->outputLines.append(this);
-        nodeView->NODE_scene->sceneLines.append(this);
+        outputSock->removeAll(true,this);
+        //nodeView->NODE_scene->sceneLines.append(this);
         saveHistory("create_line",save());
-
-		outputSock->node->cook();
 		qDebug() << "cook : " << outputSock->node->title;
     }
     else{

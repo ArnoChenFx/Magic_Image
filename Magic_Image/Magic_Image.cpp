@@ -14,6 +14,7 @@
 #include <qmessagebox.h>
 #include <Register.h>
 #include <node_Viewport.h>
+#include <Image_basic.h>
 #include <json.hpp>
 using json = nlohmann::json;
 using namespace std;
@@ -34,11 +35,11 @@ void MagicImage::initUI()
     this->resize(1280,720);
 
     //菜单栏/状态栏
-    initStyle();
     initMenuBar();
     initNodeWindow();
     initViewerWindow();
     initDock();
+	initStyle();
 	onNew();
 
 }
@@ -121,6 +122,8 @@ void MagicImage::initNodeWindow()
     //nodeView
     nodeWindow->setCentralWidget(nodeView);
 	nodeView->createContextMenu();
+
+	connect(nodeView, &NODE_graphics_view::drop, this, [=]() {this->onDrop();});
 
     //菜单栏
     QMenuBar *nodeMenuBar = new QMenuBar();
@@ -210,9 +213,10 @@ void MagicImage::initNodeWindow()
 
 void MagicImage::initViewerWindow()
 {
-    viewerGraphicsview->VI_graphics_scene->addWidget(viewer);
-    //QHBoxLayout *layput = new QHBoxLayout;
-    //viewerWindow->setLayout(layout());
+	viewer = new VI_image_viever;
+	viewerGraphicsview = new VI_graphics_view(viewer);
+    //viewerGraphicsview->VI_graphics_scene->addWidget(viewer);
+
     viewerWindow->setCentralWidget(viewerGraphicsview);
     //status bar
     viewerWindow->setStatusBar(viewerStatusBar);
@@ -327,9 +331,6 @@ void MagicImage::onNew(bool loadProject)
     nodeView->NODE_scene->clear();
     nodeView->NODE_scene->sceneNodes.clear();
     nodeView->NODE_scene->sceneLines.clear();
-    nodeView->sceneTempLines.clear();
-    nodeView->sceneSelectedLines.clear();
-    nodeView->sceneSelectedNodes.clear();
 	if(!loadProject) onCreateNode("Viewport");
     history.clear();
     history_index = 0;
@@ -389,8 +390,7 @@ void MagicImage::onUndo()
         size_t id = history_content["id"];
         foreach(NODE_item*node,nodeView->NODE_scene->sceneNodes){
             if(node->id==id){
-                nodeView->sceneSelectedNodes.append(node);
-                nodeView->deleteSelected();
+				nodeView->deleteNode(node);
                 goto end_ci;
             }
         }
@@ -458,8 +458,7 @@ void MagicImage::onRedo()
         size_t id = history_content["id"];
         foreach(NODE_item*node,nodeView->NODE_scene->sceneNodes){
             if(node->id==id){
-                nodeView->sceneSelectedNodes.append(node);
-                nodeView->deleteSelected();
+				nodeView->deleteNode(node);
                 goto end_ci;
             }
         }
@@ -668,4 +667,26 @@ void MagicImage::cookImage()
 {
 	viewer->mainImage = nodeView->viewportNode->image;
 	viewer->updateImage();
+}
+
+void MagicImage::onDrop()
+{
+	QList<string> files = nodeView->files;
+	QPointF pos = nodeView->mousePos;
+	int count = 0;
+	foreach(string path, files) {
+		string format = getFormat(path);
+		string name = getFilename(path);
+		qDebug() << QString::fromStdString(format);
+		QPointF nodePos = pos + QPointF(0, count * 300);
+		if (isUsefulFormat("imageFormats", format)){
+			auto node = onCreateNode("Image");
+			node->title = QString::fromStdString(name);
+			node->setPos(nodePos);
+			node->resultImage = loadImage(path);
+			node->cook();
+			count++;
+		}
+	}
+	nodeView->files.clear();
 }

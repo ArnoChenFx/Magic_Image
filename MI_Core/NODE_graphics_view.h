@@ -25,9 +25,6 @@ public:
     QPointF mousePos = QPointF(0,0);
 	NODE_item *viewportNode=nullptr;
 
-    QList<NODE_item*> sceneSelectedNodes;
-    QList<NODE_line*> sceneSelectedLines;
-    QList<NODE_line*> sceneTempLines;
 
     void onCopy();
     void onPase(bool move=false);
@@ -39,10 +36,8 @@ public:
     void onIndependent();
     void onFocus();
 
-    void deleteSelected();
-    void deleteTempLine();
     void deleteNode(NODE_item *node);
-
+	void deleteLine(NODE_line *line = nullptr);
     bool canUseKey = true;
 
 	void showContextMenu();
@@ -54,6 +49,8 @@ public:
 	QList<QAction*> allActions;
 	int state = 0;//default state
 	bool lineType = true;////false:linear;true:cubic
+
+	QList<string> files;
 
 protected:
     virtual void wheelEvent(QWheelEvent *event) override;
@@ -97,11 +94,6 @@ private:
     void initFlags();
     bool dragEnd(NODE_socket *socket);
 
-
-    void deleteLine(NODE_line *line=nullptr);
-    void clearSelected();
-    void deleteOneLine(NODE_line *line);
-
 	QRectF _getSelectionBoundingbox();
 
     QList<NODE_item*> getSelectedNodes();
@@ -118,4 +110,7 @@ private:
 
 	bool adsorb = false;
 	NODE_socket *adsorbSocket=nullptr;
+
+signals:
+	void drop();
 };

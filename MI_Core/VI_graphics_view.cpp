@@ -7,18 +7,21 @@
 #include <QGraphicsScene>
 #include <QDebug>
 
-VI_graphics_view::VI_graphics_view(QWidget *parent) : QGraphicsView(parent)
+VI_graphics_view::VI_graphics_view(VI_image_viever *vi) : QGraphicsView()
 {	
 	VI_graphics_scene = new QGraphicsScene;
     this->setScene(VI_graphics_scene);
     VI_graphics_scene->setSceneRect(-width,-height,width*2,height*2);
-    _focus();
 
     this->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     this->setCacheMode(QGraphicsView::CacheBackground);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setRenderHint(QPainter::Antialiasing);
+
+	viewer = vi;
+	VI_graphics_scene->addWidget(viewer);
+	_focus();
 }
 
 void VI_graphics_view::wheelEvent(QWheelEvent *event)
@@ -148,6 +151,6 @@ void VI_graphics_view::keyPressEvent(QKeyEvent *event)
 
 void VI_graphics_view::_focus()
 {
-    QRectF itemsArea = QRectF(0,0,imageWidth,imageHeight);
+    QRectF itemsArea = QRectF(0,0, viewer->width(), viewer->height());
     this->fitInView(itemsArea, Qt::KeepAspectRatio);
 }

@@ -19,11 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Imagc_basic.cpp" />
+    <ClCompile Include="Image_basic.cpp" />
     <ClCompile Include="Image_mix.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Imagc_basic.h" />
+    <ClInclude Include="Image_basic.h" />
     <ClInclude Include="Image_mix.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

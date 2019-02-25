@@ -12,6 +12,7 @@
 #include <QtWidgets>
 #include <QVBoxLayout>
 #include <time.h>  
+#include <qthread.h>
 
 using json = nlohmann::json;
 
@@ -78,17 +79,27 @@ NODE_item::NODE_item(NODE_graphics_view* NODE_v,QString title,QPointF pos,qreal 
 	resultImage = cv::Mat::zeros(1080, 1920, CV_32FC3);
 
 	//init thread
-	threadIsrun = false;
-	//myThread = nullptr;
-
 	myThread = new Thread_node(this);
-	connect(myThread, &Thread_node::done, this, [=]() {
-		myThread->stopImmediately();
-		threadIsrun = false;
+	//connect(myThread, &Thread_node::done, this, [=]() {
+	//	tempThread->quit();
+	//	tempThread->wait();
+	//});
+
+	tempThread = new QThread;
+	myThread->moveToThread(tempThread);
+	connect(this, &NODE_item::startThread, myThread, &Thread_node::run);
+	connect(tempThread,&QThread::finished,this, [=]() {
+		tempThread->quit();
+		tempThread->wait();
 		updateUI();
 		qDebug() << "thread finish";
 		emit cookImage();
 	});
+}
+
+NODE_item::~NODE_item()
+{
+	//
 }
 
 void NODE_item::loadToScene()
@@ -146,6 +157,7 @@ void NODE_item::removeLine()
     foreach(NODE_socket *socket,output_sockets){
         socket->removeAll();
     }
+	
 }
 
 void NODE_item::initChildren()
@@ -309,16 +321,18 @@ void NODE_item::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         NODE_socket *preSocket = colliderLine->inputSock;
         NODE_socket *nextSocket = colliderLine->outputSock;
 
-        if(!nodeView->sceneTempLines.contains(colliderLine))
-                nodeView->sceneTempLines.append(colliderLine);
-        nodeView->deleteTempLine();
+        //if(!nodeView->sceneTempLines.contains(colliderLine))
+                //nodeView->sceneTempLines.append(colliderLine);
+        //nodeView->deleteTempLine();
+		nodeView->deleteLine(colliderLine);
+		colliderLine = nullptr;
 
         if(!input_sockets.isEmpty())
             new NODE_line(nodeView,preSocket,input_sockets[0]);
         if(!output_sockets.isEmpty())
             new NODE_line(nodeView,output_sockets[0],nextSocket);
         collider = false;
-        colliderLine = nullptr;
+        
     }
     event->accept();
     QGraphicsItem::mouseReleaseEvent(event);
@@ -329,7 +343,8 @@ void NODE_item::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 	collider = false;
 	if (colliderLine != nullptr) colliderLine->setSelected(false);
 
-	foreach(QGraphicsItem* item, nodeView->NODE_scene->items(QRectF(pos().x(),pos().y(),width,height))) {
+	QRectF rect = QRectF(pos().x(), pos().y(), width, height);
+	foreach(QGraphicsItem* item, nodeView->NODE_scene->items(rect)) {
 		NODE_line *line = dynamic_cast<NODE_line*>(item);
 		if (line && line->inputSock->node != this && line->outputSock->node != this) {
 			collider = true;
@@ -371,12 +386,8 @@ void NODE_item::cookNext()
 {
 	if (output_sockets.length() > 0) {
 		foreach(NODE_socket *socket, output_sockets) {
-			foreach(NODE_line *line, socket->outputLines) {
+			foreach(NODE_line *line, socket->connectedLines()) {
 				line->outputSock->node->cook();
-				//if (line->outputSock->node->viewerState_item->state) {
-				//	line->outputSock->node->updateImage();
-				//}
-				//line->outputSock->node->cookNext();
 			}
 		}
 	}
@@ -387,26 +398,31 @@ void NODE_item::getPreImage()
 	resultImage.release();
 	if (input_sockets.length() > 0) {
 		NODE_socket *socket = input_sockets[0];
-		if (socket->inputLines.length() > 0) {
-			resultImage = socket->inputLines[0]->inputSock->node->resultImage;
+		QList<NODE_line*> lines = socket->connectedLines();
+		if (lines.length() > 0) {
+			resultImage = lines[0]->inputSock->node->resultImage;
 		}
 		else resultImage = defaultImage;
 	}
 	else resultImage = defaultImage;
 }
 
-void NODE_item::updateImage()
+void NODE_item::updateImage(bool ignoreState)
 {
-	if (!viewerState_item->state) return;
+	if (!ignoreState && !viewerState_item->state) return;
 
-	if (!threadIsrun) {
-		//delete image;
-		//image = nullptr;
-		myThread->start();
+	if (!tempThread->isRunning()) {
+		myThread->setStop(false);
+		tempThread->start();
+		emit startThread();
 	}
 	else {
-		myThread->stopImmediately();
-		myThread->start();
+		myThread->setStop();
+		tempThread->quit();
+		tempThread->wait();
+		myThread->setStop(false);
+		tempThread->start();
+		emit startThread();
 	}
 }
 

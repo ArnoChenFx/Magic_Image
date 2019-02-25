@@ -134,15 +134,6 @@ void NODE_graphics_view::onCut()
     }
 }
 
-void NODE_graphics_view::onDeleteSelected()
-{
-    if(canUseKey){
-        clearSelected();
-        NODE_scene->update();
-        deleteSelected();
-    }
-}
-
 void NODE_graphics_view::onDisable()
 {
     if(canUseKey){
@@ -193,10 +184,10 @@ void NODE_graphics_view::onIndependent()
             NODE_item* node= dynamic_cast<NODE_item*>(item);
             if(node){
 				if (node->input_sockets.length() > 0 && node->output_sockets.length() > 0
-					&& node->input_sockets[0]->inputLines.length() > 0
-					&& node->output_sockets[0]->outputLines.length() > 0) {
-					NODE_socket *inS = node->input_sockets[0]->inputLines[0]->inputSock;
-					NODE_socket *outS = node->output_sockets[0]->outputLines[0]->outputSock;
+					&& node->input_sockets[0]->connectedLines().length() > 0
+					&& node->output_sockets[0]->connectedLines().length() > 0) {
+					NODE_socket *inS = node->input_sockets[0]->connectedLines()[0]->inputSock;
+					NODE_socket *outS = node->output_sockets[0]->connectedLines()[0]->outputSock;
 					node->removeLine();
 					new NODE_line(this, inS, outS);
 				}
@@ -258,17 +249,17 @@ void NODE_graphics_view::mouseMoveEvent(QMouseEvent *event)
             NODE_socket *endS = nullptr;
             NODE_line *origLine = nullptr;
             if(startS->socketType){//output socket
-                if(!startS->outputLines.isEmpty()){
-                    origLine = startS->outputLines[0];
+                if(!startS->connectedLines().isEmpty()){
+                    origLine = startS->connectedLines()[0];
                     endS = origLine->outputSock;
-                    deleteOneLine(origLine);
+                    deleteLine(origLine);
                 }
             }
             else{//input socket
-                if(!startS->inputLines.isEmpty()){
-                    origLine = startS->inputLines[0];
+                if(!startS->connectedLines().isEmpty()){
+                    origLine = startS->connectedLines()[0];
                     endS = origLine->inputSock;
-                    deleteOneLine(origLine);
+					deleteLine(origLine);
                 }
             }
             if(endS!=nullptr){
@@ -469,13 +460,13 @@ void NODE_graphics_view::leftMousePressEvent(QMouseEvent *event)
             qDebug()<<"mousePos"<<mousePos;
             qDebug()<<"pos1"<<pos1;
             if(Qdistance(mousePos,pos1)<50){
-                deleteOneLine(line);
+				deleteLine(line);
             }
             else{
                 QPointF pos2 = line->outputSock->position();
                 qDebug()<<"pos2"<<pos2;
                 if(Qdistance(mousePos,pos2)<50){
-                    deleteOneLine(line);
+					deleteLine(line);
                 }
             }
         }
@@ -487,7 +478,7 @@ void NODE_graphics_view::leftMousePressEvent(QMouseEvent *event)
 		}
 		else {
 			NODE_scene->removeItem(dragLine);
-			delete dragLine;
+			dragLine->deleteLater();
 			dragLine = nullptr;
 		}
         NODE_scene->update();
@@ -533,17 +524,15 @@ void NODE_graphics_view::leftMouseReleaseEvent(QMouseEvent *event)
             QPointF p2 = cutline->line_points[i + 1];
             foreach(NODE_line *line,NODE_scene->sceneLines){
                 if(line->intersectsWith(p1,p2)){
-                    if(!sceneTempLines.contains(line))
-                        sceneTempLines.append(line);
+					deleteLine(line);
                 }
             }
         }
-        deleteTempLine();
         cutline->line_points.clear();
         cutline->update();
+		NODE_scene->removeItem(cutline);
         delete cutline;
         cutline = nullptr;
-        NODE_scene->removeItem(cutline);
         this->viewport()->setCursor(Qt::ArrowCursor);
         setDragMode(QGraphicsView::RubberBandDrag);
         MODE = MODE_NOOP;
@@ -565,20 +554,12 @@ void NODE_graphics_view::dragMoveEvent(QDragMoveEvent *event)
 
 void NODE_graphics_view::dropEvent(QDropEvent *event)
 {
-    QList<QString*> files;
-    QPointF pos = mapToScene( event->pos());
-    int count = 0;
+	mousePos = mapToScene(event->pos());
     foreach(QUrl url,event->mimeData()->urls()){
         string path =  url.toLocalFile().toStdString();
-        string format = getFormat(path);
-        string name = getFilename(path);
-        qDebug()<<QString::fromStdString(format);
-        QPointF nodePos = pos+QPointF(0,count*300);
-        if(isUsefulFormat("imageFormats",format))
-            new NODE_item(this,QString::fromStdString(name),nodePos);
-            count ++;
+		files.append(path);
     }
-
+	emit drop();
 }
 
 QRectF NODE_graphics_view::_getSelectionBoundingbox(){
@@ -659,41 +640,9 @@ bool NODE_graphics_view::dragEnd(NODE_socket *socket)
             return true;
         }
     }
-    deleteOneLine(dragLine);
+	deleteLine(dragLine);
     dragLine = nullptr;
     return false;
-}
-
-void NODE_graphics_view::clearSelected()
-{
-    foreach(QGraphicsItem *item,NODE_scene->selectedItems()){
-        NODE_item* node= dynamic_cast<NODE_item*>(item);
-        if(node && !sceneSelectedNodes.contains(node)){
-            sceneSelectedNodes.append(node);
-        }
-    }
-    qDebug()<<"selected node count"<<sceneSelectedNodes.length();
-
-    foreach(NODE_item* node,sceneSelectedNodes){
-        node->removeLine();
-    }
-
-    qDebug()<<"nodes deleted";
-    //deleteTempLine();
-    NODE_scene->update();
-
-    foreach(QGraphicsItem *item,NODE_scene->selectedItems()){
-        NODE_line* line= dynamic_cast<NODE_line*>(item);
-        if(line && !sceneSelectedLines.contains(line)){
-            sceneSelectedLines.append(line);
-        }
-    }
-}
-
-void NODE_graphics_view::deleteOneLine(NODE_line *line)
-{
-    sceneTempLines.append(line);
-    deleteTempLine();
 }
 
 QList<NODE_item *> NODE_graphics_view::getSelectedNodes()
@@ -720,58 +669,37 @@ QList<NODE_line *> NODE_graphics_view::getSelectedLines()
     return lines;
 }
 
-void NODE_graphics_view::deleteSelected()
+void NODE_graphics_view::onDeleteSelected()
 {
-    for(int i=0;i<sceneSelectedLines.length();i++){
-        NODE_line*line = sceneSelectedLines[i];
-        deleteLine(line);
-        delete sceneSelectedLines[i];
-        //sceneSelectedLines[i]->deleteLater();
-        sceneSelectedLines[i] = nullptr;
-    }
-    sceneSelectedLines.clear();
-    qDebug()<<"lines left:"<<sceneSelectedLines.length();
+	foreach(QGraphicsItem *item, NODE_scene->selectedItems()) {
+		NODE_line* line = dynamic_cast<NODE_line*>(item);
+		if (line) deleteLine(line);
+	}
 
-    for(int i=0;i<sceneSelectedNodes.length();i++){
-        NODE_item*node = sceneSelectedNodes[i];
-        deleteNode(node);
-        delete sceneSelectedNodes[i];
-        //sceneSelectedNodes[i]->deleteLater();
-        sceneSelectedNodes[i] = nullptr;
-    }
-    sceneSelectedNodes.clear();
-    qDebug()<<"nodes left:"<<sceneSelectedNodes.length();
-}
+	NODE_scene->update();
 
-void NODE_graphics_view::deleteTempLine()
-{
-    for(int i=0;i<sceneTempLines.length();i++){
-        deleteLine(sceneTempLines[i]);
-        delete sceneTempLines[i];
-        //sceneTempLines[i]->deleteLater();
-        sceneTempLines[i] = nullptr;
-    }
-    sceneTempLines.clear();
-    qDebug()<<"temp lines left:"<<sceneTempLines.length();
+	foreach(QGraphicsItem *item, NODE_scene->selectedItems()) {
+		NODE_item* node = dynamic_cast<NODE_item*>(item);
+		if (node) deleteNode(node);
+	}
+
 }
 
 void NODE_graphics_view::deleteLine(NODE_line *line)
 {
     if(MODE!=MODE_LINE_DRAG) line->appendHistory("delete_line");
-    if(NODE_scene->sceneLines.contains(line)) NODE_scene->sceneLines.removeOne(line);
-    if(line->inputSock != nullptr) line->inputSock->outputLines.removeOne(line);
-	if (line->outputSock != nullptr) {
-		line->outputSock->inputLines.removeOne(line);
-		line->outputSock->node->cook();
-	}
+    //if(NODE_scene->sceneLines.contains(line)) NODE_scene->sceneLines.removeOne(line);
+
     qDebug()<<"delete line"<<line->pos();
 
     line->isDeleted = true;
     line->setVisible(false);
     line->setSelected(false);
-	//if(line.isD)
-	
+
+	line->update();
     NODE_scene->removeItem(line);
+	if (line->outputSock != nullptr) line->outputSock->node->cook();
+	//line->deleteLater();
     //(history)
 }
 
@@ -781,9 +709,12 @@ void NODE_graphics_view::deleteNode(NODE_item *node)
 		this->viewportNode = nullptr;
 	}
     node->appendHistory("delete_node");
-    NODE_scene->removeItem(node);
-    NODE_scene->sceneNodes.removeOne(node);
-    qDebug()<<"delete node"<<node->title;
+	node->removeLine();
+
+	NODE_scene->sceneNodes.removeOne(node);
+	NODE_scene->removeItem(node);
+	node->deleteLater();
+	qDebug() << "delete node" << node->title;
 
 	if (viewportNode == nullptr) {
 		foreach(auto node, NODE_scene->sceneNodes) {
@@ -793,6 +724,7 @@ void NODE_graphics_view::deleteNode(NODE_item *node)
 			}
 		}
 	}
+	
 }
 
 void NODE_graphics_view::createContextMenu()

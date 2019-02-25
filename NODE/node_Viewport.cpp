@@ -1,7 +1,7 @@
 #include "node_Viewport.h"
 #include <qdebug.h>
 #include <opencv.hpp>
-#include <Imagc_basic.h>
+#include <Image_basic.h>
 #include <Image_convert.h>
 #include <time.h>
 #include <Thread_node.h>
@@ -25,14 +25,9 @@ void node_Viewport::initSocket()
 void node_Viewport::cook()
 {
 	if (!checkActive()) return;
-	resultImage.release();
 	getPreImage();
 
-	//delete image;
-	//image = nullptr;
-	if (myThread->isRunning()) return;
-	myThread->start();
-
+	updateImage(true);
 }
 
 REGISTER_NODE(node_Viewport, "Viewport","Export","V");

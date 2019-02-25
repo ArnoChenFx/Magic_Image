@@ -14,7 +14,7 @@
     <ClInclude Include="Image_mix.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Imagc_basic.h">
+    <ClInclude Include="Image_basic.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -22,7 +22,7 @@
     <ClCompile Include="Image_mix.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Imagc_basic.cpp">
+    <ClCompile Include="Image_basic.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -14,13 +14,15 @@ class MagicImage : public QMainWindow
     Q_OBJECT
 
 public:
+
     MagicImage(QWidget *parent = nullptr);
 
 	virtual void closeEvent(QCloseEvent *event) override;
 
+
 private:
-	VI_image_viever *viewer = new VI_image_viever;
-	VI_graphics_view *viewerGraphicsview = new VI_graphics_view;
+	VI_image_viever *viewer;
+	VI_graphics_view *viewerGraphicsview;
 	NODE_graphics_view *nodeView = new NODE_graphics_view();
 
 	QMainWindow *nodeWindow = new QMainWindow;
@@ -47,6 +49,7 @@ private:
     void onOpen();
     void onUndo();
     void onRedo();
+	void onDrop();
 	NODE_item* onCreateNode(string name);
 
     QDockWidget *paramDock = new QDockWidget("Parameters", this);

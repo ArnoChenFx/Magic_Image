@@ -3,7 +3,7 @@
 #include <qmutex.h>
 
 class NODE_item;
-class Thread_node: public QThread
+class Thread_node: public QObject
 {
 	Q_OBJECT
 
@@ -15,11 +15,15 @@ public:
 	void updateImage();
 	void stopImmediately();
 
-protected:
 	void run();
 
+	void setStop(bool flag = true);
+protected:
 	QMutex m_lock;
 	bool m_isCanRun;
+
+private:
+	bool stop;
 
 signals:
 	void done();

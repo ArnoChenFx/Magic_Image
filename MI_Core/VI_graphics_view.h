@@ -4,15 +4,18 @@
 #include <QGraphicsItem>
 #include <QMouseEvent>
 #include "mi_core_global.h"
+#include <VI_image_viever.h>
 
 class MI_CORE_EXPORT VI_graphics_view : public QGraphicsView
 {
     Q_OBJECT
 
 public:
+	VI_image_viever *viewer;
 
 	QGraphicsScene *VI_graphics_scene;
-    VI_graphics_view(QWidget *parent = nullptr);
+
+    VI_graphics_view(VI_image_viever *vi);
 
 protected:
 	virtual void wheelEvent(QWheelEvent *event) override;
@@ -23,9 +26,6 @@ protected:
     void _focus();
 
 private:
-    qreal imageWidth = 1920;
-    qreal imageHeight = 1080;
-
     //attribute
     int state = 0;//default state
     const qreal zoomInFactor = 1.15;

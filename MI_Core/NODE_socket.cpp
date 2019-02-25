@@ -7,6 +7,7 @@
 #include <iostream>
 #include "NODE_line.h"
 #include <NODE_graphics_view.h>
+#include <NODE_graphics_scene.h>
 
 NODE_socket::NODE_socket(QGraphicsItem *parent,int index,bool sType):QGraphicsItem (parent)
 {
@@ -39,14 +40,11 @@ NODE_socket::NODE_socket(QGraphicsItem *parent,int index,bool sType):QGraphicsIt
     nameItem->setScale(0.7);
     nameItem->setPlainText(name);
     nameItem->setZValue(0.5);
-    if(socketType){
-        nameItem->moveBy(-50,-12);
-    }
-    else{
-        nameItem->moveBy(7,-12);
-    }
-}
 
+    if(socketType) nameItem->moveBy(-50,-12);
+    else nameItem->moveBy(7,-12);
+
+}
 
 QRectF NODE_socket::boundingRect() const
 {
@@ -84,46 +82,20 @@ void NODE_socket::updatePosition()
 	node->height = max(node->minHeight, node->height);
 }
 
-void NODE_socket::removeAll()
+void NODE_socket::removeAll(bool avoid, NODE_line*avoidLine)
 {
-    if(socketType){//output socket
-        for(int i=0;i<outputLines.length();i++){
-            NODE_line *line = outputLines[i];
-            if(!node->nodeView->sceneTempLines.contains(line)){
-                //line->inputSock = nullptr;
-                node->nodeView->sceneTempLines.append(line);
-            }
-            //node->nodeView->deleteLine(line);
-        }
-        //outputLines.clear();
-    }
-    else{//input socket
-        for(int i=0;i<inputLines.length();i++){
-            NODE_line *line = inputLines[i];
-            if(!node->nodeView->sceneTempLines.contains(line)){
-                //line->outputSock = nullptr;
-                node->nodeView->sceneTempLines.append(line);
-            }
-            //node->nodeView->deleteLine(line);
-        }
-        //inputLines.clear();
-    }
-    node->nodeView->deleteTempLine();
+	foreach(NODE_line *line, connectedLines()) {
+		if (avoid && line == avoidLine) continue;
+
+		node->nodeView->deleteLine(line);
+	}
 }
 
 void NODE_socket::updateLines()
 {
-    if(socketType){//output socket
-        foreach(NODE_line *line,outputLines){
-            //line->updatePosition();
-            line->update();
-        }
-    }
-    else{
-        foreach(NODE_line *line,inputLines){
-            //line->updatePosition();
-            line->update();
-        }
+    foreach(NODE_line *line, connectedLines()){
+        //line->updatePosition();
+        line->update();
     }
 }
 
@@ -155,5 +127,23 @@ void NODE_socket::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 
 QPointF NODE_socket::position()
 {
-	return (this->pos() + this->node->pos());
+	QPointF pos = this->pos() + this->node->pos();
+	return pos;
+}
+
+QList<NODE_line*> NODE_socket::connectedLines()
+{
+	QPointF pos = position();
+	QPointF range = QPointF(5, 5);
+	QRectF socketRect = QRectF(pos - range, pos + range);
+
+	QList<NODE_line*> lines;
+	
+	QList<QGraphicsItem*> items = this->scene()->items(socketRect);
+	foreach(QGraphicsItem* item, items) {
+		NODE_line *line = dynamic_cast<NODE_line*>(item);
+		if (line) lines.append(line);
+	}
+	items.clear();
+	return lines;
 }

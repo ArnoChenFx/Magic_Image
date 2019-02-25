@@ -1,13 +1,15 @@
 #include "noed_Image.h"
 #include <qdebug.h>
-#include <Imagc_basic.h>
+#include <Image_basic.h>
 
 noed_Image::noed_Image(NODE_graphics_view* NODE_v) :
 	NODE_item(NODE_v, "Image")
 {
 	initSocket();
 	viewerState_item->setState(true);
-	cook();
+
+	//cook();
+	//resultImage = loadImage("F:/FFOutput/Download/Compressed/RS/07.Car/B.png");
 }
 
 void noed_Image::initSocket()
@@ -20,10 +22,8 @@ void noed_Image::initSocket()
 
 void noed_Image::cook()
 {
-	if (!checkActive()) return;
-	resultImage.release();
-	resultImage = loadImage("F:/FFOutput/Download/Compressed/RS/07.Car/B.png");
-
+	//if (!checkActive()) return;
+	
 	updateImage();
 	cookNext();
 }

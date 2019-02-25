@@ -13,7 +13,6 @@ void node_Render::cook()
 {
 	if (!checkActive()) return;
 	getPreImage();
-
 	updateImage();
 	cookNext();
 }

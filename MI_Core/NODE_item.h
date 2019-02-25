@@ -52,6 +52,7 @@ public:
     NODE_Drag_item *drag_item;
 
     explicit NODE_item(NODE_graphics_view* NODE_v=nullptr,QString title="Node",QPointF pos=QPointF(0,0),qreal width=200,qreal height=250);
+	~NODE_item();
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter,const QStyleOptionGraphicsItem *options,QWidget *widget) override;
@@ -75,12 +76,12 @@ public:
 	//mat
 	cv::Mat defaultImage;
 	cv::Mat resultImage;
-	void updateImage();
+	void updateImage(bool ignoreState=false);
 	virtual void getPreImage();
 
 	//thread
 	Thread_node *myThread;
-	bool threadIsrun;
+	QThread *tempThread;
 
 protected:
     void initChildren();
@@ -126,4 +127,5 @@ private:
 
 signals:
 	void cookImage();
+	void startThread();
 };

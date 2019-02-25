@@ -20,10 +20,12 @@ public:
 
     //list
     //NODE_line *inputLine=nullptr;
-    QList<NODE_line*> inputLines;
-    QList<NODE_line*> outputLines;
+    //QList<NODE_line*> inputLines;
+    //QList<NODE_line*> outputLines;
 
-    void removeAll();
+	QList<NODE_line*> connectedLines();
+
+	void removeAll(bool avoid = false,NODE_line*avoidLine =nullptr);
     void updateLines();
 
     NODE_socket(QGraphicsItem *parent = nullptr,int index=0,bool sType=false);
@@ -53,4 +55,5 @@ private:
     QBrush _brush_color;
     QBrush _brush_output;
     QBrush _brush_value;
+
 };

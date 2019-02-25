@@ -1,4 +1,4 @@
-#include "Imagc_basic.h"
+#include "Image_basic.h"
 
 using namespace cv;
 
