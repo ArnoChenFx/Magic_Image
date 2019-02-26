@@ -69,6 +69,8 @@ public:
 	void setScale(qreal w, qreal h);
 	void cookNext();
 
+	virtual void updateParamUI();
+
 	//virtual
 	virtual void initSocket();
 	virtual void cook();
@@ -124,6 +126,7 @@ private:
 	QGraphicsTextItem *name_item;
 
 	void onShiftState();
+	void loadQss();
 
 signals:
 	void cookImage();

@@ -14,6 +14,7 @@
 #include <qmessagebox.h>
 #include <Register.h>
 #include <node_Viewport.h>
+#include <node_Image.h>
 #include <Image_basic.h>
 #include <json.hpp>
 using json = nlohmann::json;
@@ -531,6 +532,7 @@ NODE_item* MagicImage::onCreateNode(string name)
 		nodeView->viewportNode = vp;
 		connect(vp, &node_Viewport::cookImage, this, [=]() {cookImage(); });
 	}
+	node->cook();
 	return node;
 }
 
@@ -616,7 +618,7 @@ void MagicImage::loadLine(json liInfo)
 		}
 	}
 
-	if (count == 2) new NODE_line(nodeView, inSocket, outSocket);
+	if (count == 2) nodeView->createLine(nodeView, inSocket, outSocket);
 	else qDebug() << "create Line error!!  "<<count;
 }
 
@@ -680,10 +682,11 @@ void MagicImage::onDrop()
 		qDebug() << QString::fromStdString(format);
 		QPointF nodePos = pos + QPointF(0, count * 300);
 		if (isUsefulFormat("imageFormats", format)){
-			auto node = onCreateNode("Image");
+			node_Image *node = dynamic_cast<node_Image*>(onCreateNode("Image"));
 			node->title = QString::fromStdString(name);
+			node->pathLine->setText(QString::fromStdString(path));
 			node->setPos(nodePos);
-			node->resultImage = loadImage(path);
+			node->filePath = path;
 			node->cook();
 			count++;
 		}

@@ -10,7 +10,6 @@ Thread_node::Thread_node(NODE_item *nd):QObject()
 	stop = false;
 }
 
-
 Thread_node::~Thread_node()
 {
 }
@@ -25,16 +24,16 @@ void Thread_node::setStop(bool flag)
 {
 	stop = true;
 }
+
 void Thread_node::updateImage()
 {
-	clock_t startTime, endTime;
+	//clock_t startTime, endTime;
 
-	startTime = clock();
+	//startTime = clock();
 
 	//-------------------
 	cv::Mat m = cv::Mat::zeros(node->resultImage.rows, node->resultImage.cols, CV_8UC3);
 
-	qDebug() << "node image size" <<node->resultImage.rows<< node->resultImage.cols;
 
 	int nr = node->resultImage.rows;
 	int nc = node->resultImage.cols * node->resultImage.channels();
@@ -53,23 +52,26 @@ void Thread_node::updateImage()
 		float* data2 = imag.ptr<float>(i);
 		for (size_t j = 0; j < nc; j++)
 		{
-			*data++ = (uchar)(*data2++ * 255);
+			*data = (uchar)(*data2 * 255);
+			*data++;
+			*data2++;
 		}
 	}
 	//-------------------
-	endTime = clock();
-	qDebug() << "convert to 8UC3 : " << (double)(endTime - startTime) / CLOCKS_PER_SEC << "s";
-	startTime = clock();
+	//endTime = clock();
+	//qDebug() << "convert to 8UC3 : " << (double)(endTime - startTime) / CLOCKS_PER_SEC << "s";
+	//startTime = clock();
 
 	QImage *img = new  QImage((uchar*)m.data, m.cols, m.rows, m.step, QImage::Format_RGB888);
 	node->image = new QImage(img->width(), img->height(), img->format());
 	*(node->image) = img->copy();
 	delete img;
 
-	endTime = clock();
-	qDebug() << "convert to QImage : " << (double)(endTime - startTime) / CLOCKS_PER_SEC << "s";
+	//endTime = clock();
+	//qDebug() << "convert to QImage : " << (double)(endTime - startTime) / CLOCKS_PER_SEC << "s";
 
 	//QRectF rect = QRectF(8, node->title_height + 5, node->width - 16, node->height - node->title_height - 16);
+	//qDebug() << "update image in thread :" << node->title;
 	emit done();
 }
 

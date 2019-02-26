@@ -53,7 +53,10 @@ void Image_add(Mat m, Mat n) {
 
 		for (size_t j = 0; j < nc; j++)
 		{
-			*data = (*data++) + (*data2++);
+			*data = *data + *data2;
+			if (*data > 1) *data = 1.0;
+			*data++;
+			*data2++;
 		}
 	}
 	/*endTime = clock();
@@ -152,7 +155,10 @@ void Image_substract(Mat m, Mat n) {
 
 		for (size_t j = 0; j < nc; j++)
 		{
-			*data = max(*data++ - *data2++,.0f);
+			*data = *data - *data2;
+			if (*data < 0)*data = .0;
+			*data++;
+			*data2++;
 		}
 	}
 }
@@ -177,7 +183,10 @@ void Image_substract(Mat m, Mat n, Mat result) {
 
 		for (size_t j = 0; j < nc; j++)
 		{
-			*data3++ = max(*data++ - *data2++, .0f);
+			*data3++ = *data++ - *data2++;
+			if (*data < 0)*data = .0;
+			*data++;
+			*data2++;
 		}
 	}
 }
@@ -201,7 +210,10 @@ void Image_divide(Mat m, Mat n) {
 
 		for (size_t j = 0; j < nc; j++)
 		{
-			*data = *data++ / *data2++;
+			*data = *data / *data2;
+			if (*data > 1)*data = 1.0;
+			*data++;
+			*data2++;
 		}
 	}
 }
@@ -250,7 +262,9 @@ void Image_max(Mat m, Mat n) {
 
 		for (size_t j = 0; j < nc; j++)
 		{
-			*data = max(*data++, *data2++);
+			if (*data < *data2) *data = *data2;
+			*data++;
+			*data2++;
 		}
 	}
 }
@@ -274,7 +288,9 @@ void Image_min(Mat m, Mat n) {
 
 		for (size_t j = 0; j < nc; j++)
 		{
-			*data = min(*data++, *data2++);
+			if (*data > *data2) *data = *data2;
+			*data++;
+			*data2++;
 		}
 	}
 }
@@ -403,8 +419,16 @@ void Image_vividLight(Mat m, Mat n) {
 
 		for (size_t j = 0; j < nc; j++)
 		{
-			if (*data2 <= 0.5) *data = max(1 - (1 - *data++) / (*data2++), .0f);
-			else *data = min(*data++ / (1 - *data2++), 1.0f);
+			if (*data2 <= 0.5) {
+				*data = 1 - (1 - *data) / (*data2);
+				if (*data < 0) *data = 0.0;
+			}
+			else {
+				*data = *data / (1 - *data2);
+				if (*data > 1) *data = 1.0;
+			}
+			*data++;
+			*data2++;
 		}
 	}
 }
@@ -428,7 +452,11 @@ void Image_linearLight(Mat m, Mat n) {
 
 		for (size_t j = 0; j < nc; j++)
 		{
-			*data = *data++ + 2 * *data2++ - 1;
+			*data = *data + 2 * *data2 - 1;
+			if (*data > 1) *data = 1.0;
+			if (*data < 0) *data = 0;
+			*data++;
+			*data2++;
 		}
 	}
 }
@@ -453,8 +481,16 @@ void Image_pinLight(Mat m, Mat n) {
 
 		for (size_t j = 0; j < nc; j++)
 		{
-			if (*data <= 0.5) *data = min(*data++ , 2 * *data2++);
-			else *data = max(*data++ , 2 * *data2 - 1);
+			if (*data <= 0.5) {
+				float d = 2 * *data2;
+				if (*data > d) *data = d;
+			}
+			else {
+				float f = 2 * *data2 - 1;
+				if (*data < f) *data = f;
+			}
+			*data++;
+			*data2++;
 		}
 	}
 }
@@ -478,7 +514,10 @@ void Image_colorBurn(Mat m, Mat n) {
 
 		for (size_t j = 0; j < nc; j++)
 		{
-			*data = max(1 - (1 - *data++) / (*data2++),.0f);
+			*data = 1 - (1 - *data) / (*data2);
+			if (*data < 0) *data = 0.0;
+			*data++;
+			*data2++;
 		}
 	}
 }
@@ -502,7 +541,10 @@ void Image_linearBurn(Mat m, Mat n) {
 
 		for (size_t j = 0; j < nc; j++)
 		{
-			*data = max(*data++ + *data2++  - 1.0 , .0);
+			*data = *data + *data2 - 1.0;
+			if (*data < 0) *data = 0.0;
+			*data++;
+			*data2++;
 		}
 	}
 }
@@ -525,7 +567,10 @@ void Image_colorDodge(Mat m, Mat n) {
 
 		for (size_t j = 0; j < nc; j++)
 		{
-			*data = min(*data++ / (1 - *data2++),1.0f);
+			*data = *data / (1 - *data2);
+			if (*data > 1) *data = 1.0;
+			*data++;
+			*data2++;
 		}
 	}
 }
@@ -621,9 +666,13 @@ void Image_reflect(Mat m, Mat n) {
 
 		for (size_t j = 0; j < nc; j++)
 		{
-			if (*data2 == 1) *data++ = *data2++;
-			else *data = min(*data * *data++ / (1.0 - *data2++), 1.0);
-			
+			if (*data2 == 1) *data = *data2;
+			else {
+				*data = *data * *data / (1.0 - *data2);
+				if (*data > 1) *data = 1.0;
+			}
+			*data++;
+			*data2++;
 		}
 	}
 }
@@ -647,7 +696,13 @@ void Image_phoenix(Mat m, Mat n) {
 
 		for (size_t j = 0; j < nc; j++)
 		{
-			*data = min(*data, *data2) - max(*data++, *data2++) + 1;
+			float a = *data;
+			if (a > *data2) a = *data2;
+			float b = *data;
+			if (b < *data2) b = *data2;
+			*data = a - b + 1;
+			*data++;
+			*data2++;
 
 		}
 	}
@@ -672,9 +727,13 @@ void Image_glow(Mat m, Mat n) {
 
 		for (size_t j = 0; j < nc; j++)
 		{
-			if (*data2 == 1) *data++ = *data2++;
-			else *data = min(*data2 * *data2++ / (1.0 - *data++), 1.0);
-
+			if (*data2 == 1) *data = *data2;
+			else {
+				*data = *data2 * *data2 / (1.0 - *data);
+				if (*data > 1)*data = 1.0;
+			}
+			*data++;
+			*data2++;
 		}
 	}
 }
@@ -698,12 +757,19 @@ void Image_hardMix(Mat m, Mat n) {
 
 		for (size_t j = 0; j < nc; j++)
 		{
-			if (*data2 <= 0.5) *data = max(1 - (1 - *data++) / (*data2++), .0f);
-			else *data = min(*data++ / (1 - *data2++), 1.0f);
-
+			if (*data2 <= 0.5) {
+				*data = 1 - (1 - *data) / (*data2);
+				if (*data < 0) *data = .0;
+			}
+			else {
+				*data = *data / (1 - *data2);
+				if (*data > 1) *data = 1.0;
+			}
 			if (*data < 0.5) *data = 0.0;
 			else *data = 1.0;
 
+			*data++;
+			*data2++;
 		}
 	}
 }
@@ -730,6 +796,33 @@ void Image_colorOver(Mat m, Mat n) {
 		{
 			if (*data2 <= 0.5) *data = (*data++ * *data2++) * 2;
 			else *data = 1 - (1 - *data++) * (1 - *data2++) * 2;
+		}
+	}
+}
+
+void Image_Mask(cv::Mat m, cv::Mat n, cv::Mat mask)
+{
+	int nr = m.rows;
+	int nc = m.cols * m.channels();
+
+	if (m.isContinuous()) {
+		nc = nc * nr;
+		nr = 1;
+	}
+
+
+#pragma omp parallel for num_threads(16)
+	for (int i = 0; i < nr; i++)
+	{
+		float* data = m.ptr<float>(i);
+		float* data2 = n.ptr<float>(i);
+		float *data3 = mask.ptr<float>(i);
+		for (size_t j = 0; j < nc; j++)
+		{
+			*data = *data * (1 - *data3) + *data2 * *data3;
+			*data++;
+			*data2++;
+			*data3++;
 		}
 	}
 }

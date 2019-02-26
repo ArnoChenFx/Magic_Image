@@ -72,23 +72,28 @@ NODE_item::NODE_item(NODE_graphics_view* NODE_v,QString title,QPointF pos,qreal 
 	_padding = 4.0;
 
     initWidget();
+	updateParamUI();
     initChildren();
 
+	loadQss();
 	//init image
 	defaultImage = cv::Mat::zeros(1080,1920, CV_32FC3);
 	resultImage = cv::Mat::zeros(1080, 1920, CV_32FC3);
 
 	//init thread
 	myThread = new Thread_node(this);
-	//connect(myThread, &Thread_node::done, this, [=]() {
-	//	tempThread->quit();
-	//	tempThread->wait();
-	//});
+	connect(myThread, &Thread_node::done, this, [=]() {
+		myThread->setStop();
+		tempThread->quit();
+		tempThread->wait();
+	});
 
 	tempThread = new QThread;
 	myThread->moveToThread(tempThread);
 	connect(this, &NODE_item::startThread, myThread, &Thread_node::run);
 	connect(tempThread,&QThread::finished,this, [=]() {
+		//tempThread->terminate();
+		myThread->setStop();
 		tempThread->quit();
 		tempThread->wait();
 		updateUI();
@@ -207,12 +212,18 @@ void NODE_item::initSocket()
 void NODE_item::initWidget()
 {
     nodeProxyWidget = new QGraphicsProxyWidget(this);
+	nodeProxyWidget->setZValue(1);
     nodeMainWidget = new QWidget;
-    nodeMainWidget->setStyleSheet("background-color:transparent");
+    //nodeMainWidget->setStyleSheet("background-color:transparent");
+	QPalette pal = QPalette();
+	pal.setColor(QPalette::Background, Qt::transparent);
+	nodeMainWidget->setAutoFillBackground(true);
+	nodeMainWidget->setPalette(pal);
+
     nodeProxyWidget->setWidget(nodeMainWidget);
     mainLayout =new QVBoxLayout;
     mainLayout->setContentsMargins(0,0,0,0);
-    QRectF rect = QRectF(8, title_height+5,width-16, height-title_height-16);
+    QRectF rect = QRectF(10, title_height+5,width-20, height-title_height-16);
 
     nodeProxyWidget->setGeometry(rect);
     nodeMainWidget->setLayout(mainLayout);
@@ -236,7 +247,7 @@ void NODE_item::updateUI()
     foreach(NODE_socket*sock,input_sockets){
         sock->updatePosition();
     }
-    QRectF rect = QRectF(5, title_height+2,width-10, height-title_height-10);
+	QRectF rect = QRectF(10, title_height + 5, width - 20, height - title_height - 16);
 
     nodeProxyWidget->setGeometry(rect);
     updateViewer(rect);
@@ -328,9 +339,9 @@ void NODE_item::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 		colliderLine = nullptr;
 
         if(!input_sockets.isEmpty())
-            new NODE_line(nodeView,preSocket,input_sockets[0]);
+			nodeView->createLine(nodeView,preSocket,input_sockets[0]);
         if(!output_sockets.isEmpty())
-            new NODE_line(nodeView,output_sockets[0],nextSocket);
+			nodeView->createLine(nodeView,output_sockets[0],nextSocket);
         collider = false;
         
     }
@@ -343,7 +354,8 @@ void NODE_item::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 	collider = false;
 	if (colliderLine != nullptr) colliderLine->setSelected(false);
 
-	QRectF rect = QRectF(pos().x(), pos().y(), width, height);
+	//QRectF *rect = new QRectF(pos().x(), pos().y(), width, height);
+	QRectF rect = this->mapRectToScene(this->boundingRect());
 	foreach(QGraphicsItem* item, nodeView->NODE_scene->items(rect)) {
 		NODE_line *line = dynamic_cast<NODE_line*>(item);
 		if (line && line->inputSock->node != this && line->outputSock->node != this) {
@@ -356,6 +368,7 @@ void NODE_item::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 			break;
 		}
 	}
+	//delete rect;
     QGraphicsItem::mouseMoveEvent(event);
 }
 
@@ -387,7 +400,7 @@ void NODE_item::cookNext()
 	if (output_sockets.length() > 0) {
 		foreach(NODE_socket *socket, output_sockets) {
 			foreach(NODE_line *line, socket->connectedLines()) {
-				line->outputSock->node->cook();
+				if(line->outputSock != nullptr) line->outputSock->node->cook();
 			}
 		}
 	}
@@ -399,12 +412,14 @@ void NODE_item::getPreImage()
 	if (input_sockets.length() > 0) {
 		NODE_socket *socket = input_sockets[0];
 		QList<NODE_line*> lines = socket->connectedLines();
-		if (lines.length() > 0) {
-			resultImage = lines[0]->inputSock->node->resultImage;
+		if (lines.length() > 0 && lines[0]->inputSock != nullptr) {
+			resultImage = lines[0]->inputSock->node->resultImage.clone();
+			return;
 		}
-		else resultImage = defaultImage;
+		else goto dft;
 	}
-	else resultImage = defaultImage;
+	dft:
+	resultImage = defaultImage.clone();
 }
 
 void NODE_item::updateImage(bool ignoreState)
@@ -412,6 +427,10 @@ void NODE_item::updateImage(bool ignoreState)
 	if (!ignoreState && !viewerState_item->state) return;
 
 	if (!tempThread->isRunning()) {
+		myThread->setStop();
+		tempThread->quit();
+		tempThread->wait();
+
 		myThread->setStop(false);
 		tempThread->start();
 		emit startThread();
@@ -436,7 +455,24 @@ bool NODE_item::checkActive()
 	return active;
 }
 
+void NODE_item::loadQss()
+{
+	QFile qssFile("data/style.qss");
+	qssFile.open(QFile::ReadOnly);
+
+	if (qssFile.isOpen())
+	{
+		QString qss = QLatin1String(qssFile.readAll());
+		nodeMainWidget->setStyleSheet(qss);
+		//nodeMainWidget->setStyleSheet("background-color:transparent");
+		qssFile.close();
+	}
+
+}
+
 void NODE_item::cook() {}
+
+void NODE_item::updateParamUI() {};
 
 //void NODE_item::mousePressEvent(QGraphicsSceneMouseEvent *event)
 //{

@@ -7,7 +7,8 @@ VI_image_viever::VI_image_viever(QWidget *parent):QLabel (parent)
 	mainImage = new QImage(1920,1080, QImage::Format_RGB888);
 	mainImage->fill(Qt::black);
 	updateImage();
-
+	this->setGeometry(-1920 / 2, -1080 / 2, 1920 / 2, 1080 / 2);
+	
     this->setMouseTracking(true);
 }
 
@@ -47,7 +48,8 @@ void VI_image_viever::leftMouseMoveEvent(QMouseEvent *event)
 
 void VI_image_viever::updateImage()
 {
-	this->setPixmap(QPixmap::fromImage(*mainImage));
 	this->setFixedHeight(mainImage->height());
 	this->setFixedWidth(mainImage->width());
+	this->setPixmap(QPixmap::fromImage(*mainImage));
+	emit scaled();
 }

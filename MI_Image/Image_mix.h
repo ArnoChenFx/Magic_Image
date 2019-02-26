@@ -58,4 +58,6 @@ __declspec(dllexport) void Image_glow(cv::Mat m, cv::Mat n);
 
 __declspec(dllexport) void Image_colorOver(cv::Mat m, cv::Mat n);
 
+__declspec(dllexport) void Image_Mask(cv::Mat m, cv::Mat n, cv::Mat mask);
+
 __declspec(dllexport) void Image_gamma(cv::Mat m, float gamma);

@@ -65,7 +65,7 @@
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <OutputFile>D:\Code_Project\Magic_Image_VS2017\x64\NODE_d.dll</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;D:\Code_Project\Magic_Image_VS2017\x64\Debug;%(AdditionalLibraryDirectories);E:\Software\CPPlib\opencv\opencv _4.01_cuda\x64\vc15\lib</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -99,17 +99,17 @@
     </QtMoc>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Image_convert.cpp" />
+    <ClCompile Include="node_Merge.cpp" />
     <ClCompile Include="node_Render.cpp" />
     <ClCompile Include="node_Viewport.cpp" />
-    <ClCompile Include="noed_Image.cpp" />
+    <ClCompile Include="node_Image.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Image_convert.h" />
     <ClInclude Include="node_global.h" />
+    <ClInclude Include="node_Merge.h" />
     <ClInclude Include="node_Render.h" />
     <ClInclude Include="node_Viewport.h" />
-    <ClInclude Include="noed_Image.h" />
+    <ClInclude Include="node_Image.h" />
     <ClInclude Include="Register.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

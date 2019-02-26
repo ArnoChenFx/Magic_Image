@@ -43,5 +43,6 @@ private:
     qreal width = 20000;
     qreal height = 20000;
 
+	void setScale();
 };
 

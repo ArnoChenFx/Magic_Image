@@ -37,9 +37,9 @@ void testCUDA() {
 	Mat image1, image2,image3;
 
 	//Mat<float> s;
-	m1.convertTo(image1, CV_32F, 1 / 255.0);
-	m2.convertTo(image2, CV_32F, 1 / 255.0);
-	m3.convertTo(image3, CV_32F, 1 / 255.0);
+	m1.convertTo(image1, CV_32FC3, 1 / 255.0);
+	m2.convertTo(image2, CV_32FC3, 1 / 255.0);
+	m3.convertTo(image3, CV_32FC3, 1 / 255.0);
 	m1.release();
 	m2.release();
 	m3.release();
@@ -58,8 +58,8 @@ void testCUDA() {
 	
 	//cvtColor(result, image1, 3);
 
-	//Image_colorOver(image1,image2);
-	Image_gamma(image1, 1);
+	Image_add(image1,image2);
+	//Image_gamma(image1, 1);
 
 	imshow("CUDA ADD", image1);
 	Vec3f rgb_f = image1.at<Vec3f>(100, 100);

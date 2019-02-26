@@ -12,6 +12,7 @@ node_Render::node_Render(NODE_graphics_view* NODE_v) :
 void node_Render::cook()
 {
 	if (!checkActive()) return;
+	
 	getPreImage();
 	updateImage();
 	cookNext();

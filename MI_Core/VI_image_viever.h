@@ -21,6 +21,6 @@ protected:
 signals:
     void click(QMouseEvent *event);
     void move(QMouseEvent *event);
-
+	void scaled();
 };
 

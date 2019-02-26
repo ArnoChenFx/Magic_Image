@@ -9,7 +9,7 @@
 #include <NODE_graphics_view.h>
 #include <NODE_graphics_scene.h>
 
-NODE_socket::NODE_socket(QGraphicsItem *parent,int index,bool sType):QGraphicsItem (parent)
+NODE_socket::NODE_socket(QGraphicsItem *parent,int index,bool sType, QString nm, qreal offset):QGraphicsItem (parent)
 {
     node = dynamic_cast<NODE_item*>(parent);
     socketType = sType;
@@ -18,7 +18,8 @@ NODE_socket::NODE_socket(QGraphicsItem *parent,int index,bool sType):QGraphicsIt
 	nameItem = new QGraphicsTextItem(this);
 
 	id = index;
-    name = "Image";
+	name = nm;
+	extraOffset = offset;
 
     updatePosition();
 
@@ -35,14 +36,18 @@ NODE_socket::NODE_socket(QGraphicsItem *parent,int index,bool sType):QGraphicsIt
     _brush_output = QBrush(color_output);
     _brush_value = QBrush(color_value);
 
-    nameItem->setDefaultTextColor(getColor("nd_color_attribute"));
-    nameItem->setFont(getString("nd_attrib_font"));
-    nameItem->setScale(0.7);
-    nameItem->setPlainText(name);
-    nameItem->setZValue(0.5);
+	//setZValue(1.1);
 
-    if(socketType) nameItem->moveBy(-50,-12);
-    else nameItem->moveBy(7,-12);
+	nameItem->setDefaultTextColor(getColor("nd_color_attribute"));
+	nameItem->setFont(getString("nd_attrib_font"));
+	nameItem->setScale(0.7);
+	nameItem->setPlainText(name);
+	nameItem->setZValue(0.5);
+
+	if (!socketType) {
+		nameItem->moveBy(7, -12);
+	}
+	else nameItem->moveBy(-50,-12);
 
 }
 
@@ -73,10 +78,10 @@ void NODE_socket::updatePosition()
 
     if(socketType)//output
     {
-		setPos(node->width, delta);
+		setPos(node->width, delta+extraOffset);
     }
     else{//input
-        setPos(0, delta);
+        setPos(0, delta + extraOffset);
     }
 	node->minHeight= max(delta+30, node->minHeight);
 	node->height = max(node->minHeight, node->height);
@@ -143,6 +148,7 @@ QList<NODE_line*> NODE_socket::connectedLines()
 	foreach(QGraphicsItem* item, items) {
 		NODE_line *line = dynamic_cast<NODE_line*>(item);
 		if (line) lines.append(line);
+		//if (line) qDebug() << "connected lines" << line->inputSock->node->title << "," << line->outputSock->node->title;
 	}
 	items.clear();
 	return lines;

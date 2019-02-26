@@ -11,18 +11,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="NODE_utils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="NODE_utils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="node_utils_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NODE_ui_items.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NODE_ui_utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="NODE_ui_items.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NODE_ui_utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

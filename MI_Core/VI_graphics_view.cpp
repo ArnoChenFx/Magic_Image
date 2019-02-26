@@ -22,6 +22,8 @@ VI_graphics_view::VI_graphics_view(VI_image_viever *vi) : QGraphicsView()
 	viewer = vi;
 	VI_graphics_scene->addWidget(viewer);
 	_focus();
+
+	connect(viewer, &VI_image_viever::scaled, this, [=]() {setScale(); });
 }
 
 void VI_graphics_view::wheelEvent(QWheelEvent *event)
@@ -151,6 +153,16 @@ void VI_graphics_view::keyPressEvent(QKeyEvent *event)
 
 void VI_graphics_view::_focus()
 {
-    QRectF itemsArea = QRectF(0,0, viewer->width(), viewer->height());
+	qreal w = viewer->width();
+	qreal h = viewer->height();
+	QRectF itemsArea = QRectF(0,0, w , h);
+    //QRectF itemsArea = QRectF(-1 * viewer->width() / 2, -1*viewer->height() / 2, viewer->width() / 2, viewer->height() / 2);
     this->fitInView(itemsArea, Qt::KeepAspectRatio);
+}
+
+void VI_graphics_view::setScale()
+{
+	//qreal w = viewer->width();
+	//qreal h = viewer->height();
+	//viewer->setGeometry(-1 * w / 2,  -1*h / 2, w / 2, h / 2);
 }

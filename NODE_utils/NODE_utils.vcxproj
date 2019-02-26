@@ -97,10 +97,12 @@
     </QtMoc>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="NODE_utils.cpp" />
+    <ClCompile Include="NODE_ui_items.cpp" />
+    <ClCompile Include="NODE_ui_utils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="NODE_utils.h" />
+    <ClInclude Include="NODE_ui_items.h" />
+    <ClInclude Include="NODE_ui_utils.h" />
     <ClInclude Include="node_utils_global.h" />
   </ItemGroup>
   <ItemGroup>

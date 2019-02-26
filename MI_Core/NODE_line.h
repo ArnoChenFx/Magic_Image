@@ -24,7 +24,9 @@ public:
     bool isDeleted = false;
 
     NODE_line(NODE_graphics_view *nodeV=nullptr, NODE_socket *startS=nullptr, NODE_socket *endS=nullptr,bool isDragMode=false);
-    QRectF boundingRect() const override;
+	~NODE_line();
+
+	QRectF boundingRect() const override;
     void paint(QPainter *painter,const QStyleOptionGraphicsItem *options,QWidget *widget) override;
     bool intersectsWith(QPointF p1,QPointF p2);
 
@@ -46,5 +48,7 @@ private:
     QPainterPath calLinearPath();
     QPainterPath calCubicPath();
     QPainterPath calBezierPath();
+
+	
 };
 

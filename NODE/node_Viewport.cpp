@@ -13,6 +13,7 @@ node_Viewport::node_Viewport(NODE_graphics_view* NODE_v):
 {
 	initSocket();
 	viewerState_item->setState(true);
+	setScale(200, 200);
 }
 
 void node_Viewport::initSocket()
@@ -24,9 +25,9 @@ void node_Viewport::initSocket()
 
 void node_Viewport::cook()
 {
-	if (!checkActive()) return;
+	//if (!checkActive()) return;
+	qDebug() << "cook viewport";
 	getPreImage();
-
 	updateImage(true);
 }
 

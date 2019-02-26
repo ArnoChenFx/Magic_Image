@@ -14,13 +14,13 @@
     <ClCompile Include="node_Viewport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="noed_Image.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="node_Render.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Image_convert.cpp">
+    <ClCompile Include="node_Image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="node_Merge.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -31,13 +31,13 @@
     <ClInclude Include="Register.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="noed_Image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="node_Render.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Image_convert.h">
+    <ClInclude Include="node_Image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="node_Merge.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

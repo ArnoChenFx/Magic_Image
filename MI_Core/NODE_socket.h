@@ -28,7 +28,9 @@ public:
 	void removeAll(bool avoid = false,NODE_line*avoidLine =nullptr);
     void updateLines();
 
-    NODE_socket(QGraphicsItem *parent = nullptr,int index=0,bool sType=false);
+	NODE_socket(QGraphicsItem *parent = nullptr, int index = 0, bool sType = false, QString nm = "Image", qreal offset = 0);
+	
+	
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter,const QStyleOptionGraphicsItem *options,QWidget *widget) override;
@@ -56,4 +58,5 @@ private:
     QBrush _brush_output;
     QBrush _brush_value;
 
+	qreal extraOffset;
 };

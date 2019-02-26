@@ -37,13 +37,19 @@ NODE_line::NODE_line(NODE_graphics_view *nodeV,NODE_socket *startS,NODE_socket *
     roundness = 100;
 
     updatePosition();
-    //Node_scene->update();
-    //update();
-    qDebug()<<"line Created";
-	
-	nodeV->update();
+    //qDebug()<<"line Created";
 
-	if(!isDrag) outputSock->node->cook();
+	//nodeV->update();
+	//if(!isDrag) outputSock->node->cook();
+}
+
+NODE_line::~NODE_line()
+{
+	nodeView = nullptr;
+	inputSock = nullptr;
+	outputSock = nullptr;
+	startSock = nullptr;
+	endSock = nullptr;
 }
 
 QRectF NODE_line::boundingRect() const

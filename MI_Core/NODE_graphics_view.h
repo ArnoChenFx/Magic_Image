@@ -39,6 +39,7 @@ public:
     void deleteNode(NODE_item *node);
 	void deleteLine(NODE_line *line = nullptr);
     bool canUseKey = true;
+	void createLine(NODE_graphics_view *nodeV, NODE_socket *startS, NODE_socket *endS, bool isCook=true);
 
 	void showContextMenu();
 	void createContextMenu();
