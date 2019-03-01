@@ -33,6 +33,7 @@ NODE_graphics_view::NODE_graphics_view() : QGraphicsView()
 	connect(searchLine, &QLineEdit::returnPressed,[=](){applySearch();});
 	searchLine->setContextMenuPolicy(Qt::NoContextMenu);
 	
+	this.sca
 }
 
 void NODE_graphics_view::onCopy()

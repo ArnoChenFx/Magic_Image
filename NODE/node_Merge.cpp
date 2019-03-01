@@ -60,8 +60,10 @@ void node_Merge::updateParamUI()
 		cook();
 	});
 
-	mainLayout->addLayout(hbox);
-	addSpacer(mainLayout);
+	//mainLayout->addLayout(hbox);
+	//addSpacer(mainLayout);
+
+	addHboxs(mainLayout, { hbox });
 }
 
 void node_Merge::computeMix()

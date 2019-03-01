@@ -23,6 +23,9 @@
     <ClCompile Include="node_Merge.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="node_Curve.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="node_Viewport.h">
@@ -38,6 +41,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="node_Merge.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="node_Curve.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

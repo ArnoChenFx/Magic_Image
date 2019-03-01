@@ -10,3 +10,5 @@ NODE_UTILS_EXPORT void addFileUI(QHBoxLayout *hbox, QLineEdit *pathLine, QPushBu
 NODE_UTILS_EXPORT void addHline(QVBoxLayout *mainLayout);
 
 NODE_UTILS_EXPORT void addSpacer(QVBoxLayout *mainLayout);
+
+NODE_UTILS_EXPORT void addHboxs(QVBoxLayout *mainLayout,QList<QHBoxLayout*> hboxs);

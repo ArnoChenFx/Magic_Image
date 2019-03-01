@@ -38,7 +38,17 @@ void addHline(QVBoxLayout *mainLayout)
 
 void addSpacer(QVBoxLayout *mainLayout)
 {
-	addHline(mainLayout);
 	QSpacerItem *spacerItem =new QSpacerItem(40, 200, QSizePolicy::Expanding, QSizePolicy::Expanding);
 	mainLayout->addItem(spacerItem);
+}
+
+void addHboxs(QVBoxLayout *mainLayout, QList<QHBoxLayout*> hboxs)
+{
+	foreach(QHBoxLayout* hbox, hboxs)
+	{
+		mainLayout->addLayout(hbox);
+		addHline(mainLayout);
+	}
+
+	addSpacer(mainLayout);
 }

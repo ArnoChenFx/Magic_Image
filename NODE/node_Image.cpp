@@ -40,8 +40,9 @@ void node_Image::updateParamUI()
 	});
 
 	addFileUI(hbox,pathLine,open,"image");
-	mainLayout->addLayout(hbox);
-	addSpacer(mainLayout);
+	//mainLayout->addLayout(hbox);
+	//addSpacer(mainLayout);
+	addHboxs(mainLayout, { hbox });
 }
 
 void node_Image::openFile(QString fileName)
