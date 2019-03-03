@@ -3,7 +3,7 @@
 out vec4 FragColor;
 in vec3 ourColor;
 in vec2 TexCoord;
-uniform sampler2D ourTexture;
+uniform sampler2D ourTextureA;
 uniform sampler2D ourTextureB;
 
 vec4 adgustGamma(vec4 color,float gamma)
@@ -16,7 +16,7 @@ vec4 adgustGamma(vec4 color,float gamma)
 void main()
 {
 	//FragColor = vec4(ourColor, 1.0);
-	vec4 a = texture(ourTexture,TexCoord);
+	vec4 a = texture(ourTextureA,TexCoord);
 	vec4 b = texture(ourTextureB,TexCoord);
 
 	FragColor = b.w>0 ? a*b*1.2 : a;

@@ -2,12 +2,9 @@
 
 #include <QMainWindow>
 #include <QStatusBar>
-#include <QFrame>
-#include "VI_image_viever.h"
-#include "NODE_graphics_view.h"
-#include "VI_graphics_view.h"
-#include <string>
-#include <QDockWidget>
+#include "viewerWindow.h"
+#include "nodeWindow.h"
+#include "paramWindow.h"
 
 class MagicImage : public QMainWindow
 {
@@ -20,17 +17,12 @@ public:
 	virtual void closeEvent(QCloseEvent *event) override;
 
 
-private:
-	VI_image_viever *viewer;
-	VI_graphics_view *viewerGraphicsview;
-	NODE_graphics_view *nodeView = new NODE_graphics_view();
-
-	QMainWindow *nodeWindow = new QMainWindow;
-	QMainWindow *viewerWindow = new QMainWindow;
-
 	QStatusBar *IMstatusBar = new QStatusBar;
-	QFrame *IMparam = new QFrame;
+	void cookImage();
 
+
+private:
+	
     QString projectName=nullptr;
 
     void initUI();
@@ -49,18 +41,11 @@ private:
     void onOpen();
     void onUndo();
     void onRedo();
-	void onDrop();
-	NODE_item* onCreateNode(string name);
 
-    QDockWidget *paramDock = new QDockWidget("Parameters", this);
-    QDockWidget *viewerDock = new QDockWidget("Viewer", this);
-    QDockWidget *nodeDock = new QDockWidget("Node Editor", this);
 
-    QStatusBar*viewerStatusBar = new QStatusBar;
-    QLabel *rLabel = new QLabel();
-    QLabel *gLabel = new QLabel();
-    QLabel *bLabel = new QLabel();
-    QLabel *aLabel = new QLabel();
+	paramWindow *paramWid;
+	viewerWindow *viewerWid;
+	nodeWindow *nodeWid;
 
     void initStyle();
 	
@@ -69,6 +54,6 @@ private:
 	void loadLine(json lineInfo);
 	void loadNode(json nodeInfo);
 	
-	void cookImage();
+	
 };
 

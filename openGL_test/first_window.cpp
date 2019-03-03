@@ -5,7 +5,7 @@
 #include "Shader.h"
 #include "Camera.h"
 
-#define STB_IMAGE_IMPLEMENTATION
+//#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include <time.h>
 
@@ -13,15 +13,149 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-	glViewport(0, 0, width, height);
-}
+/*
+
+
+#pragma region Model Data
+	// set up vertex data (and buffer(s)) and configure vertex attributes
+	//data
+float vertices[] = {
+-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+ 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+ 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+ 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+ 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+ 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+ 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+ 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+ 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+ 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+ 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+ 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+ 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+ 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+ 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+ 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+ 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+ 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+ 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+};
+glm::vec3 cubePositions[] = {
+glm::vec3(0.0f,  0.0f,  0.0f),
+glm::vec3(2.0f,  5.0f, -15.0f),
+glm::vec3(-1.5f, -2.2f, -2.5f),
+glm::vec3(-3.8f, -2.0f, -12.3f),
+glm::vec3(2.4f, -0.4f, -3.5f),
+glm::vec3(-1.7f,  3.0f, -7.5f),
+glm::vec3(1.3f, -2.0f, -2.5f),
+glm::vec3(1.5f,  2.0f, -2.5f),
+glm::vec3(1.5f,  0.2f, -1.5f),
+glm::vec3(-1.3f,  1.0f, -1.5f)
+};
+
+#pragma endregion
+
+#pragma region Attribute Data
+float preX;
+float preY;
+bool firstMouse = true;
+Camera *cam = new Camera(glm::vec3(0, 0, 3), -10.0f, 175.0f, glm::vec3(0, 1, 0));
+const int LOOP = 0;
+const int MOVE = 1;
+const int SCALE = 2;
+const int ROTATE = 3;
+int PRESSMODE = LOOP;
+#pragma endregion
 
 void processInput(GLFWwindow *window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
+}
+
+void mouse_callback(GLFWwindow* window, double posX, double posY)
+{
+	if (firstMouse == true) {
+		preX = posX;
+		preY = posY;
+		firstMouse = false;
+	}
+	float deltaX, deltaY;
+	deltaX = posX - preX;
+	deltaY = posY - preY;
+	preX = posX;
+	preY = posY;
+
+	switch (PRESSMODE)
+	{
+	case LOOP:
+		break;
+	case ROTATE:
+		cam->processMovement(-deltaX, -deltaY);
+		break;
+	case MOVE:
+		cam->speedX = deltaX;
+		cam->speedY = deltaY;
+		break;
+	case SCALE:
+		cam->speedZ = deltaX;
+		break;
+	default:
+		return;
+	}
+}
+
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	if (action == GLFW_PRESS) switch (button)
+	{
+	case GLFW_MOUSE_BUTTON_LEFT:
+		printf("left mouse\n");
+		PRESSMODE = ROTATE;
+		break;
+	case GLFW_MOUSE_BUTTON_MIDDLE:
+		printf("middle mouse\n");
+		PRESSMODE = MOVE;
+		break;
+	case GLFW_MOUSE_BUTTON_RIGHT:
+		printf("right mouse\n");
+		PRESSMODE = SCALE;
+		break;
+	default:
+		return;
+	}
+
+	else if (action == GLFW_RELEASE)
+	{
+		PRESSMODE = LOOP;
+		cam->setStop();
+		printf("release mode\n");
+	}
+
+	return;
+
 }
 
 
@@ -391,72 +525,20 @@ void initRender3(GLFWwindow* window)
 
 void initRender4(GLFWwindow* window)
 {
+	//使用深度信息,画出来的结果有遮挡关系
 	glEnable(GL_DEPTH_TEST);
+
+	//关闭鼠标绘制
+	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+	glfwSetMouseButtonCallback(window, mouse_button_callback);
+	glfwSetCursorPosCallback(window, mouse_callback);
 
 	//create shader program
 	Shader *testShader1 = new Shader("vertexSource2_uv.vert", "fragmentSource2_uv.frag");
-	Camera *cam = new Camera(glm::vec3(0,0,3),glm::vec3(0,0,0), glm::vec3(0, 1, 0));
+	//Camera *cam = new Camera(glm::vec3(0,0,3),glm::vec3(0,0,0), glm::vec3(0, 1, 0));
 
 	clock_t startTime, endTime;
-
-
-	// set up vertex data (and buffer(s)) and configure vertex attributes
-	//data
-	float vertices[] = {
-	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-	};
-	glm::vec3 cubePositions[] = {
-  glm::vec3(0.0f,  0.0f,  0.0f),
-  glm::vec3(2.0f,  5.0f, -15.0f),
-  glm::vec3(-1.5f, -2.2f, -2.5f),
-  glm::vec3(-3.8f, -2.0f, -12.3f),
-  glm::vec3(2.4f, -0.4f, -3.5f),
-  glm::vec3(-1.7f,  3.0f, -7.5f),
-  glm::vec3(1.3f, -2.0f, -2.5f),
-  glm::vec3(1.5f,  2.0f, -2.5f),
-  glm::vec3(1.5f,  0.2f, -1.5f),
-  glm::vec3(-1.3f,  1.0f, -1.5f)
-	};
 
 	unsigned int VBO, VAO;
 	glGenVertexArrays(1, &VAO); // we can also generate multiple VAOs or buffers at the same time
@@ -510,11 +592,7 @@ void initRender4(GLFWwindow* window)
 	//放到5号槽位
 	glActiveTexture(GL_TEXTURE5);
 	glBindTexture(GL_TEXTURE_2D, textureB);
-	// 为当前绑定的纹理对象设置环绕、过滤方式
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 	// 加载并生成纹理
 	int widthB, heightB, nrChannelsB;
 	unsigned char *dataB = stbi_load("F:/FFOutput/Download/awesomeface.png", &widthB, &heightB, &nrChannelsB, 0);
@@ -553,12 +631,6 @@ void initRender4(GLFWwindow* window)
 
 	while (!glfwWindowShouldClose(window))
 	{
-		//trans = glm::translate(trans, glm::vec3(0.001f, 0.0f, 0.0f));
-		//trans = glm::rotate(trans, glm::radians(1.0f), glm::vec3(0, 0, 1));
-
-		//glm::mat4 trans = glm::mat4(1.0f);
-		//trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
-		//trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0, 0, 1));
 
 		// 检查输入
 		processInput(window);
@@ -568,7 +640,9 @@ void initRender4(GLFWwindow* window)
 		//清除颜色缓冲和深度缓冲
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		
+		cam->updateCamPos();
+		viewMat = cam->GetViewMatrix();
+
 		testShader1->use();
 		testShader1->setInt("ourTexture", 3);//设置shader的两张贴图
 		testShader1->setInt("ourTextureB", 5);
@@ -593,6 +667,8 @@ void initRender4(GLFWwindow* window)
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 
+		cam->setStop();
+
 		// 检查并调用事件，交换缓冲
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -605,55 +681,4 @@ void initRender4(GLFWwindow* window)
 	delete cam;
 }
 
-void initWindow()
-{
-	//初始化glfw
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);//opengl 4.6
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	//创建glfw窗口
-	GLFWwindow* window = glfwCreateWindow(1000, 1000, "ARNO OpenGL", NULL, NULL);
-	if (window == NULL)
-	{
-		std::cout << "Failed to create GLFW window" << std::endl;
-		glfwTerminate();
-		return;
-	}
-	//将glfw窗口的上下文设置为当前线程的主上下文
-	glfwMakeContextCurrent(window);
-
-	//判断glad是否正确加载
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
-		std::cout << "Failed to initialize GLAD" << std::endl;
-		glfwTerminate();
-		return;
-	}
-
-
-	//初始化glew
-	//glewExperimental = true;
-	//if (glewInit() != GLEW_OK) {
-	//	std::cout << "Failed to init glew" << std::endl;
-	//	glfwTerminate();
-	//	return;
-	//}
-
-	//设置opengl窗口大小
-	glViewport(0, 0, 1000, 1000);
-
-	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_BACK);//背面剔除
-
-	//设置glfw的callback.每次调整窗口大小都更新gl窗口大小
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
-
-	//render
-	initRender4(window);
-
-	glfwTerminate();
-}
-
+*/

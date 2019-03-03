@@ -1,5 +1,4 @@
-#include "first_window.h"
-//#include "stb_test.h"
+#include "Window.h"
 
 int main()
 {
