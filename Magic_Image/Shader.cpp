@@ -1,9 +1,8 @@
+#include <glad/glad.h> 
 #include "Shader.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <GLFW/glfw3.h>
-#include <glad/glad.h> 
 #include <time.h>
 
 using namespace std;

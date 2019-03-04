@@ -45,7 +45,6 @@ void MagicImage::initDock()
     //this->setDockOptions(QMainWindow::ForceTabbedDocks);
     this->setDockNestingEnabled(true);
 
-
 	paramWid = new paramWindow(this);
 	viewerWid = new viewerWindow(this);
 	nodeWid = new nodeWindow(this);
@@ -484,4 +483,3 @@ void MagicImage::cookImage()
 	viewerWid->viewer->mainImage = nodeWid->nodeView->viewportNode->image;
 	viewerWid->viewer->updateImage();
 }
-

@@ -28,8 +28,6 @@ private:
     void initUI();
     void initDock();
     void initMenuBar();
-    void initNodeWindow();
-    void initViewerWindow();
     void initSingalConnection();
     bool eventFilter(QObject *target, QEvent *qevent);
 

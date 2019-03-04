@@ -18,17 +18,19 @@ viewerWindow::viewerWindow(MagicImage * mainW ):QDockWidget("Viewer",mainW)
 	bLabel = new QLabel();
 	aLabel = new QLabel();
 
-	glView = new OpenGLWindow;
+	OpenGLWindow *openglWidget = new OpenGLWindow;
+	QOpenGLContext* m_context = new QOpenGLContext(openglWidget);
 	QSurfaceFormat format;
 	format.setDepthBufferSize(24);
 	format.setStencilBufferSize(8);
 	format.setVersion(4, 6);
 	format.setProfile(QSurfaceFormat::CoreProfile);
-	glView->setFormat(format);
-	glView->installEventFilter(this);
+	m_context->setFormat(format); // must be called before the widget or its parent window gets shown
+	m_context->create();
+	m_context->makeCurrent(this);
 
-	glView->move(1000, -1080/2);
-	viewerGraphicsview->VI_graphics_scene->addWidget(glView);
+	openglWidget->move(1000, -1080/2);
+	viewerGraphicsview->VI_graphics_scene->addWidget(openglWidget);
 
 	//status bar
 	viewerMainWindow->setCentralWidget(viewerGraphicsview);
@@ -96,17 +98,4 @@ void viewerWindow::initStyle()
 	viewerGraphicsview->scene()->setBackgroundBrush(getColor("color_background"));
 
 	viewer->setStyleSheet("QLabel{background-color:rgb(30,30,30);border: 0px solid #32414B;padding: 0px;margin: 0px;color: black}");
-}
-
-bool viewerWindow::eventFilter(QObject * target, QEvent * qevent)
-{
-	if (target == glView)
-	{
-		if (qevent->type() == QEvent::MouseMove) {
-			QMouseEvent *mouseEvent = dynamic_cast<QMouseEvent *>(qevent);
-			glView->mouseMove(mouseEvent);
-		}
-	}
-	return QDockWidget::eventFilter(target, qevent);
-	//return false;
 }
