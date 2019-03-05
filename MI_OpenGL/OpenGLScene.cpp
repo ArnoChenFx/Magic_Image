@@ -53,6 +53,9 @@ void OpenGLScene::initObjects()
 {
 	myShader1 = new Shader("vertexSource_textures.vert", "fragmentSource_textures.frag");
 	md = new Model("F:/FFOutput/Download/AOVs/glModels/A.obj");
+	Model *md2 = new Model("F:/FFOutput/Download/AOVs/glModels/B.obj");
+	models.append(md);
+	models.append(md2);
 }
 
 
@@ -74,7 +77,10 @@ void OpenGLScene::render()
 	myShader1->setMat4("viewMat", viewMat);
 	myShader1->setMat4("projMat", projMat);
 
-	md->Draw(myShader1);
+	for (int i = 0; i < models.size(); i++)
+	{
+		models[i]->Draw(myShader1);
+	}
 
 	cam->setStop();
 }

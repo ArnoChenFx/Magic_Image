@@ -316,7 +316,6 @@ void NODE_graphics_view::mouseMoveEvent(QMouseEvent *event)
 	if (state==4 || state ==1) {
 		state = 1;//zoom state
 		setDragMode(QGraphicsView::NoDrag);
-		this->viewport()->setCursor(Qt::SizeVerCursor);
 
 		qreal offset = zoomInitialPos.x() - event->pos().x();
 		if (offset > previousMouseOffset) {

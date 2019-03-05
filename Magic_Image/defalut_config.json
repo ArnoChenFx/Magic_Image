@@ -34,6 +34,6 @@
     "-----------file format--------------":"",
     "imageFormats"                 : ["jpg","jpeg","png","exr","tif","tiff",
                                      "pbm","pgm","ppm","sr","ras","bmp","dib",
-                                     "jpe"]
-
+                                     "jpe"],
+    "modelFormats"                 : ["obj"]
 }

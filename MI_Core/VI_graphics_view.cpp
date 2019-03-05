@@ -79,7 +79,6 @@ void VI_graphics_view::mouseMoveEvent(QMouseEvent *event)
 {
     //zoom
     if (state == 1){
-		this->viewport()->setCursor(Qt::SizeVerCursor);
         qreal offset = zoomInitialPos.x() - event->pos().x();
         if(offset >previousMouseOffset){
             previousMouseOffset = offset;

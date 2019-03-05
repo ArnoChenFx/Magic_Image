@@ -12,7 +12,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
+//#include <vector>
 
 #pragma region Model Data
 	// set up vertex data (and buffer(s)) and configure vertex attributes
@@ -348,8 +348,12 @@ void glProgramModel(GLFWwindow* window)
 
 #pragma region load VAO VBO
 	//Mesh cube(verticesB);
-	Model md("F:/FFOutput/Download/AOVs/glModels/A.obj");
+	Model *md = new Model("F:/FFOutput/Download/AOVs/glModels/A.obj");
+
+	Model *md2 = new Model("F:/FFOutput/Download/AOVs/glModels/B.obj");
 	//nanosuit/nanosuit.obj
+
+	std::vector<Model*> mods = { md,md2 };
 
 #pragma endregion
 
@@ -381,9 +385,13 @@ void glProgramModel(GLFWwindow* window)
 	//摄像机张角45度,分辨率1000x1000,宽高比为1,nearest为0.1,faster为100
 	projMat = glm::perspective(glm::radians(45.0f), (float)1000 / (float)1000, 0.1f, 100.0f);
 	viewMat = cam->GetViewMatrix();
+
+	glm::mat4 ident = glm::mat4(1.0f);//单位矩阵
+
 #pragma endregion
 
 #pragma region render loop
+	int sss = 0;
 	while (!glfwWindowShouldClose(window))
 	{
 		processInput(window);// 检查输入
@@ -413,13 +421,19 @@ void glProgramModel(GLFWwindow* window)
 			//myShader1->setInt("ourTextureA", 3);//设置shader的两张贴图,读取之前设置的槽位
 			//myShader1->setInt("ourTextureB", 5);
 
-			myShader1->setMat4("modelMat", modelMat);
 			myShader1->setMat4("viewMat", viewMat);
 			myShader1->setMat4("projMat", projMat);
 
-			md.Draw(myShader1);
-			//cube.Draw(myShader1);
+			if (sss == 1000) mods.pop_back();
+			int s = mods.size();
+	
+			if(i==1) modelMat = glm::translate(glm::mat4(1.0f),glm::vec3(1,2,1));
+			else modelMat = ident;
+			myShader1->setMat4("modelMat", modelMat);
+				
+			mods[i]->Draw(myShader1);
 
+			sss += 1;
 		}
 
 		cam->setStop();
@@ -439,6 +453,7 @@ void glProgramModel(GLFWwindow* window)
 
 	delete myShader1;
 	delete cam;
+	delete md;
 #pragma endregion
 
 }

@@ -7,6 +7,7 @@
 #include <string>
 #include <QEvent>
 #include <qwindow.h>
+#include <qlist.h>
 #include "mi_opengl_global.h"
 
 class MI_OPENGL_EXPORT OpenGLScene : public QWindow, protected QOpenGLFunctions
@@ -21,7 +22,7 @@ public:
 	Model *md;
 
 	void setRender(bool start = false);
-
+	QList<Model*> models;
 private:
 	Camera *cam;
 	//Camera

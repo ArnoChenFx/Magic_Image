@@ -77,6 +77,7 @@ bool isUsefulFormat(string name, string format)
     return false;
 }
 
+
 qreal Qdistance(QPointF a, QPointF b)
 {
     return sqrt(pow(a.x()-b.x(),2)+pow(a.y()-b.y(),2));

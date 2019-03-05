@@ -6,12 +6,9 @@ TDWindow::TDWindow(MagicImage * mainW) :QDockWidget("3D Viewer", mainW)
 {
 	mainWindow = mainW;
 	mainWindow->addDockWidget(Qt::RightDockWidgetArea, this);
-	//this->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetClosable);
-	//this->setFloating(true);
 
 	TDMainWindow = new QMainWindow;
-	//this->resize(2000, 1080);
-
+	
 	glScene = new OpenGLScene;
 	glWidget = TDMainWindow->createWindowContainer(glScene);
 	TDMainWindow->setCentralWidget(glWidget);
