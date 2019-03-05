@@ -17,41 +17,34 @@ public:
 	explicit OpenGLScene(QWindow *parent = nullptr);
 	~OpenGLScene();
 
-	virtual void initialize();
-
-	void resizeEvent(QResizeEvent *event);
-
-	//Camera *cam;
-	float preX;
-	float preY;
-	
-	const int LOOP = 0;
-	const int MOVE = 1;
-	const int SCALE = 2;
-	const int ROTATE = 3;
-	int PRESSMODE;
-
 	Shader *myShader1;
 	Model *md;
+
+	void setRender(bool start = false);
+
+private:
 	Camera *cam;
+	//Camera
+	float preX;
+	float preY;
 
 	glm::mat4 modelMat;//ŒÔÃÂæÿ’Û
 	glm::mat4 viewMat;//…„œÒª˙æÿ’Û
 	glm::mat4 projMat;//Õ∂…‰æÿ’Û
 
-	
 	void render();
 	void render(QPainter *painter);
 
-	void setAnimating(bool animating);
+	virtual void initialize();
 
-private:
 	void mousePressEvent(QMouseEvent *event) override;
 	void mouseReleaseEvent(QMouseEvent *event) override;
 	void mouseMoveEvent(QMouseEvent *event) override;
+	void resizeEvent(QResizeEvent *event);
+
 
 	void initObjects();
-
+	void setAnimating(bool animating);
 	bool m_animating;
 
 	QOpenGLContext *m_context;
@@ -59,7 +52,6 @@ private:
 
 	bool hasInitialized;
 
-	void setRender(bool start = false);
 
 public slots:
 	void renderLater();
