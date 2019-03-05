@@ -17,7 +17,7 @@ VI_graphics_view::VI_graphics_view(VI_image_viever *vi) : QGraphicsView()
     this->setCacheMode(QGraphicsView::CacheBackground);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    this->setRenderHint(QPainter::Antialiasing);
+    this->setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
 
 	viewer = vi;
 	VI_graphics_scene->addWidget(viewer);
@@ -156,7 +156,7 @@ void VI_graphics_view::_focus()
 	qreal w = viewer->width();
 	qreal h = viewer->height();
 	QRectF itemsArea = QRectF(0,0, w , h);
-    //QRectF itemsArea = QRectF(-1 * viewer->width() / 2, -1*viewer->height() / 2, viewer->width() / 2, viewer->height() / 2);
+    //QRectF itemsArea = QRectF(-2*w ,2* h ,2*w , -2*h);
     this->fitInView(itemsArea, Qt::KeepAspectRatio);
 }
 

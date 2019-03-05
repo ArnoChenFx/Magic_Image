@@ -36,6 +36,9 @@
     <ClCompile Include="paramWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="OpenGLWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="glad.c">
       <Filter>Resource Files</Filter>
     </ClCompile>
@@ -54,18 +57,12 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OpenGLScene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TDWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Magic_Image.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="OpenGLScene.h">
+    <QtMoc Include="OpenGLWindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -105,15 +102,18 @@
     <ClInclude Include="Cameras.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TDWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="defalut_config.json">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="packages.config" />
+    <None Include="fragmentSource2_uv.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="vertexSource2_uv.vert">
+      <Filter>Resource Files</Filter>
+    </None>
     <None Include="fragmentSource_textures.frag">
       <Filter>Resource Files</Filter>
     </None>

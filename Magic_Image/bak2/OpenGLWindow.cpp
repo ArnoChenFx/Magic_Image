@@ -62,26 +62,7 @@ void OpenGLWindow::resizeGL(int w, int h)
 
 void OpenGLWindow::paintGL()
 {
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);//清除并渲染背景
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);//清除颜色缓冲和深度缓冲
-	myShader1->use();
-	myShader1->setMat4("modelMat", modelMat);
-	myShader1->setMat4("viewMat", viewMat);
-	myShader1->setMat4("projMat", projMat);
-
-	md->Draw(myShader1);
-	cam->setStop();
-
-	//prepare for next render loop
-			// 检查并调用事件，交换缓冲
-
-	//glfwSwapBuffers(window);
-	//glfwPollEvents();
-	//m_context->swapBuffers();
-
-	//camera
-	cam->updateCamPos();
-	viewMat = cam->GetViewMatrix();
+	render();
 }
 
 void OpenGLWindow::resizeEvent(QResizeEvent * event)
@@ -133,5 +114,29 @@ void OpenGLWindow::mouseMove(QMouseEvent * event)
 		cam->speedZ = deltaX;
 		qDebug() << "zoom";
 	}
-	this->update();
+	render();
+}
+
+void OpenGLWindow::render()
+{
+	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);//清除并渲染背景
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);//清除颜色缓冲和深度缓冲
+	myShader1->use();
+	myShader1->setMat4("modelMat", modelMat);
+	myShader1->setMat4("viewMat", viewMat);
+	myShader1->setMat4("projMat", projMat);
+
+	md->Draw(myShader1);
+	cam->setStop();
+
+	//prepare for next render loop
+			// 检查并调用事件，交换缓冲
+
+	//glfwSwapBuffers(window);
+	//glfwPollEvents();
+	//m_context->swapBuffers();
+
+	//camera
+	cam->updateCamPos();
+	viewMat = cam->GetViewMatrix();
 }

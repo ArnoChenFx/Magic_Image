@@ -54,6 +54,8 @@ public:
 	//void mouseMoveEvent(QMouseEvent *event) override;
 
 	void mouseMove(QMouseEvent *event);
+
+	void render();
 private:
 	//virtual void wheelEvent(QWheelEvent *event) override;
 	//virtual void mousePressEvent(QMouseEvent *event)override;

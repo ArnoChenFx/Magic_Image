@@ -45,10 +45,8 @@ void MagicImage::initDock()
     //this->setDockOptions(QMainWindow::ForceTabbedDocks);
     this->setDockNestingEnabled(true);
 
-	
-	viewerWid = new viewerWindow(this);
-	TDWid = new TDWindow(this);
 	paramWid = new paramWindow(this);
+	viewerWid = new viewerWindow(this);
 	nodeWid = new nodeWindow(this);
 	nodeWid->nodeView->installEventFilter(this);
 

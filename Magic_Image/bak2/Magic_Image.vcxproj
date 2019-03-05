@@ -127,10 +127,9 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="nodeWindow.cpp" />
-    <ClCompile Include="OpenGLScene.cpp" />
+    <ClCompile Include="OpenGLWindow.cpp" />
     <ClCompile Include="paramWindow.cpp" />
     <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="TDWindow.cpp" />
     <ClCompile Include="viewerWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -142,14 +141,13 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="nodeWindow.h" />
-    <QtMoc Include="OpenGLScene.h">
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;$(INHERIT);E:\Software\CPPlib\opengl_lib\include</IncludePath>
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;D:\Code_Project\Magic_Image_VS2017\MI_Core;$(INHERIT);E:\Software\CPPlib\opengl_lib\include</IncludePath>
+    <QtMoc Include="OpenGLWindow.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;D:\Code_Project\Magic_Image_VS2017\MI_Core</IncludePath>
     </QtMoc>
     <ClInclude Include="paramWindow.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
-    <ClInclude Include="TDWindow.h" />
     <ClInclude Include="viewerWindow.h" />
     <QtMoc Include="Magic_Image.h">
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
@@ -159,8 +157,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="defalut_config.json" />
+    <None Include="fragmentSource2_uv.frag" />
     <None Include="fragmentSource_textures.frag" />
     <None Include="packages.config" />
+    <None Include="vertexSource2_uv.vert" />
     <None Include="vertexSource_textures.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

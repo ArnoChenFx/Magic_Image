@@ -5,7 +5,7 @@
 #include "viewerWindow.h"
 #include "nodeWindow.h"
 #include "paramWindow.h"
-#include "TDWindow.h"
+
 class MagicImage : public QMainWindow
 {
     Q_OBJECT
@@ -44,7 +44,6 @@ private:
 	paramWindow *paramWid;
 	viewerWindow *viewerWid;
 	nodeWindow *nodeWid;
-	TDWindow *TDWid;
 
     void initStyle();
 	

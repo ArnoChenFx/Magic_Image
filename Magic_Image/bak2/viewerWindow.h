@@ -4,7 +4,7 @@
 #include <qstatusbar.h>
 #include "VI_image_viever.h"
 #include "VI_graphics_view.h"
-
+#include "OpenGLWindow.h"
 
 class MagicImage;
 
@@ -19,6 +19,7 @@ public:
 	QMainWindow *viewerMainWindow;
 	VI_image_viever *viewer;
 	VI_graphics_view *viewerGraphicsview;
+	OpenGLWindow *glView;
 
 	QStatusBar*viewerStatusBar;
 	QLabel *rLabel;
@@ -29,5 +30,7 @@ public:
 private:
 	void connectSignals();
 	void initStyle();
+
+	bool eventFilter(QObject *target, QEvent *qevent);
 };
 
