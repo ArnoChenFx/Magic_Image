@@ -7,7 +7,7 @@
 #include <node_Viewport.h>
 #include <node_Image.h>
 #include <Image_basic.h>
-
+using namespace std;
 
 nodeWindow::nodeWindow(MagicImage * mainW) : QDockWidget("Node Editor", mainW)
 {

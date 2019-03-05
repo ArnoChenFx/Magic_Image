@@ -17,6 +17,11 @@ viewerWindow::viewerWindow(MagicImage * mainW ):QDockWidget("Viewer",mainW)
 	gLabel = new QLabel();
 	bLabel = new QLabel();
 	aLabel = new QLabel();
+	resLabel = new QLabel();
+	factorLabel = new QLabel();
+	QLabel *spacer = new QLabel();
+	spacer->setMinimumWidth(20);
+	spacer->setStyleSheet("background-color:transparent;border:0px");
 
 	//status bar
 	viewerMainWindow->setCentralWidget(viewerGraphicsview);
@@ -25,16 +30,20 @@ viewerWindow::viewerWindow(MagicImage * mainW ):QDockWidget("Viewer",mainW)
 	viewerStatusBar->addPermanentWidget(gLabel);
 	viewerStatusBar->addPermanentWidget(bLabel);
 	viewerStatusBar->addPermanentWidget(aLabel);
+	viewerStatusBar->addPermanentWidget(spacer);
+	viewerStatusBar->addPermanentWidget(factorLabel);
+	viewerStatusBar->addPermanentWidget(resLabel);
 	rLabel->setText("0.00000");
 	gLabel->setText("0.00000");
 	bLabel->setText("0.00000");
 	aLabel->setText("1.00000");
+	resLabel->setText(QString("(%1,%2)").arg(viewer->width()).arg(viewer->height()));
+	factorLabel->setText(QString("%1%").arg(100));
 
 	//set state
 	viewerStatusBar->setFixedHeight(20);
 	viewerStatusBar->setSizeGripEnabled(false);
 
-	
 	this->setWidget(viewerMainWindow);
 
 	//init
@@ -62,6 +71,10 @@ void viewerWindow::connectSignals()
 
 	});
 
+	connect(viewer, &VI_image_viever::scaled, [=]() {
+		resLabel->setText(QString("(%1,%2)").arg(viewer->width()).arg(viewer->height()));
+	});
+
 	connect(viewer, &VI_image_viever::click, [=](QMouseEvent *event) {
 		QString msg = QString("click:(%1,%2)").arg(event->pos().x()).arg(event->pos().y());
 		mainWindow->IMstatusBar->showMessage(msg);
@@ -76,6 +89,9 @@ void viewerWindow::initStyle()
 	gLabel->setStyleSheet("background-color:transparent;font-size:12px;color:green;border:0px");
 	bLabel->setStyleSheet("background-color:transparent;font-size:12px;color:blue;border:0px");
 	aLabel->setStyleSheet("background-color:transparent;font-size:12px;color:white;border:0px");
+
+	resLabel->setStyleSheet("background-color:transparent;font-size:12px;color:white;border:0px");
+	factorLabel->setStyleSheet("background-color:transparent;font-size:12px;color:white;border:0px");
 
 	viewerStatusBar->setStyleSheet(QString("QStatusBar::item {border: None;}""QStatusBar{background-color:%1;color:rgb(230,230,230);border: 0px solid black;"
 		"border-radius: 0px;font-size:12px;}")

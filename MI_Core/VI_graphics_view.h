@@ -23,7 +23,7 @@ protected:
 	virtual void mouseMoveEvent(QMouseEvent *event) override;
 	virtual void mouseReleaseEvent(QMouseEvent *event) override;
 	virtual void keyPressEvent(QKeyEvent *event) override;
-    void _focus();
+    void focus();
 
 private:
     //attribute

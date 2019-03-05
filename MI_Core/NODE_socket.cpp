@@ -83,8 +83,9 @@ void NODE_socket::updatePosition()
     else{//input
         setPos(0, delta + extraOffset);
     }
-	node->minHeight= max(delta+30, node->minHeight);
-	node->height = max(node->minHeight, node->height);
+	
+	node->minHeight= qMax(delta+30, node->minHeight);
+	node->height = qMax(node->minHeight, node->height);
 }
 
 void NODE_socket::removeAll(bool avoid, NODE_line*avoidLine)

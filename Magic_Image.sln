@@ -15,7 +15,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NODE", "NODE\NODE.vcxproj",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MI_Image", "MI_Image\MI_Image.vcxproj", "{99210D80-B82D-40DA-94F4-8FB7D7545871}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openGL_test", "openGL_test\openGL_test.vcxproj", "{79503082-404B-4DA6-91A7-9B0543BB3338}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenGL_test", "openGL_test\openGL_test.vcxproj", "{79503082-404B-4DA6-91A7-9B0543BB3338}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MI_OpenGL", "MI_OpenGL\MI_OpenGL.vcxproj", "{EA19E943-7DB6-4AD6-806E-EBF19AAFD03D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +73,12 @@ Global
 		{79503082-404B-4DA6-91A7-9B0543BB3338}.Release|x64.Build.0 = Release|x64
 		{79503082-404B-4DA6-91A7-9B0543BB3338}.Release|x86.ActiveCfg = Release|Win32
 		{79503082-404B-4DA6-91A7-9B0543BB3338}.Release|x86.Build.0 = Release|Win32
+		{EA19E943-7DB6-4AD6-806E-EBF19AAFD03D}.Debug|x64.ActiveCfg = Debug|x64
+		{EA19E943-7DB6-4AD6-806E-EBF19AAFD03D}.Debug|x64.Build.0 = Debug|x64
+		{EA19E943-7DB6-4AD6-806E-EBF19AAFD03D}.Debug|x86.ActiveCfg = Debug|x64
+		{EA19E943-7DB6-4AD6-806E-EBF19AAFD03D}.Release|x64.ActiveCfg = Release|x64
+		{EA19E943-7DB6-4AD6-806E-EBF19AAFD03D}.Release|x64.Build.0 = Release|x64
+		{EA19E943-7DB6-4AD6-806E-EBF19AAFD03D}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -51,7 +51,7 @@ public:
 	int state = 0;//default state
 	bool lineType = true;////false:linear;true:cubic
 
-	QList<string> files;
+	QList<std::string> files;
 
 protected:
     virtual void wheelEvent(QWheelEvent *event) override;

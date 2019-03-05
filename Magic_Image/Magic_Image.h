@@ -53,6 +53,10 @@ private:
 	void loadLine(json lineInfo);
 	void loadNode(json nodeInfo);
 	
-	
+	QAction *createAct(QMenu *menu, QString name, QString tooltip, QString shortcut = "");
+
+
+	void writeSettings();
+	void readSettings();
 };
 

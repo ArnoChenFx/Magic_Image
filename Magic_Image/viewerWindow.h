@@ -26,6 +26,9 @@ public:
 	QLabel *bLabel;
 	QLabel *aLabel;
 
+	QLabel *resLabel;
+	QLabel *factorLabel;
+
 private:
 	void connectSignals();
 	void initStyle();

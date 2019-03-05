@@ -21,9 +21,10 @@ VI_graphics_view::VI_graphics_view(VI_image_viever *vi) : QGraphicsView()
 
 	viewer = vi;
 	VI_graphics_scene->addWidget(viewer);
-	_focus();
+	focus();
 
 	connect(viewer, &VI_image_viever::scaled, this, [=]() {setScale(); });
+	
 }
 
 void VI_graphics_view::wheelEvent(QWheelEvent *event)
@@ -44,6 +45,9 @@ void VI_graphics_view::wheelEvent(QWheelEvent *event)
     translate(diff.x(), diff.y());
 
     state = 0;//default state;
+	//qDebug() << this->sceneRect().width();
+	//qDebug() << this->sceneRect().height();
+	
 }
 
 void VI_graphics_view::mousePressEvent(QMouseEvent *event)
@@ -96,8 +100,8 @@ void VI_graphics_view::mouseMoveEvent(QMouseEvent *event)
         }
 
         qreal zoomFactor;
-        if(zoomDirection == 1.0) zoomFactor = 1.05;
-        else zoomFactor = 1 / 1.05;
+        if(zoomDirection == 1.0) zoomFactor = zoomInFactor;
+        else zoomFactor = 1 / zoomInFactor;
 
         //Perform zoom and re-center on initial click position.
         QPointF pBefore = this->mapToScene(initMousePos);
@@ -145,13 +149,13 @@ void VI_graphics_view::mouseReleaseEvent(QMouseEvent *event)
 void VI_graphics_view::keyPressEvent(QKeyEvent *event)
 {
     if(event->key()==Qt::Key_F){
-        _focus();
+        focus();
     }
 
     QGraphicsView::keyPressEvent(event);
 }
 
-void VI_graphics_view::_focus()
+void VI_graphics_view::focus()
 {
 	qreal w = viewer->width();
 	qreal h = viewer->height();

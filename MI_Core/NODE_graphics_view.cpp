@@ -553,7 +553,7 @@ void NODE_graphics_view::dropEvent(QDropEvent *event)
 {
 	mousePos = mapToScene(event->pos());
     foreach(QUrl url,event->mimeData()->urls()){
-        string path =  url.toLocalFile().toStdString();
+        std::string path =  url.toLocalFile().toStdString();
 		files.append(path);
     }
 	emit drop();

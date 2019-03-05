@@ -27,8 +27,8 @@ struct NODE_EXPORT factory
 		{
 			factory::get().map_.emplace(key, &register_t<T>::create);
 			auto&& tt = std::forward_as_tuple(args...);
-			string menuName = std::get<0>(tt);
-			string keyW = std::get<1>(tt);
+			std::string menuName = std::get<0>(tt);
+			std::string keyW = std::get<1>(tt);
 			//qDebug() << QString::fromStdString(key);
 			//qDebug() << QString::fromStdString(menuName);
 			//qDebug() << QString::fromStdString(keyW);

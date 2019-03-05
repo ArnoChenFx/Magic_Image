@@ -1,15 +1,15 @@
 #pragma once
 #include <glm/glm.hpp>
 #include <qopenglfunctions.h>
-#include <qopenglwindow.h>
 #include "Cameras.h"
 #include "Model.h"
 #include "Shader.h"
 #include <string>
 #include <QEvent>
 #include <qwindow.h>
+#include "mi_opengl_global.h"
 
-class OpenGLScene : public QWindow, protected QOpenGLFunctions
+class MI_OPENGL_EXPORT OpenGLScene : public QWindow, protected QOpenGLFunctions
 {
 	Q_OBJECT
 
@@ -40,15 +40,15 @@ private:
 	void mousePressEvent(QMouseEvent *event) override;
 	void mouseReleaseEvent(QMouseEvent *event) override;
 	void mouseMoveEvent(QMouseEvent *event) override;
-	void resizeEvent(QResizeEvent *event);
-
+	void resizeEvent(QResizeEvent *event) override;
+	void wheelEvent(QWheelEvent *event) override;
 
 	void initObjects();
 	void setAnimating(bool animating);
 	bool m_animating;
 
 	QOpenGLContext *m_context;
-	QOpenGLPaintDevice *m_device;
+	//QOpenGLPaintDevice *m_device;
 
 	bool hasInitialized;
 

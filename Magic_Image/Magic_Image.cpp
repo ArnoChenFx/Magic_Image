@@ -4,7 +4,7 @@
 #include <QFrame>
 #include <QFileDialog>
 #include <QRgb>
-#include "MI_utils.hpp"
+#include <QMenuBar>
 #include <iostream>
 #include <fstream>
 #include <NODE_line.h>
@@ -13,6 +13,7 @@
 #include <node_Viewport.h>
 #include <node_Image.h>
 #include <Image_basic.h>
+#include <qsettings.h>
 #include <json.hpp>
 using json = nlohmann::json;
 using namespace std;
@@ -25,6 +26,7 @@ MagicImage::MagicImage(QWidget *parent)
     initUI();
     initSingalConnection();
 
+	readSettings();
 }
 
 void MagicImage::initUI()
@@ -42,6 +44,11 @@ void MagicImage::initUI()
 
 void MagicImage::initDock()
 {
+
+	QWidget* p = this->takeCentralWidget();
+	if (p)
+		delete p;
+
     //this->setDockOptions(QMainWindow::ForceTabbedDocks);
     this->setDockNestingEnabled(true);
 
@@ -52,6 +59,10 @@ void MagicImage::initDock()
 	nodeWid = new nodeWindow(this);
 	nodeWid->nodeView->installEventFilter(this);
 
+	//paramWid->close();
+
+	splitDockWidget(viewerWid, nodeWid, Qt::Vertical);
+	splitDockWidget(viewerWid, TDWid, Qt::Horizontal);
 }
 
 void MagicImage::initMenuBar()
@@ -82,9 +93,13 @@ void MagicImage::initMenuBar()
     QAction *showViewer = createAct(windowsMenu,"Viewer","","");
     QAction *showParameters = createAct(windowsMenu,"Parameters","","");
     QAction *showNodeEditor = createAct(windowsMenu,"Node Editor","","");
+	QAction *show3DViewer = createAct(windowsMenu, "3D Viewer", "", "");
+	QAction *saveLayout = createAct(windowsMenu, "Save Layout", "", "");
     connect(showViewer,&QAction::triggered,this,[=](){viewerWid->show();});
     connect(showParameters,&QAction::triggered,this,[=](){paramWid->show();});
-    connect(showNodeEditor,&QAction::triggered,this,[=](){nodeWid->show();});
+	connect(showNodeEditor, &QAction::triggered, this, [=]() {nodeWid->show();});
+	connect(show3DViewer, &QAction::triggered, this, [=]() {TDWid->show(); });
+	connect(saveLayout, &QAction::triggered, this, [=]() {writeSettings();});
 
     //edit Menu
     QAction *Undo = createAct(editMenu,"Undo","","Ctrl+Z");
@@ -476,6 +491,43 @@ void MagicImage::initStyle()
     IMstatusBar->setStyleSheet(QString("background-color:%1;color:rgb(230,230,230);border: 0px solid black;"
                                        "border-radius: 0px;font-size:12px;")
                                         .arg(getRGB("color_background_dark")));
+
+}
+
+QAction* MagicImage::createAct(QMenu *menu, QString name, QString tooltip, QString shortcut) {
+	QAction *act = new QAction;
+	if (shortcut != "") act->setShortcut(QKeySequence(shortcut));
+	act->setText(name);
+	act->setToolTip(tooltip);
+	menu->addAction(act);
+	return act;
+}
+
+void MagicImage::writeSettings()
+{
+	QSettings settings("ARNO Soft", "Magic_Image");
+	settings.beginGroup("Magic_Image");
+	settings.setValue("geometry", saveGeometry());
+	settings.setValue("state", saveState());
+	settings.setValue("size", size());
+	settings.endGroup();
+
+}
+
+void MagicImage::readSettings()
+{
+	QSettings settings("ARNO Soft", "Magic_Image");
+
+	settings.beginGroup("Magic_Image");
+	restoreGeometry(settings.value("geometry").toByteArray());
+	restoreState(settings.value("state").toByteArray());
+	resize(settings.value("size", QSize(400, 400)).toSize());
+
+	QList<QDockWidget *> dwList = this->findChildren<QDockWidget*>();
+	foreach(QDockWidget *dw, dwList) {
+		restoreDockWidget(dw);
+	}
+	settings.endGroup();
 
 }
 

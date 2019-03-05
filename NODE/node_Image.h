@@ -11,7 +11,7 @@ public:
 	virtual void initSocket() override;
 	virtual void updateParamUI() override;
 	virtual void cook() override;
-	string filePath;
+	std::string filePath;
 	QLineEdit *pathLine;
 private:
 	void openFile(QString fileName=nullptr);
