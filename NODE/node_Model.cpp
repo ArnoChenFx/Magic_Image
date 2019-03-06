@@ -15,6 +15,14 @@ node_Model::node_Model(NODE_graphics_view* NODE_v) :
 {
 	initSocket();
 	updateParamUI();
+	filePath = QDir::homePath().toStdString();
+}
+
+node_Model::~node_Model()
+{
+	emit destroyM();
+	delete geo;
+	
 }
 
 void node_Model::initSocket()
@@ -22,6 +30,7 @@ void node_Model::initSocket()
 	//socket output
 	NODE_socket *s0 = new NODE_socket(this, 0, true, "");
 	output_sockets.append(s0);
+	s0->sockeFormat = s0->MODEL;
 }
 
 void node_Model::updateParamUI()
@@ -45,7 +54,7 @@ void node_Model::updateParamUI()
 void node_Model::openFile(QString fileName)
 {
 	if (fileName == nullptr) {
-		QString pathH = QDir::homePath();
+		QString pathH = QString::fromStdString(filePath);
 		fileName = QFileDialog::getOpenFileName(nullptr, "Open Project", pathH);
 	}
 
@@ -66,11 +75,12 @@ void node_Model::openFile(QString fileName)
 
 void node_Model::loadModel()
 {
-	
+	emit destroyM();
 	delete geo;
 	geo = nullptr;
 	geo = new Model(filePath);
 	qDebug() << "load:" << QString::fromStdString(filePath);
+	emit loadM();
 }
 
 void node_Model::cook()

@@ -32,8 +32,10 @@
     "color_background_orange"       :[180,100,0],
 
     "-----------file format--------------":"",
-    "imageFormats"                 : ["jpg","jpeg","png","exr","tif","tiff",
+    "imageFormats"                  : ["jpg","jpeg","png","exr","tif","tiff",
                                      "pbm","pgm","ppm","sr","ras","bmp","dib",
                                      "jpe"],
-    "modelFormats"                 : ["obj"]
+    "modelFormats"                  : [ "obj", "fbx", "blend", "3ds",
+                                      "gltf", "pmx", "stp", "stl","c4d" ]
+                   
 }

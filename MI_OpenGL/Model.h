@@ -15,13 +15,13 @@ public:
 
 	void Draw(Shader *shader);
 	void loadModel(std::string path);
-private:
+
 	/*  Model Data  */
 	std::vector<Mesh> meshes;
 	std::string directory;
 	std::vector<Texture> textures_loaded;	// Stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
 
-
+private:
 	
 	void processNode(aiNode* node, const aiScene* scene);
 	Mesh processMesh(aiMesh *mesh, const aiScene *scene);

@@ -6,8 +6,11 @@
 
 class NODE_EXPORT node_Model :public NODE_item
 {
+	Q_OBJECT
+
 public:
 	node_Model(NODE_graphics_view* NODE_v = nullptr);
+	~node_Model();
 
 	virtual void initSocket() override;
 	virtual void updateParamUI() override;
@@ -19,8 +22,11 @@ public:
 
 	void loadModel();
 
+signals:
+	void loadM();
+	void destroyM();
+
 private:
 	void openFile(QString fileName = nullptr);
-
 };
 

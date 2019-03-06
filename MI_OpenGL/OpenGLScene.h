@@ -19,7 +19,7 @@ public:
 	~OpenGLScene();
 
 	Shader *myShader1;
-	Model *md;
+	//Model *md;
 
 	void setRender(bool start = false);
 	QList<Model*> models;

@@ -94,12 +94,21 @@ void MagicImage::initMenuBar()
     QAction *showParameters = createAct(windowsMenu,"Parameters","","");
     QAction *showNodeEditor = createAct(windowsMenu,"Node Editor","","");
 	QAction *show3DViewer = createAct(windowsMenu, "3D Viewer", "", "");
-	QAction *saveLayout = createAct(windowsMenu, "Save Layout", "", "");
-    connect(showViewer,&QAction::triggered,this,[=](){viewerWid->show();});
-    connect(showParameters,&QAction::triggered,this,[=](){paramWid->show();});
-	connect(showNodeEditor, &QAction::triggered, this, [=]() {nodeWid->show();});
+	connect(showViewer, &QAction::triggered, this, [=]() {viewerWid->show(); });
+	connect(showParameters, &QAction::triggered, this, [=]() {paramWid->show(); });
+	connect(showNodeEditor, &QAction::triggered, this, [=]() {nodeWid->show(); });
 	connect(show3DViewer, &QAction::triggered, this, [=]() {TDWid->show(); });
+
+	windowsMenu->addSeparator();
+
+	QAction *saveLayout = createAct(windowsMenu, "Save Layout", "", "");
+	QAction *clearLayout = createAct(windowsMenu, "Clear Layout", "", "");
 	connect(saveLayout, &QAction::triggered, this, [=]() {writeSettings();});
+	connect(clearLayout, &QAction::triggered, this, [=]() {
+		QSettings settings("ARNO Soft", "Magic_Image");
+		settings.clear();
+	});
+	
 
     //edit Menu
     QAction *Undo = createAct(editMenu,"Undo","","Ctrl+Z");
@@ -506,11 +515,11 @@ QAction* MagicImage::createAct(QMenu *menu, QString name, QString tooltip, QStri
 void MagicImage::writeSettings()
 {
 	QSettings settings("ARNO Soft", "Magic_Image");
-	settings.beginGroup("Magic_Image");
+	//settings.beginGroup("Magic_Image");
 	settings.setValue("geometry", saveGeometry());
 	settings.setValue("state", saveState());
 	settings.setValue("size", size());
-	settings.endGroup();
+	//settings.endGroup();
 
 }
 
@@ -518,7 +527,7 @@ void MagicImage::readSettings()
 {
 	QSettings settings("ARNO Soft", "Magic_Image");
 
-	settings.beginGroup("Magic_Image");
+	//settings.beginGroup("Magic_Image");
 	restoreGeometry(settings.value("geometry").toByteArray());
 	restoreState(settings.value("state").toByteArray());
 	resize(settings.value("size", QSize(400, 400)).toSize());
@@ -527,7 +536,7 @@ void MagicImage::readSettings()
 	foreach(QDockWidget *dw, dwList) {
 		restoreDockWidget(dw);
 	}
-	settings.endGroup();
+	//settings.endGroup();
 
 }
 

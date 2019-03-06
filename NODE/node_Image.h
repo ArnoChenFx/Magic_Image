@@ -15,7 +15,6 @@ public:
 	QLineEdit *pathLine;
 private:
 	void openFile(QString fileName=nullptr);
-
 	//param
 	
 };

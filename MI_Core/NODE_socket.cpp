@@ -44,11 +44,15 @@ NODE_socket::NODE_socket(QGraphicsItem *parent,int index,bool sType, QString nm,
 	nameItem->setPlainText(name);
 	nameItem->setZValue(0.5);
 
-	if (!socketType) {
+	sockeFormat = IMAGE;
+	if (socketType == false) {
 		nameItem->moveBy(7, -12);
+		multiConnect = false;
 	}
-	else nameItem->moveBy(-50,-12);
-
+	else {
+		nameItem->moveBy(-50, -12);
+		multiConnect = true;
+	}
 }
 
 QRectF NODE_socket::boundingRect() const
@@ -92,7 +96,6 @@ void NODE_socket::removeAll(bool avoid, NODE_line*avoidLine)
 {
 	foreach(NODE_line *line, connectedLines()) {
 		if (avoid && line == avoidLine) continue;
-
 		node->nodeView->deleteLine(line);
 	}
 }
@@ -133,17 +136,17 @@ void NODE_socket::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 
 QPointF NODE_socket::position()
 {
-	QPointF pos = this->pos() + this->node->pos();
-	return pos;
+	if (this == nullptr) return QPointF(10000, 10000);
+	QPointF poss = this->pos() + this->node->pos();
+	return poss;
 }
 
 QList<NODE_line*> NODE_socket::connectedLines()
 {
+	QList<NODE_line*> lines;
 	QPointF pos = position();
 	QPointF range = QPointF(5, 5);
 	QRectF socketRect = QRectF(pos - range, pos + range);
-
-	QList<NODE_line*> lines;
 	
 	QList<QGraphicsItem*> items = this->scene()->items(socketRect);
 	foreach(QGraphicsItem* item, items) {

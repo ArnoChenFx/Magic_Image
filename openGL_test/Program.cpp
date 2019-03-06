@@ -348,12 +348,12 @@ void glProgramModel(GLFWwindow* window)
 
 #pragma region load VAO VBO
 	//Mesh cube(verticesB);
-	Model *md = new Model("F:/FFOutput/Download/AOVs/glModels/A.obj");
+	//Model *md = new Model("F:/FFOutput/Download/AOVs/glModels/A.obj");
 
-	Model *md2 = new Model("F:/FFOutput/Download/AOVs/glModels/B.obj");
+	Model *md2 = new Model("F:/FFOutput/Download/AOVs/glModels/cerberus.fbx");
 	//nanosuit/nanosuit.obj
 
-	std::vector<Model*> mods = { md,md2 };
+	std::vector<Model*> mods = {md2 };
 
 #pragma endregion
 
@@ -453,7 +453,7 @@ void glProgramModel(GLFWwindow* window)
 
 	delete myShader1;
 	delete cam;
-	delete md;
+	//delete md;
 #pragma endregion
 
 }

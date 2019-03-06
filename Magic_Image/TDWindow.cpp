@@ -6,6 +6,7 @@ TDWindow::TDWindow(MagicImage * mainW) :QDockWidget("3D Viewer", mainW)
 {
 	mainWindow = mainW;
 	mainWindow->addDockWidget(Qt::RightDockWidgetArea, this);
+	this->setObjectName("TDWindow");
 
 	TDMainWindow = new QMainWindow;
 	

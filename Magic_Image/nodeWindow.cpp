@@ -4,9 +4,12 @@
 #include <QMenuBar>
 #include "Magic_Image.h"
 #include <Register.h>
+#include "TDWindow.h"
+#include "OpenGLScene.h"
 #include <node_Viewport.h>
 #include <node_Image.h>
 #include <Image_basic.h>
+#include <node_Model.h>
 using namespace std;
 
 nodeWindow::nodeWindow(MagicImage * mainW) : QDockWidget("Node Editor", mainW)
@@ -14,7 +17,7 @@ nodeWindow::nodeWindow(MagicImage * mainW) : QDockWidget("Node Editor", mainW)
 	mainWindow = mainW;
 	mainWindow->addDockWidget(Qt::BottomDockWidgetArea, this);
 	//this->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetClosable);
-	
+	this->setObjectName("nodeWindow");
 
 	//nodeView
 	nodeView = new NODE_graphics_view;
@@ -133,6 +136,21 @@ NODE_item* nodeWindow::onCreateNode(std::string name)
 		node_Viewport *vp = static_cast<node_Viewport *>(node);
 		nodeView->viewportNode = vp;
 		connect(vp, &node_Viewport::cookImage, this, [=]() {mainWindow->cookImage(); });
+	}
+	else if (name == "Model") {
+		node_Model *md = static_cast<node_Model *>(node);
+		connect(md, &node_Model::loadM, this, [=]() {
+			this->mainWindow->TDWid->glScene->models.append(md->geo);
+			mainWindow->TDWid->glScene->renderNow();
+			qDebug() << "load model"<< this->mainWindow->TDWid->glScene->models.size();
+		});
+		connect(md, &node_Model::destroyM, this, [=]() {
+			if (this->mainWindow->TDWid->glScene->models.contains(md->geo)) {
+				this->mainWindow->TDWid->glScene->models.removeOne(md->geo);
+				mainWindow->TDWid->glScene->renderNow();
+				qDebug() << "remove model";
+			}
+		});
 	}
 	node->cook();
 	return node;

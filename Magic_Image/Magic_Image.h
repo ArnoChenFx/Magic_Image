@@ -20,6 +20,11 @@ public:
 	QStatusBar *IMstatusBar = new QStatusBar;
 	void cookImage();
 
+	paramWindow *paramWid;
+	viewerWindow *viewerWid;
+	nodeWindow *nodeWid;
+	TDWindow *TDWid;
+
 
 private:
 	
@@ -39,12 +44,6 @@ private:
     void onOpen();
     void onUndo();
     void onRedo();
-
-
-	paramWindow *paramWid;
-	viewerWindow *viewerWid;
-	nodeWindow *nodeWid;
-	TDWindow *TDWid;
 
     void initStyle();
 	

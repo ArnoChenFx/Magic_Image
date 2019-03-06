@@ -68,7 +68,6 @@
     <None Include="defalut_config.json">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="packages.config" />
     <None Include="vertexSource_textures.vert">
       <Filter>Resource Files</Filter>
     </None>

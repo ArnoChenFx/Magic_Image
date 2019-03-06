@@ -16,6 +16,8 @@ node_Image::node_Image(NODE_graphics_view* NODE_v) :
 	initSocket();
 	viewerState_item->setState(true);
 	updateParamUI();
+
+	filePath = QDir::homePath().toStdString();
 }
 
 void node_Image::initSocket()
@@ -48,7 +50,7 @@ void node_Image::updateParamUI()
 void node_Image::openFile(QString fileName)
 {
 	if (fileName == nullptr) {
-		QString pathH = QDir::homePath();
+		QString pathH = QString::fromStdString(filePath);
 		fileName = QFileDialog::getOpenFileName(nullptr, "Open Project", pathH);
 	}
 

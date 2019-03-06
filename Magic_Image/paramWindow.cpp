@@ -7,6 +7,7 @@ paramWindow::paramWindow(MagicImage * mainW) : QDockWidget("Parameter", mainW)
 	mainWindow = mainW;
 	mainWindow->addDockWidget(Qt::RightDockWidgetArea, this);
 	//this->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetClosable);
+	this->setObjectName("paramWindow");
 
 	paramView->setFrameShape(QFrame::StyledPanel);
 	this->setWidget(paramView);

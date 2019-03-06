@@ -6,6 +6,8 @@
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QDebug>
+#include <qtransform.h>
+#include <qmatrix.h>
 
 VI_graphics_view::VI_graphics_view(VI_image_viever *vi) : QGraphicsView()
 {	
@@ -21,8 +23,9 @@ VI_graphics_view::VI_graphics_view(VI_image_viever *vi) : QGraphicsView()
 
 	viewer = vi;
 	VI_graphics_scene->addWidget(viewer);
-	focus();
 
+	scakeRatio = 1;
+	focus();
 	connect(viewer, &VI_image_viever::scaled, this, [=]() {setScale(); });
 	
 }
@@ -47,7 +50,8 @@ void VI_graphics_view::wheelEvent(QWheelEvent *event)
     state = 0;//default state;
 	//qDebug() << this->sceneRect().width();
 	//qDebug() << this->sceneRect().height();
-	
+	scakeRatio *= zoomFactor;
+	emit scaled();
 }
 
 void VI_graphics_view::mousePressEvent(QMouseEvent *event)
@@ -150,7 +154,13 @@ void VI_graphics_view::keyPressEvent(QKeyEvent *event)
     if(event->key()==Qt::Key_F){
         focus();
     }
-
+	else if (event->key() == Qt::Key_H) {
+		this->resetMatrix();
+		scakeRatio = 1;
+		QRectF rect = QRectF(0, 0, viewer->width(), viewer->height());
+		centerOn(rect.center());
+		emit scaled();
+	}
     QGraphicsView::keyPressEvent(event);
 }
 
@@ -159,8 +169,41 @@ void VI_graphics_view::focus()
 	qreal w = viewer->width();
 	qreal h = viewer->height();
 	QRectF itemsArea = QRectF(0,0, w , h);
-    //QRectF itemsArea = QRectF(-2*w ,2* h ,2*w , -2*h);
-    this->fitInView(itemsArea, Qt::KeepAspectRatio);
+	this->fitView(itemsArea);
+}
+
+void VI_graphics_view::fitView(const QRectF &rect)
+{
+	qreal ss = 1;
+
+	// Reset the view scale to 1:1.
+	QRectF unity = this->matrix().mapRect(QRectF(0, 0, 1, 1));
+	if (unity.isEmpty())
+		return;
+	scale(1 / unity.width(), 1 / unity.height());
+	ss *= 1 / unity.width();
+
+	// Find the ideal x / y scaling ratio to fit \a rect in the view.
+	int margin = 2;
+	QRectF viewRect = viewport()->rect().adjusted(margin, margin, -margin, -margin);
+	if (viewRect.isEmpty())
+		return;
+	QRectF sceneRect = this->matrix().mapRect(rect);
+	if (sceneRect.isEmpty())
+		return;
+	qreal xratio = viewRect.width() / sceneRect.width();
+	qreal yratio = viewRect.height() / sceneRect.height();
+	// Respect the aspect ratio mode.
+
+	xratio = yratio = qMin(xratio, yratio);
+
+	ss *= xratio;
+	// Scale and center on the center of \a rect.
+	scale(xratio, yratio);
+	centerOn(rect.center());
+
+	scakeRatio *= ss;
+	emit scaled();
 }
 
 void VI_graphics_view::setScale()

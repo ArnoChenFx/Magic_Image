@@ -1,7 +1,7 @@
 #include <glad/glad.h> 
 #include "OpenGLScene.h"
 #include "Model.h"
-#include "AN_GL_utils.h"
+#include "GL_utils.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <qdebug.h>
@@ -31,9 +31,9 @@ OpenGLScene::OpenGLScene(QWindow *parent):QWindow(parent)
 OpenGLScene::~OpenGLScene()
 {
 	// Destroy OpenGL Handles
-	delete cam;
-	delete md;
+	delete cam;	
 	delete myShader1;
+	//delete md;
 	//delete m_device;
 }
 
@@ -52,10 +52,10 @@ void OpenGLScene::initialize()
 void OpenGLScene::initObjects()
 {
 	myShader1 = new Shader("vertexSource_textures.vert", "fragmentSource_textures.frag");
-	md = new Model("F:/FFOutput/Download/AOVs/glModels/A.obj");
-	Model *md2 = new Model("F:/FFOutput/Download/AOVs/glModels/B.obj");
-	models.append(md);
-	models.append(md2);
+	//md = new Model("F:/FFOutput/Download/AOVs/glModels/A.obj");
+	//Model *md2 = new Model("F:/FFOutput/Download/AOVs/glModels/B.obj");
+	//models.append(md);
+	//models.append(md2);
 }
 
 

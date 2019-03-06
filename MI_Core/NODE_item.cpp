@@ -332,15 +332,12 @@ void NODE_item::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         NODE_socket *preSocket = colliderLine->inputSock;
         NODE_socket *nextSocket = colliderLine->outputSock;
 
-        //if(!nodeView->sceneTempLines.contains(colliderLine))
-                //nodeView->sceneTempLines.append(colliderLine);
-        //nodeView->deleteTempLine();
 		nodeView->deleteLine(colliderLine);
 		colliderLine = nullptr;
 
-        if(!input_sockets.isEmpty())
+        if(!input_sockets.isEmpty() && preSocket->sockeFormat == input_sockets[0]->sockeFormat)
 			nodeView->createLine(nodeView,preSocket,input_sockets[0]);
-        if(!output_sockets.isEmpty())
+        if(!output_sockets.isEmpty() && nextSocket->sockeFormat == output_sockets[0]->sockeFormat)
 			nodeView->createLine(nodeView,output_sockets[0],nextSocket);
         collider = false;
         

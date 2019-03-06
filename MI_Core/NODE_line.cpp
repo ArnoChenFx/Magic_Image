@@ -110,7 +110,8 @@ void NODE_line::updateSocket()
             inputSock = endSock;
             outputSock = startSock;
         }
-        outputSock->removeAll(true,this);
+		if(inputSock->multiConnect== false) inputSock->removeAll(true, this);
+		if(outputSock->multiConnect == false) outputSock->removeAll(true,this);
         //nodeView->NODE_scene->sceneLines.append(this);
         saveHistory("create_line",save());
 		qDebug() << "cook : " << outputSock->node->title;

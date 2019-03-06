@@ -7,6 +7,7 @@ viewerWindow::viewerWindow(MagicImage * mainW ):QDockWidget("Viewer",mainW)
 	mainWindow = mainW;
 	mainWindow->addDockWidget(Qt::LeftDockWidgetArea, this);
 	//this->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetClosable);
+	this->setObjectName("viewerWindow");
 
 	//new
 	viewer = new VI_image_viever;
@@ -79,6 +80,11 @@ void viewerWindow::connectSignals()
 		QString msg = QString("click:(%1,%2)").arg(event->pos().x()).arg(event->pos().y());
 		mainWindow->IMstatusBar->showMessage(msg);
 	});
+
+	connect(viewerGraphicsview, &VI_graphics_view::scaled, [=]() {
+		factorLabel->setText(QString("%1%").arg(viewerGraphicsview->scakeRatio*100));
+	});
+
 }
 
 void viewerWindow::initStyle()

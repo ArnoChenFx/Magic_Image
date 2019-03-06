@@ -17,6 +17,8 @@ public:
 
     VI_graphics_view(VI_image_viever *vi);
 
+	qreal scakeRatio;
+
 protected:
 	virtual void wheelEvent(QWheelEvent *event) override;
 	virtual void mousePressEvent(QMouseEvent *event) override;
@@ -24,6 +26,8 @@ protected:
 	virtual void mouseReleaseEvent(QMouseEvent *event) override;
 	virtual void keyPressEvent(QKeyEvent *event) override;
     void focus();
+
+	void fitView(const QRectF &rect);
 
 private:
     //attribute
@@ -44,5 +48,8 @@ private:
     qreal height = 20000;
 
 	void setScale();
+
+signals:
+	void scaled();
 };
 

@@ -30,12 +30,15 @@ public:
 
 	NODE_socket(QGraphicsItem *parent = nullptr, int index = 0, bool sType = false, QString nm = "Image", qreal offset = 0);
 	
-	
-
     QRectF boundingRect() const override;
     void paint(QPainter *painter,const QStyleOptionGraphicsItem *options,QWidget *widget) override;
     void updatePosition();
 	QPointF position();
+
+	int IMAGE = 0;
+	int MODEL = 1;
+	int sockeFormat;
+	bool multiConnect;
 
 protected:
 	virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;

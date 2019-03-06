@@ -159,7 +159,8 @@ void NODE_graphics_view::onConnectToViewport()
 			if (currentNode->output_sockets.length() > 0) {
 				NODE_socket *inSocket = currentNode->output_sockets[0];
 				NODE_socket *outSocket = viewportNode->input_sockets[0];
-				createLine(this, inSocket, outSocket);
+				if (inSocket->sockeFormat == outSocket->sockeFormat)
+					createLine(this, inSocket, outSocket);
 			}
 
 		}
@@ -623,7 +624,8 @@ bool NODE_graphics_view::dragEnd(NODE_socket *socket)
 {
     if(socket){
         if(socket != startSocket && startSocket->node != socket->node
-            && startSocket->socketType != socket->socketType){
+            && startSocket->socketType != socket->socketType 
+			&& startSocket->sockeFormat == socket->sockeFormat){
             //new NODE_line(NODE_scene,startSocket,socket);
             dragLine->endSock = socket;
             dragLine->isDrag = false;
@@ -701,6 +703,7 @@ void NODE_graphics_view::deleteLine(NODE_line *line)
     //NODE_scene->removeItem(line);
 	//line->deleteLater();
 	delete line;
+	line = nullptr;
 
 	if (node != nullptr) node->cookNext();
 	if (node2 != nullptr) node2->cook();
