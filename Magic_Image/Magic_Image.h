@@ -6,6 +6,8 @@
 #include "nodeWindow.h"
 #include "paramWindow.h"
 #include "TDWindow.h"
+#include <memory.h>
+
 class MagicImage : public QMainWindow
 {
     Q_OBJECT
@@ -17,7 +19,8 @@ public:
 	virtual void closeEvent(QCloseEvent *event) override;
 
 
-	QStatusBar *IMstatusBar = new QStatusBar;
+	QStatusBar IMstatusBar;
+
 	void cookImage();
 
 	paramWindow *paramWid;

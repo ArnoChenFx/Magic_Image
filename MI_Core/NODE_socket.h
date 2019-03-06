@@ -29,7 +29,8 @@ public:
     void updateLines();
 
 	NODE_socket(QGraphicsItem *parent = nullptr, int index = 0, bool sType = false, QString nm = "Image", qreal offset = 0);
-	
+	~NODE_socket();
+
     QRectF boundingRect() const override;
     void paint(QPainter *painter,const QStyleOptionGraphicsItem *options,QWidget *widget) override;
     void updatePosition();

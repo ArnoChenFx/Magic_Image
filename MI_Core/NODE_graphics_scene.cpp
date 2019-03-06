@@ -42,3 +42,7 @@ void NODE_graphics_scene::drawBackground(QPainter *painter, const QRectF &rect)
 
 }
 
+NODE_graphics_scene::~NODE_graphics_scene()
+{
+	//qDebug() << "delete node scene";
+}

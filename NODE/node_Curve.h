@@ -9,5 +9,5 @@ public:
 
 	virtual void updateParamUI() override;
 	virtual void cook() override;
-	~node_Curve();
+
 };

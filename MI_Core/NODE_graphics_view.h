@@ -21,6 +21,7 @@ public:
     NODE_graphics_scene *NODE_scene;
 
     explicit NODE_graphics_view();
+	~NODE_graphics_view();
 
     QPointF mousePos = QPointF(0,0);
 	NODE_item *viewportNode=nullptr;

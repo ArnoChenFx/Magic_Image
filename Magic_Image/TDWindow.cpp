@@ -20,6 +20,7 @@ TDWindow::TDWindow(MagicImage * mainW) :QDockWidget("3D Viewer", mainW)
 
 TDWindow::~TDWindow()
 {
+	delete TDMainWindow;
 }
 
 void TDWindow::connectSignals()

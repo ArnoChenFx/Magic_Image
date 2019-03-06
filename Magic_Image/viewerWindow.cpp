@@ -1,6 +1,6 @@
 #include "viewerWindow.h"
 #include "Magic_Image.h"
-
+#include <qdebug.h>
 
 viewerWindow::viewerWindow(MagicImage * mainW ):QDockWidget("Viewer",mainW)
 {
@@ -55,6 +55,7 @@ viewerWindow::viewerWindow(MagicImage * mainW ):QDockWidget("Viewer",mainW)
 
 viewerWindow::~viewerWindow()
 {
+	//delete viewerMainWindow;
 }
 
 void viewerWindow::connectSignals()
@@ -78,7 +79,7 @@ void viewerWindow::connectSignals()
 
 	connect(viewer, &VI_image_viever::click, [=](QMouseEvent *event) {
 		QString msg = QString("click:(%1,%2)").arg(event->pos().x()).arg(event->pos().y());
-		mainWindow->IMstatusBar->showMessage(msg);
+		mainWindow->IMstatusBar.showMessage(msg);
 	});
 
 	connect(viewerGraphicsview, &VI_graphics_view::scaled, [=]() {

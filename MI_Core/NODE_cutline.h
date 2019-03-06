@@ -8,6 +8,7 @@ class MI_CORE_EXPORT NODE_cutline:public QGraphicsItem
 {
 public:
     NODE_cutline();
+	~NODE_cutline();
 
     QRectF rect;
     QVector<QPointF> line_points;

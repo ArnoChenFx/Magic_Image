@@ -804,3 +804,8 @@ void NODE_graphics_view::clearSearch()
 	searchedActions.clear();
 }
 
+NODE_graphics_view::~NODE_graphics_view()
+{
+	NODE_scene->deleteLater();
+	contextMenu->deleteLater();
+}

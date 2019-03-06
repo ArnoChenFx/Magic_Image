@@ -120,6 +120,7 @@ nodeWindow::nodeWindow(MagicImage * mainW) : QDockWidget("Node Editor", mainW)
 
 nodeWindow::~nodeWindow()
 {
+	//delete nodeMainWindow;
 }
 
 

@@ -2,7 +2,6 @@
 #include <QApplication>
 #include <iostream>
 #include <string.h>
-//#include <GL/glew.h>
 using namespace std;
 
 
@@ -21,6 +20,5 @@ int main(int argc, char *argv[])
 
     w.show();
 	
-	//delete vp;
     return a.exec();
 }

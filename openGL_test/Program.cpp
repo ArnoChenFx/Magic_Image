@@ -13,6 +13,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 //#include <vector>
+#include <memory>
+using namespace std;
 
 #pragma region Model Data
 	// set up vertex data (and buffer(s)) and configure vertex attributes
@@ -125,7 +127,8 @@ glm::vec3(-1.3f,  1.0f, -1.5f)
 float preX;
 float preY;
 bool firstMouse = true;
-Camera *cam = new Camera(glm::vec3(0, 8, -20), -10.0f, 0.0f, glm::vec3(0, 1, 0));
+unique_ptr<Camera> cam(new Camera(glm::vec3(0, 8, -20), -10.0f, 0.0f, glm::vec3(0, 1, 0)));
+//Camera *cam = new Camera(glm::vec3(0, 8, -20), -10.0f, 0.0f, glm::vec3(0, 1, 0));
 const int LOOP = 0;
 const int MOVE = 1;
 const int SCALE = 2;
@@ -323,7 +326,7 @@ void glProgram(GLFWwindow* window)
 	glDeleteBuffers(1, &VBO);
 
 	delete myShader1;
-	delete cam;
+	//deletecam;
 #pragma endregion
 
 }
@@ -344,16 +347,17 @@ void glProgramModel(GLFWwindow* window)
 #pragma endregion
 
 	//create shader program
+	//shared_ptr<Shader> myShader1(new Shader("vertexSource_textures.vert", "fragmentSource_textures.frag"));
 	Shader *myShader1 = new Shader("vertexSource_textures.vert", "fragmentSource_textures.frag");
 
 #pragma region load VAO VBO
 	//Mesh cube(verticesB);
 	//Model *md = new Model("F:/FFOutput/Download/AOVs/glModels/A.obj");
-
-	Model *md2 = new Model("F:/FFOutput/Download/AOVs/glModels/cerberus.fbx");
+	//shared_ptr<Model> md2(new Model("F:/FFOutput/Download/AOVs/glModels/B.obj"));
+	Model *md2 = new Model("F:/FFOutput/Download/AOVs/glModels/B.obj");
 	//nanosuit/nanosuit.obj
 
-	std::vector<Model*> mods = {md2 };
+	std::vector<Model*> mods = {md2};
 
 #pragma endregion
 
@@ -452,8 +456,8 @@ void glProgramModel(GLFWwindow* window)
 	//glDeleteBuffers(1, &VBO);
 
 	delete myShader1;
-	delete cam;
-	//delete md;
+	//delete cam;
+	delete md2;
 #pragma endregion
 
 }

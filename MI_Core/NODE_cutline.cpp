@@ -1,5 +1,6 @@
 ﻿#include "NODE_cutline.h"
 #include <QPainter>
+#include <qdebug.h>
 
 NODE_cutline::NODE_cutline():QGraphicsItem()
 {
@@ -40,4 +41,9 @@ void NODE_cutline::calShape()
         path.lineTo(QPointF(1,1));
     }
     rect = path.boundingRect();
+}
+
+NODE_cutline::~NODE_cutline()
+{
+	qDebug() << "cutline delete";
 }

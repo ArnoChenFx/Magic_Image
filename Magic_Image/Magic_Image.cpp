@@ -27,6 +27,7 @@ MagicImage::MagicImage(QWidget *parent)
     initSingalConnection();
 
 	readSettings();
+	
 }
 
 void MagicImage::initUI()
@@ -120,12 +121,12 @@ void MagicImage::initMenuBar()
 	QAction *About = createAct(helpMenu, "About", "", "");
 
     //状态栏
-    this->setStatusBar(IMstatusBar);
+    this->setStatusBar(&IMstatusBar);
 //    QLabel *mesgLabel = new QLabel("Welcome!");
 //    IMstatusBar->addWidget(mesgLabel);
-    IMstatusBar->showMessage("Welcome!");
-    IMstatusBar->setFixedHeight(20);
-    IMstatusBar->setSizeGripEnabled(false);
+    IMstatusBar.showMessage("Welcome!");
+    IMstatusBar.setFixedHeight(20);
+    IMstatusBar.setSizeGripEnabled(false);
 }
 
 void MagicImage::initSingalConnection()
@@ -201,7 +202,7 @@ void MagicImage::save()
     file << projectInfo.dump(4);
 
 	isModified = false;
-    IMstatusBar->showMessage("Save Successfully!");
+    IMstatusBar.showMessage("Save Successfully!");
 }
 
 void MagicImage::onNew(bool loadProject)
@@ -391,6 +392,10 @@ void MagicImage::closeEvent(QCloseEvent *event)
 			event->ignore();
 			return;
 		}
+		delete viewerWid;
+		delete TDWid;
+		delete paramWid;
+		delete nodeWid;
 		event->accept();
 	}
 }
@@ -497,7 +502,7 @@ void MagicImage::initStyle()
      .arg(getRGB("color_background_dark")).arg(getRGB("color_background_light")).arg(getRGB("color_background")).arg(getRGB("color_background_orange")));
 
 
-    IMstatusBar->setStyleSheet(QString("background-color:%1;color:rgb(230,230,230);border: 0px solid black;"
+    IMstatusBar.setStyleSheet(QString("background-color:%1;color:rgb(230,230,230);border: 0px solid black;"
                                        "border-radius: 0px;font-size:12px;")
                                         .arg(getRGB("color_background_dark")));
 

@@ -157,3 +157,8 @@ QList<NODE_line*> NODE_socket::connectedLines()
 	items.clear();
 	return lines;
 }
+
+NODE_socket::~NODE_socket()
+{
+	//qDebug() << "socket delete";
+}

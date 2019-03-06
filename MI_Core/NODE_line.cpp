@@ -50,6 +50,7 @@ NODE_line::~NODE_line()
 	outputSock = nullptr;
 	startSock = nullptr;
 	endSock = nullptr;
+	//qDebug() << "delete line on close";
 }
 
 QRectF NODE_line::boundingRect() const

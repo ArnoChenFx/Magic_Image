@@ -3,6 +3,7 @@
 #include <Register.h>
 #include <qlineedit.h>
 #include "Model.h"
+#include <memory>
 
 class NODE_EXPORT node_Model :public NODE_item
 {
@@ -18,6 +19,7 @@ public:
 	std::string filePath;
 	QLineEdit *pathLine;
 
+	
 	Model *geo = nullptr;
 
 	void loadModel();

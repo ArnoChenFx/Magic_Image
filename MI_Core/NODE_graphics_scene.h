@@ -15,6 +15,7 @@ class MI_CORE_EXPORT NODE_graphics_scene:public QGraphicsScene
 public:
     NODE_graphics_view *nodeView;
     NODE_graphics_scene(NODE_graphics_view *nodeV=nullptr);
+	~NODE_graphics_scene();
     bool drawGrid = false;
 
     QList<NODE_line*> sceneLines;

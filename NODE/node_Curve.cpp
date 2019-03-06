@@ -65,8 +65,6 @@ void node_Curve::cook()
 	cookNext();
 }
 
-node_Curve::~node_Curve()
-{
-}
+
 
 REGISTER_NODE(node_Curve, "Curve", "Color", "");

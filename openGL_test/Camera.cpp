@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include "glm/gtc/matrix_transform.hpp"
+#include <iostream>
 
 Camera::Camera(glm::vec3 position, glm::vec3 target, glm::vec3 worldup)
 {
@@ -69,4 +70,5 @@ void Camera::updateCamVectors()
 
 Camera::~Camera()
 {
+	std::cout << "camera delete" << std::endl;
 }
