@@ -31,6 +31,17 @@
     "color_background_light"        :[70,70,70],
     "color_background_orange"       :[180,100,0],
 
+    "-----------node color---------": "",
+    "Import"                        : [125,43,50],
+    "Export"                        : [44,138,93],
+    "Color"                         : [76,137,175],
+    "Color0"                        : [50,50,50],
+    "Color1"                        : [110,91,175],
+    "Color2"                        : [50,74,33],
+    "Color3"                        : [86,128,194],
+    "SocketImage"                   : [77,180,220],
+    "SocketModel"                   : [125,43,50],
+
     "-----------file format--------------":"",
     "imageFormats"                  : ["jpg","jpeg","png","exr","tif","tiff",
                                      "pbm","pgm","ppm","sr","ras","bmp","dib",

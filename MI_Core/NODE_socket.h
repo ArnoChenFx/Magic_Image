@@ -36,8 +36,8 @@ public:
     void updatePosition();
 	QPointF position();
 
-	int IMAGE = 0;
-	int MODEL = 1;
+	const int IMAGE = 0;
+	const int MODEL = 1;
 	int sockeFormat;
 	bool multiConnect;
 
@@ -52,15 +52,17 @@ private:
     qreal radius_max = 12;
     qreal outline_width = 0.5;
 
-    QColor color_color;
-    QColor color_output;
-    QColor color_value;
+    //QColor color_color;
+    //QColor color_output;
+    //QColor color_value;
     QColor color_outline;
 
     QPen _pen = QPen(color_outline);
-    QBrush _brush_color;
-    QBrush _brush_output;
-    QBrush _brush_value;
+    //QBrush _brush_color;
+    //QBrush _brush_output;
+    //QBrush _brush_value;
 
 	qreal extraOffset;
+
+	QBrush getBrush();
 };

@@ -700,9 +700,8 @@ void NODE_graphics_view::deleteLine(NODE_line *line)
     line->setSelected(false);
 
 	line->update();
-    //NODE_scene->removeItem(line);
-	//line->deleteLater();
-	delete line;
+
+	line->deleteLater();
 	line = nullptr;
 
 	if (node != nullptr) node->cookNext();

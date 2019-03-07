@@ -116,6 +116,20 @@ void OpenGLScene::renderNow()
 }
 
 
+glm::vec3 OpenGLScene::GetRayFromMouse(float x,float y)
+{
+	glm::vec2 ray_nds = glm::vec2(x, y);
+	glm::vec4 ray_clip = glm::vec4(ray_nds.x, ray_nds.y, -1.0f, 1.0f);
+	glm::mat4 invProjMat = glm::inverse(cam->GetViewMatrix());
+	glm::vec4 eyeCoords = invProjMat * ray_clip;
+	eyeCoords = glm::vec4(eyeCoords.x, eyeCoords.y, -1.0f, 0.0f);
+	glm::mat4 invViewMat = glm::inverse(cam->GetViewMatrix());
+	glm::vec4 rayWorld = invViewMat * eyeCoords;
+	glm::vec3 rayDirection = glm::normalize(glm::vec3(rayWorld));
+
+	return rayDirection;
+}
+
 
 bool OpenGLScene::event(QEvent * event)
 {
@@ -233,3 +247,4 @@ void OpenGLScene::mouseMoveEvent(QMouseEvent * event)
 
 	QWindow::mouseMoveEvent(event);
 }
+

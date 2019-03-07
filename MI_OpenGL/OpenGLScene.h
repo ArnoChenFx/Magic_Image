@@ -53,6 +53,7 @@ private:
 
 	bool hasInitialized;
 
+	glm::vec3 GetRayFromMouse(float x,float y);
 
 public slots:
 	void renderLater();

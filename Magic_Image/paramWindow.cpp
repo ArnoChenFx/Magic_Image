@@ -17,7 +17,7 @@ paramWindow::paramWindow(MagicImage * mainW) : QDockWidget("Parameter", mainW)
 
 paramWindow::~paramWindow()
 {
-	//
+
 }
 
 void paramWindow::initStyle()

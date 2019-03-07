@@ -11,6 +11,7 @@ node_Curve::node_Curve(NODE_graphics_view* NODE_v) :
 	NODE_item(NODE_v, "Curve")
 {
 	initSocket();
+	color_title_bar = getColor("Color");
 	updateParamUI();
 }
 

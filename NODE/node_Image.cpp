@@ -13,6 +13,7 @@ using namespace std;
 node_Image::node_Image(NODE_graphics_view* NODE_v) :
 	NODE_item(NODE_v, "Image")
 {
+	color_title_bar = getColor("Import");
 	initSocket();
 	viewerState_item->setState(true);
 	updateParamUI();

@@ -104,7 +104,7 @@ NODE_item::NODE_item(NODE_graphics_view* NODE_v,QString title,QPointF pos,qreal 
 
 NODE_item::~NODE_item()
 {
-	delete tempThread;
+	//delete tempThread;
 }
 
 void NODE_item::loadToScene()

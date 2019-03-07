@@ -1,6 +1,7 @@
 #include "TDWindow.h"
 #include "Magic_Image.h"
 #include "UT_utils.h"
+#include <qdebug.h>
 
 TDWindow::TDWindow(MagicImage * mainW) :QDockWidget("3D Viewer", mainW)
 {
@@ -16,11 +17,13 @@ TDWindow::TDWindow(MagicImage * mainW) :QDockWidget("3D Viewer", mainW)
 	this->setWidget(TDMainWindow);
 
 	initStyle();
+
+	connect(glScene, &OpenGLScene::destroyed, this, [=] {qDebug() << "destroy glscene"; });
 }
 
 TDWindow::~TDWindow()
 {
-	delete TDMainWindow;
+	//delete TDMainWindow;
 }
 
 void TDWindow::connectSignals()

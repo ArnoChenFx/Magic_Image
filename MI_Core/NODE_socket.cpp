@@ -26,15 +26,15 @@ NODE_socket::NODE_socket(QGraphicsItem *parent,int index,bool sType, QString nm,
     radius = radius_max;
     _pen.setWidthF(outline_width);
 
-    color_color = getColor("socket_color_color");
-    color_value = getColor("socket_color_value");
-    color_output = getColor("socket_color_output");
+    //color_color = getColor("SocketImage");
+    //color_value = getColor("socket_color_value");
+    //color_output = getColor("socket_color_output");
     color_outline = getColor("socket_color_outline");
 
     _pen = QPen(color_outline);
-    _brush_color = QBrush(color_color);
-    _brush_output = QBrush(color_output);
-    _brush_value = QBrush(color_value);
+    //_brush_color = QBrush(color_color);
+    //_brush_output = QBrush(color_output);
+    //_brush_value = QBrush(color_value);
 
 	//setZValue(1.1);
 
@@ -66,7 +66,7 @@ QRectF NODE_socket::boundingRect() const
 void NODE_socket::paint(QPainter *painter, const QStyleOptionGraphicsItem *options, QWidget *widget)
 {
     //painting circle
-    painter->setBrush(socketType?_brush_output:_brush_color);
+    painter->setBrush(getBrush());
     painter->setPen(_pen);
     if(!active) radius = radius_min;
     painter->drawEllipse(int(-radius), int(-radius), int(2*radius), int(2*radius));
@@ -156,6 +156,15 @@ QList<NODE_line*> NODE_socket::connectedLines()
 	}
 	items.clear();
 	return lines;
+}
+
+QBrush NODE_socket::getBrush()
+{
+
+	if(sockeFormat == IMAGE)
+		return QBrush(getColor("SocketImage"));
+	else if(sockeFormat == MODEL)
+		return QBrush(getColor("SocketModel"));
 }
 
 NODE_socket::~NODE_socket()

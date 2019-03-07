@@ -9,6 +9,7 @@ node_Merge::node_Merge(NODE_graphics_view* NODE_v):
 	NODE_item(NODE_v, "Merge")
 {
 	initSocket();
+	color_title_bar = getColor("Color");
 	updateParamUI();
 	index = 0;
 	setScale(200, 210);

@@ -55,7 +55,7 @@ viewerWindow::viewerWindow(MagicImage * mainW ):QDockWidget("Viewer",mainW)
 
 viewerWindow::~viewerWindow()
 {
-	//delete viewerMainWindow;
+
 }
 
 void viewerWindow::connectSignals()

@@ -13,6 +13,7 @@ node_Viewport::node_Viewport(NODE_graphics_view* NODE_v):
 {
 	initSocket();
 	viewerState_item->setState(true);
+	color_title_bar = getColor("Export");
 	setScale(200, 200);
 }
 

@@ -11,7 +11,7 @@
 
 VI_graphics_view::VI_graphics_view(VI_image_viever *vi) : QGraphicsView()
 {	
-	VI_graphics_scene = new QGraphicsScene;
+	VI_graphics_scene = new QGraphicsScene(this);
     this->setScene(VI_graphics_scene);
     VI_graphics_scene->setSceneRect(-width,-height,width*2,height*2);
 

@@ -5,6 +5,7 @@ node_Render::node_Render(NODE_graphics_view* NODE_v) :
 	NODE_item(NODE_v, "Render")
 {
 	initSocket();
+	color_title_bar = getColor("Export");
 }
 
 

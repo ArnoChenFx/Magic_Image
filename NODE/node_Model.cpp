@@ -14,6 +14,7 @@ node_Model::node_Model(NODE_graphics_view* NODE_v) :
 	NODE_item(NODE_v, "Model")
 {
 	initSocket();
+	color_title_bar = getColor("Import");
 	updateParamUI();
 	filePath = QDir::homePath().toStdString();
 }
