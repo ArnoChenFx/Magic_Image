@@ -148,6 +148,7 @@ void Shader::setMat4(const std::string &name, const glm::mat4 &mat) const
 Shader::~Shader()
 {
 	glDeleteProgram(ID);
+	std::cout << "shader delete" << std::endl;
 }
 
 void Shader::checkError(unsigned int idx, std::string type)

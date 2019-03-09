@@ -5,6 +5,7 @@
 #include "Shader.h"
 #include <string>
 #include <vector>
+#include <memory>
 
 class Model
 {
@@ -12,7 +13,7 @@ public:
 	Model(std::string const &path);
 	~Model();
 
-	void Draw(Shader *shader);
+	void Draw(std::unique_ptr<Shader>& shader);
 
 private:
 	/*  Model Data  */

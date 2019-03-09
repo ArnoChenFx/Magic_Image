@@ -30,9 +30,11 @@ Model::Model(std::string const &path)
 
 Model::~Model()
 {
+	std::cout << "model delete" << std::endl;
 }
 
-void Model::Draw(Shader *shader)
+//Shader *shader
+void Model::Draw(std::unique_ptr<Shader>& shader)
 {
 	for (unsigned int i = 0; i < this->meshes.size(); i++)
 	{

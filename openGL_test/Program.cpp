@@ -6,7 +6,8 @@
 #include "Mesh.h"
 #include "Model.h"
 #include "AN_GL_utils.h"
-
+#include "sceneAxis.h"
+#include "sceneGrid.h"
 #include <time.h>
 
 #include <glm/glm.hpp>
@@ -121,13 +122,15 @@ glm::vec3(1.5f,  0.2f, -1.5f),
 glm::vec3(-1.3f,  1.0f, -1.5f)
 };
 
+
 #pragma endregion
 
 #pragma region Attribute Data
 float preX;
 float preY;
 bool firstMouse = true;
-unique_ptr<Camera> cam(new Camera(glm::vec3(0, 8, -20), -10.0f, 0.0f, glm::vec3(0, 1, 0)));
+
+auto cam = make_unique< Camera>(glm::vec3(0, 8, -20), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 //Camera *cam = new Camera(glm::vec3(0, 8, -20), -10.0f, 0.0f, glm::vec3(0, 1, 0));
 const int LOOP = 0;
 const int MOVE = 1;
@@ -162,7 +165,9 @@ void mouse_callback(GLFWwindow* window, double posX, double posY)
 	case LOOP:
 		break;
 	case ROTATE:
-		cam->processMovement(-deltaX, -deltaY);
+		cam->speedX = deltaX*5;
+		cam->speedY = deltaY*5;
+		cam->updateCamVectors();
 		break;
 	case MOVE:
 		cam->speedX = deltaX;
@@ -181,12 +186,18 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	if (action == GLFW_PRESS) switch (button)
 	{
 	case GLFW_MOUSE_BUTTON_LEFT:
+		//cam->Target = glm::vec3(0, 0, 0);
+		cam->Target = cam->Position + cam->Forward*30.0f;
+		cam->computeDistance();
+		cam->MODE = cam->MODE_ROTATE;
 		PRESSMODE = ROTATE;
 		break;
 	case GLFW_MOUSE_BUTTON_MIDDLE:
+		cam->MODE = cam->MODE_MOVE;
 		PRESSMODE = MOVE;
 		break;
 	case GLFW_MOUSE_BUTTON_RIGHT:
+		cam->MODE = cam->MODE_ZOOM;
 		PRESSMODE = SCALE;
 		break;
 	default:
@@ -332,6 +343,14 @@ void glProgram(GLFWwindow* window)
 }
 
 
+//void drawAxi()
+//{
+//	glPointSize(10);
+//	glVertexArrayAttribBinding
+//
+//
+//}
+
 void glProgramModel(GLFWwindow* window)
 {
 #pragma region init
@@ -347,17 +366,21 @@ void glProgramModel(GLFWwindow* window)
 #pragma endregion
 
 	//create shader program
-	//shared_ptr<Shader> myShader1(new Shader("vertexSource_textures.vert", "fragmentSource_textures.frag"));
-	Shader *myShader1 = new Shader("vertexSource_textures.vert", "fragmentSource_textures.frag");
+	auto myShader1 = make_unique<Shader>("vertexSource_textures.vert", "fragmentSource_textures.frag");
+	//Shader *myShader1 = new Shader("vertexSource_textures.vert", "fragmentSource_textures.frag");
+
+	auto axis = make_unique<sceneAxis>();
+	auto grid = make_unique<sceneGrid>();
 
 #pragma region load VAO VBO
 	//Mesh cube(verticesB);
 	//Model *md = new Model("F:/FFOutput/Download/AOVs/glModels/A.obj");
-	//shared_ptr<Model> md2(new Model("F:/FFOutput/Download/AOVs/glModels/B.obj"));
-	Model *md2 = new Model("F:/FFOutput/Download/AOVs/glModels/B.obj");
-	//nanosuit/nanosuit.obj
-
-	std::vector<Model*> mods = {md2};
+	auto md2 = make_unique<Model>("F:/FFOutput/Download/AOVs/glModels/B.obj");
+	//unique_ptr<Model> md2(new Model("F:/FFOutput/Download/AOVs/glModels/B.obj"));
+	//Model *md2 = new Model("F:/FFOutput/Download/AOVs/glModels/B.obj");
+	
+	vector< std::unique_ptr<Model> > mods;
+	mods.push_back(std::move(md2));
 
 #pragma endregion
 
@@ -376,43 +399,28 @@ void glProgramModel(GLFWwindow* window)
 #pragma endregion
 
 #pragma region init matrixs
-	/*
-	trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));//位移矩阵
-	trans = glm::rotate(trans, glm::radians(90.0f),glm::vec3(0,0,1));//旋转矩阵
-	trans = glm::scale(trans, glm::vec3(1.1,0.8,1));//缩放矩阵
-	上面三行的效果是,先缩放,再旋转,最后位移
-	*/
-
 	glm::mat4 modelMat = glm::mat4(1.0f);//物体矩阵
 	glm::mat4 viewMat = glm::mat4(1.0f);//摄像机矩阵
 	glm::mat4 projMat = glm::mat4(1.0f);//投射矩阵
 	//摄像机张角45度,分辨率1000x1000,宽高比为1,nearest为0.1,faster为100
 	projMat = glm::perspective(glm::radians(45.0f), (float)1000 / (float)1000, 0.1f, 100.0f);
 	viewMat = cam->GetViewMatrix();
-
 	glm::mat4 ident = glm::mat4(1.0f);//单位矩阵
 
 #pragma endregion
+	
 
 #pragma region render loop
 	int sss = 0;
 	while (!glfwWindowShouldClose(window))
 	{
 		processInput(window);// 检查输入
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);//清除并渲染背景
+		glClearColor(0.4f, 0.4f, 0.4f, 1.0f);//清除并渲染背景
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);//清除颜色缓冲和深度缓冲
 
-
-		for (unsigned int i = 0; i < 1; i++)
+		modelMat = ident;
+		for (unsigned int i = 0; i < mods.size(); i++)
 		{
-			//SET Model Matrix
-			//glm::mat4 modelMat = glm::translate(glm::mat4(1.0f), cubePositions[i]);
-			//modelMat = glm::rotate(modelMat, glm::radians(20.0f * i), glm::vec3(1.0f, 0.3f, 0.5f));
-			//myShader1->setMat4("modelMat", modelMat);
-
-			//SET View and Projection Matrixs here
-
-
 			//SET MATERIAL -> Shader Program
 			myShader1->use();
 
@@ -428,17 +436,21 @@ void glProgramModel(GLFWwindow* window)
 			myShader1->setMat4("viewMat", viewMat);
 			myShader1->setMat4("projMat", projMat);
 
-			if (sss == 1000) mods.pop_back();
-			int s = mods.size();
+			//if (sss == 1000) mods.pop_back();
+			//int s = mods.size();
 	
-			if(i==1) modelMat = glm::translate(glm::mat4(1.0f),glm::vec3(1,2,1));
-			else modelMat = ident;
+			//if(i==1) modelMat = glm::translate(glm::mat4(1.0f),glm::vec3(1,2,1));
+			//else modelMat = ident;
+
 			myShader1->setMat4("modelMat", modelMat);
 				
 			mods[i]->Draw(myShader1);
 
 			sss += 1;
 		}
+
+		grid->Draw(viewMat, projMat);
+		axis->Draw(viewMat, projMat);
 
 		cam->setStop();
 		//prepare for next render loop
@@ -452,12 +464,7 @@ void glProgramModel(GLFWwindow* window)
 #pragma endregion
 
 #pragma region clear
-	//glDeleteVertexArrays(1, &VAO);
-	//glDeleteBuffers(1, &VBO);
 
-	delete myShader1;
-	//delete cam;
-	delete md2;
 #pragma endregion
 
 }

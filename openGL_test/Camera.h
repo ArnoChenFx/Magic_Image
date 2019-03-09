@@ -1,5 +1,10 @@
 #pragma once
 #include <glm/glm.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include "glm/gtx/quaternion.hpp"
+#include "glm/gtc/quaternion.hpp"
+//#include "glm/common.hpp"
+
 
 class Camera
 {
@@ -15,6 +20,15 @@ public:
 	glm::vec3 Up;
 	glm::vec3 WorldUp;
 
+	glm::vec3 Target;
+	glm::mat4 CameraMatrix;
+	glm::quat Rot;
+
+	const int MODE_MOVE = 0;
+	const int MODE_ROTATE = 1;
+	const int MODE_ZOOM = 2;
+	int MODE;
+
 	float Pitch;
 	float Yaw;
 	
@@ -24,12 +38,17 @@ public:
 	float speedY = 0;
 	float speedZ = 0;
 
+	float distance;
+
 	void processMovement(float deltaX,float deltaY);
+
 	void updateCamPos();
 	glm::mat4 GetViewMatrix();
 	void setStop();
 
-private:
 	void updateCamVectors();
+
+	void computeDistance();
+
 };
 

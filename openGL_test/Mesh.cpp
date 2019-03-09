@@ -1,6 +1,8 @@
 #include "Mesh.h"
 #include <glad/glad.h> 
 #include <string>
+#include <iostream>
+
 using namespace std;
 
 Mesh::Mesh(float verts[])
@@ -28,10 +30,10 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
 
 Mesh::~Mesh()
 {
-
+	std::cout << "mesh delete" << std::endl;
 }
 
-void Mesh::Draw(Shader *shader)
+void Mesh::Draw(std::unique_ptr<Shader>& shader)
 {
 	// Bind appropriate textures
 	unsigned int diffuseNr = 1;

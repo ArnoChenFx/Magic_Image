@@ -45,6 +45,12 @@
     <ClCompile Include="Model.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="sceneAxis.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="sceneGrid.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -73,6 +79,15 @@
       <Filter>资源文件</Filter>
     </None>
     <None Include="vertexSource_textures.vert">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="line.frag">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="line.vert">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="axis.vert">
       <Filter>资源文件</Filter>
     </None>
   </ItemGroup>
@@ -105,6 +120,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="sceneAxis.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="sceneGrid.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

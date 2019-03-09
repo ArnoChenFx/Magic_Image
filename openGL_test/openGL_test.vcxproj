@@ -27,15 +27,20 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Program.cpp" />
+    <ClCompile Include="sceneAxis.cpp" />
+    <ClCompile Include="sceneGrid.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="axis.vert" />
     <None Include="fragmentSource0.frag" />
     <None Include="fragmentSource1.frag" />
     <None Include="fragmentSource2.frag" />
     <None Include="fragmentSource2_uv.frag" />
     <None Include="fragmentSource_textures.frag" />
+    <None Include="line.frag" />
+    <None Include="line.vert" />
     <None Include="vertexSource_textures.vert" />
     <None Include="packages.config" />
     <None Include="vertexSource0.vert" />
@@ -50,6 +55,8 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="Program.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="sceneAxis.h" />
+    <ClInclude Include="sceneGrid.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Window.h" />
