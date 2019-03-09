@@ -22,7 +22,7 @@ void initWindow()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	//创建glfw窗口
-	GLFWwindow* window = glfwCreateWindow(1000, 1000, "ARNO OpenGL", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(1280,720, "ARNO OpenGL", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -50,7 +50,7 @@ void initWindow()
 	//}
 
 	//设置opengl窗口大小
-	glViewport(0, 0, 1000, 1000);
+	glViewport(0, 0, 1280, 720);
 
 	//glEnable(GL_CULL_FACE);
 	//glCullFace(GL_BACK);//背面剔除

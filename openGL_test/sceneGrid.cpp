@@ -62,11 +62,12 @@ void sceneGrid::Draw(glm::mat4 viewMat, glm::mat4 projMat)
 	myShader->setMat4("viewMat", viewMat);
 	myShader->setMat4("projMat", projMat);
 	myShader->setMat4("modelMat", modelMat);
-
+	GL_LINE_SMOOTH;
+	
 	for (int i = 0; i < num; i++) {
 
 		if (i % 5 == 0) {
-			glLineWidth(1.5);
+			glLineWidth(1);
 			myShader->setFloat("Color", colorB);
 		}
 		else {

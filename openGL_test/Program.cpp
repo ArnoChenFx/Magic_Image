@@ -356,7 +356,6 @@ void glProgramModel(GLFWwindow* window)
 #pragma region init
 	//使用深度信息,画出来的结果有遮挡关系
 	glEnable(GL_DEPTH_TEST);
-
 	//关闭鼠标绘制
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
@@ -375,7 +374,7 @@ void glProgramModel(GLFWwindow* window)
 #pragma region load VAO VBO
 	//Mesh cube(verticesB);
 	//Model *md = new Model("F:/FFOutput/Download/AOVs/glModels/A.obj");
-	auto md2 = make_unique<Model>("F:/FFOutput/Download/AOVs/glModels/B.obj");
+	auto md2 = make_unique<Model>("F:/FFOutput/Download/AOVs/glModels/A.obj");
 	//unique_ptr<Model> md2(new Model("F:/FFOutput/Download/AOVs/glModels/B.obj"));
 	//Model *md2 = new Model("F:/FFOutput/Download/AOVs/glModels/B.obj");
 	
@@ -403,7 +402,7 @@ void glProgramModel(GLFWwindow* window)
 	glm::mat4 viewMat = glm::mat4(1.0f);//摄像机矩阵
 	glm::mat4 projMat = glm::mat4(1.0f);//投射矩阵
 	//摄像机张角45度,分辨率1000x1000,宽高比为1,nearest为0.1,faster为100
-	projMat = glm::perspective(glm::radians(45.0f), (float)1000 / (float)1000, 0.1f, 100.0f);
+	projMat = glm::perspective(glm::radians(45.0f), (float)1280 / (float)720, 0.1f, 100.0f);
 	viewMat = cam->GetViewMatrix();
 	glm::mat4 ident = glm::mat4(1.0f);//单位矩阵
 

@@ -1,8 +1,6 @@
 #include "Camera.h"
 #include "glm/gtc/matrix_transform.hpp"
-//#include "glm/gtx/quaternion.hpp"
 #include "glm/gtc/quaternion.hpp"
-//#include "glm/common.hpp"
 #include <iostream>
 
 Camera::Camera(glm::vec3 position, glm::vec3 target, glm::vec3 worldup)
@@ -15,29 +13,11 @@ Camera::Camera(glm::vec3 position, glm::vec3 target, glm::vec3 worldup)
 	Up = glm::normalize(glm::cross(Forward, Right));
 	
 	Target = Position + Forward;
-
 	CameraMatrix = glm::mat4(1.0f);
 
-	//Rot = glm::quat();
 	MODE = MODE_MOVE;
 }
 
-Camera::Camera(glm::vec3 position, float pitch, float yaw, glm::vec3 worldup)
-{
-	Position = position;
-	WorldUp = worldup;
-
-	Pitch = glm::radians(pitch);
-	Yaw = glm::radians(yaw);
-
-	// make sure that when pitch is out of bounds, screen doesn't get flipped
-	//if (Pitch > 89.0f)
-	//	Pitch = 89.0f;
-	//if (Pitch < -89.0f)
-	//	Pitch = -89.0f;
-
-	updateCamVectors();
-}
 
 glm::mat4 Camera::GetViewMatrix()
 {
@@ -55,12 +35,6 @@ void Camera::setStop()
 	speedZ = 0;
 }
 
-void Camera::processMovement(float deltaX, float deltaY)
-{
-	Pitch += glm::radians(deltaY) / (float)10.0;
-	Yaw += glm::radians(deltaX) / (float)10.0;
-	updateCamVectors();
-}
 
 void Camera::updateCamPos()
 {
