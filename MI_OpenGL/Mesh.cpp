@@ -31,7 +31,7 @@ Mesh::~Mesh()
 
 }
 
-void Mesh::Draw(Shader *shader)
+void Mesh::Draw(std::unique_ptr<Shader>& shader)
 {
 	// Bind appropriate textures
 	unsigned int diffuseNr = 1;

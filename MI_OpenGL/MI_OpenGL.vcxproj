@@ -97,20 +97,26 @@
     </QtMoc>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="GL_utils.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="GL_utils.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="OpenGLScene.cpp" />
+    <ClCompile Include="renderPost.cpp" />
+    <ClCompile Include="sceneAxis.cpp" />
+    <ClCompile Include="sceneGrid.cpp" />
     <ClCompile Include="Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="GL_utils.h" />
-    <ClInclude Include="Cameras.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="mi_opengl_global.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="renderPost.h" />
+    <ClInclude Include="sceneAxis.h" />
+    <ClInclude Include="sceneGrid.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
     <QtMoc Include="OpenGLScene.h" />

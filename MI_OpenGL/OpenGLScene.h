@@ -1,7 +1,7 @@
 #pragma once
 #include <glm/glm.hpp>
 #include <qopenglfunctions.h>
-#include "Cameras.h"
+#include "Camera.h"
 #include "Model.h"
 #include "Shader.h"
 #include <string>
@@ -9,6 +9,10 @@
 #include <qwindow.h>
 #include <qlist.h>
 #include "mi_opengl_global.h"
+#include <memory>
+#include "sceneAxis.h"
+#include "sceneGrid.h"
+#include "renderPost.h"
 
 class MI_OPENGL_EXPORT OpenGLScene : public QWindow, protected QOpenGLFunctions
 {
@@ -18,13 +22,18 @@ public:
 	explicit OpenGLScene(QWindow *parent = nullptr);
 	~OpenGLScene();
 
+	std::unique_ptr<Shader> defaultShader;
 	Shader *myShader1;
 	//Model *md;
 
 	void setRender(bool start = false);
 	QList<Model*> models;
 private:
-	Camera *cam;
+	std::unique_ptr<sceneAxis> axis;
+	std::unique_ptr<sceneGrid> grid;
+	std::unique_ptr<renderPost> rPost;
+
+	std::unique_ptr<Camera> defaultCam;
 	//Camera
 	float preX;
 	float preY;

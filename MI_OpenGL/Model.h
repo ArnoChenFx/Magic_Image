@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include "mi_opengl_global.h"
+#include <memory>
 
 class MI_OPENGL_EXPORT Model
 {
@@ -13,7 +14,7 @@ public:
 	Model(std::string const &path);
 	~Model();
 
-	void Draw(Shader *shader);
+	void Draw(std::unique_ptr<Shader>& shader);
 	void loadModel(std::string path);
 
 	/*  Model Data  */

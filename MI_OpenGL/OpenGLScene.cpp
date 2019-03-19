@@ -9,6 +9,7 @@
 #include <QPainter>
 #include <qevent.h>
 
+
 OpenGLScene::OpenGLScene(QWindow *parent):QWindow(parent)
 	, m_animating(false)
 	, m_context(0)
@@ -22,8 +23,8 @@ OpenGLScene::OpenGLScene(QWindow *parent):QWindow(parent)
 	viewMat = glm::mat4(1.0f);//ÉãÏñ»ú¾ØÕó
 	projMat = glm::mat4(1.0f);//Í¶Éä¾ØÕó
 	projMat = glm::perspective(glm::radians(45.0f), (float)16 / (float)9, 0.1f, 100.0f);
-	cam = new Camera(glm::vec3(0, 8, -40), -10.0f, 0.0f, glm::vec3(0, 1, 0));
-	viewMat = cam->GetViewMatrix();
+	defaultCam = std::make_unique<Camera>(glm::vec3(0, 8, -20), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+	viewMat = defaultCam->GetViewMatrix();
 
 	renderNow();
 }
@@ -31,8 +32,8 @@ OpenGLScene::OpenGLScene(QWindow *parent):QWindow(parent)
 OpenGLScene::~OpenGLScene()
 {
 	// Destroy OpenGL Handles
-	delete cam;	
-	delete myShader1;
+	//delete cam;	
+	//delete myShader1;
 	//delete md;
 	//delete m_device;
 }
@@ -51,11 +52,11 @@ void OpenGLScene::initialize()
 
 void OpenGLScene::initObjects()
 {
-	myShader1 = new Shader("vertexSource_textures.vert", "fragmentSource_textures.frag");
-	//md = new Model("F:/FFOutput/Download/AOVs/glModels/A.obj");
-	//Model *md2 = new Model("F:/FFOutput/Download/AOVs/glModels/B.obj");
-	//models.append(md);
-	//models.append(md2);
+	defaultShader = std::make_unique<Shader>("vertexSource_textures.vert", "fragmentSource_textures.frag");
+	axis = std::make_unique<sceneAxis>();
+	grid = std::make_unique<sceneGrid>();
+	rPost = std::make_unique<renderPost>();
+	rPost->setUsePost(false);
 }
 
 
@@ -65,24 +66,26 @@ void OpenGLScene::render()
 	const qreal retinaScale = devicePixelRatio();
 	glViewport(0, 0, width() * retinaScale, height() * retinaScale);
 
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);//Çå³ý²¢äÖÈ¾±³¾°
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);//Çå³ýÑÕÉ«»º³åºÍÉî¶È»º³å
+	rPost->bind();
 	
 
-	cam->updateCamPos();
-	viewMat = cam->GetViewMatrix();
+	defaultCam->updateCamPos();
+	viewMat = defaultCam->GetViewMatrix();
 
-	myShader1->use();
-	myShader1->setMat4("modelMat", modelMat);
-	myShader1->setMat4("viewMat", viewMat);
-	myShader1->setMat4("projMat", projMat);
+	defaultShader->use();
+	defaultShader->setMat4("modelMat", modelMat);
+	defaultShader->setMat4("viewMat", viewMat);
+	defaultShader->setMat4("projMat", projMat);
 
 	for (int i = 0; i < models.size(); i++)
 	{
-		models[i]->Draw(myShader1);
+		models[i]->Draw(defaultShader);
 	}
+	grid->Draw(viewMat, projMat);
+	axis->Draw(viewMat, projMat);
+	rPost->use();
 
-	cam->setStop();
+	defaultCam->setStop();
 }
 
 void OpenGLScene::renderNow()
@@ -120,10 +123,10 @@ glm::vec3 OpenGLScene::GetRayFromMouse(float x,float y)
 {
 	glm::vec2 ray_nds = glm::vec2(x, y);
 	glm::vec4 ray_clip = glm::vec4(ray_nds.x, ray_nds.y, -1.0f, 1.0f);
-	glm::mat4 invProjMat = glm::inverse(cam->GetViewMatrix());
+	glm::mat4 invProjMat = glm::inverse(defaultCam->GetViewMatrix());
 	glm::vec4 eyeCoords = invProjMat * ray_clip;
 	eyeCoords = glm::vec4(eyeCoords.x, eyeCoords.y, -1.0f, 0.0f);
-	glm::mat4 invViewMat = glm::inverse(cam->GetViewMatrix());
+	glm::mat4 invViewMat = glm::inverse(defaultCam->GetViewMatrix());
 	glm::vec4 rayWorld = invViewMat * eyeCoords;
 	glm::vec3 rayDirection = glm::normalize(glm::vec3(rayWorld));
 
@@ -192,7 +195,7 @@ void OpenGLScene::wheelEvent(QWheelEvent * event)
 	setRender(true);
 
 	float delta = event->angleDelta().y();
-	cam->speedZ = delta/2;
+	defaultCam->speedZ = delta/2;
 	renderNow();
 
 	QWindow::wheelEvent(event);
@@ -201,6 +204,21 @@ void OpenGLScene::wheelEvent(QWheelEvent * event)
 
 void OpenGLScene::mousePressEvent(QMouseEvent * event)
 {
+	if (event->buttons() & Qt::LeftButton)
+	{
+		defaultCam->Target = defaultCam->Position + defaultCam->Forward*30.0f;
+		defaultCam->computeDistance();
+		defaultCam->MODE = defaultCam->MODE_ROTATE;
+
+	}
+	else if (event->buttons() & Qt::MiddleButton)
+	{
+		defaultCam->MODE = defaultCam->MODE_MOVE;
+	}
+	else if (event->buttons() & Qt::RightButton)
+	{
+		defaultCam->MODE = defaultCam->MODE_ZOOM;
+	}
 	setRender(true);
 	QWindow::mousePressEvent(event);
 }
@@ -208,7 +226,7 @@ void OpenGLScene::mousePressEvent(QMouseEvent * event)
 void OpenGLScene::mouseReleaseEvent(QMouseEvent * event)
 {
 	setRender(false);
-	cam->setStop();
+	defaultCam->setStop();
 	QWindow::mouseReleaseEvent(event);
 }
 
@@ -226,18 +244,21 @@ void OpenGLScene::mouseMoveEvent(QMouseEvent * event)
 
 	if (event->buttons() & Qt::LeftButton)
 	{
-		cam->processMovement(-deltaX, -deltaY);
+		defaultCam->speedX = deltaX * 5;
+		defaultCam->speedY = deltaY * 5;
+		defaultCam->updateCamVectors();
 		//qDebug() << "rotate";
 	}
 	else if (event->buttons() & Qt::MiddleButton)
 	{
-		cam->speedX = deltaX;
-		cam->speedY = deltaY;
+
+		defaultCam->speedX = deltaX;
+		defaultCam->speedY = deltaY;
 		//qDebug() << "move";
 	}
 	else if (event->buttons() & Qt::RightButton)
 	{
-		cam->speedZ = deltaX;
+		defaultCam->speedZ = deltaX;
 		//qDebug() << "zoom";
 	}
 	else

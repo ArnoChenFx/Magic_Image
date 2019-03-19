@@ -141,7 +141,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="defalut_config.json" />
+    <None Include="fragmentSource_post.frag" />
     <None Include="fragmentSource_textures.frag" />
+    <None Include="vertexSource_post.vert" />
     <None Include="vertexSource_textures.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

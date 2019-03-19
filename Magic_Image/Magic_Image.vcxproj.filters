@@ -74,5 +74,11 @@
     <None Include="fragmentSource_textures.frag">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="fragmentSource_post.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="vertexSource_post.vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

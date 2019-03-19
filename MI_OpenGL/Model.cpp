@@ -35,7 +35,7 @@ Model::~Model()
 	//directory.clear();
 }
 
-void Model::Draw(Shader *shader)
+void Model::Draw(std::unique_ptr<Shader>& shader)
 {
 	for (unsigned int i = 0; i < this->meshes.size(); i++)
 	{
