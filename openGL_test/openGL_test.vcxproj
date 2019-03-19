@@ -27,6 +27,8 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Program.cpp" />
+    <ClCompile Include="quatCamera.cpp" />
+    <ClCompile Include="renderPost.cpp" />
     <ClCompile Include="sceneAxis.cpp" />
     <ClCompile Include="sceneGrid.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -38,9 +40,11 @@
     <None Include="fragmentSource1.frag" />
     <None Include="fragmentSource2.frag" />
     <None Include="fragmentSource2_uv.frag" />
+    <None Include="fragmentSource_post.frag" />
     <None Include="fragmentSource_textures.frag" />
     <None Include="line.frag" />
     <None Include="line.vert" />
+    <None Include="vertexSource_post.vert" />
     <None Include="vertexSource_textures.vert" />
     <None Include="packages.config" />
     <None Include="vertexSource0.vert" />
@@ -54,6 +58,8 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Program.h" />
+    <ClInclude Include="quatCamera.h" />
+    <ClInclude Include="renderPost.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="sceneAxis.h" />
     <ClInclude Include="sceneGrid.h" />

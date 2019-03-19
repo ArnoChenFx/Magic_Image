@@ -9,7 +9,8 @@
 #include "sceneAxis.h"
 #include "sceneGrid.h"
 #include <time.h>
-
+#include "quatCamera.h"
+#include "renderPost.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -130,7 +131,8 @@ float preX;
 float preY;
 bool firstMouse = true;
 
-auto cam = make_unique< Camera>(glm::vec3(0, 8, -20), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+auto cam = make_unique<Camera>(glm::vec3(0, 8, -20), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+auto qcam = make_unique<quatCamera>();
 //Camera *cam = new Camera(glm::vec3(0, 8, -20), -10.0f, 0.0f, glm::vec3(0, 1, 0));
 const int LOOP = 0;
 const int MOVE = 1;
@@ -172,9 +174,11 @@ void mouse_callback(GLFWwindow* window, double posX, double posY)
 	case MOVE:
 		cam->speedX = deltaX;
 		cam->speedY = deltaY;
+		qcam->translateLocal(deltaX/50, deltaY/50,0);
 		break;
 	case SCALE:
 		cam->speedZ = deltaX;
+		qcam->translateLocal(0.0f, 0.0f, deltaX/50);
 		break;
 	default:
 		return;
@@ -356,6 +360,8 @@ void glProgramModel(GLFWwindow* window)
 #pragma region init
 	//使用深度信息,画出来的结果有遮挡关系
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_STENCIL_TEST);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 	//关闭鼠标绘制
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
@@ -366,10 +372,10 @@ void glProgramModel(GLFWwindow* window)
 
 	//create shader program
 	auto myShader1 = make_unique<Shader>("vertexSource_textures.vert", "fragmentSource_textures.frag");
-	//Shader *myShader1 = new Shader("vertexSource_textures.vert", "fragmentSource_textures.frag");
-
 	auto axis = make_unique<sceneAxis>();
 	auto grid = make_unique<sceneGrid>();
+
+	auto rPost = make_unique<renderPost>();
 
 #pragma region load VAO VBO
 	//Mesh cube(verticesB);
@@ -407,49 +413,49 @@ void glProgramModel(GLFWwindow* window)
 	glm::mat4 ident = glm::mat4(1.0f);//单位矩阵
 
 #pragma endregion
-	
+	//rPost->setUsePost(false);
 
 #pragma region render loop
-	int sss = 0;
+
 	while (!glfwWindowShouldClose(window))
 	{
 		processInput(window);// 检查输入
-		glClearColor(0.4f, 0.4f, 0.4f, 1.0f);//清除并渲染背景
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);//清除颜色缓冲和深度缓冲
-
+		rPost->bind();
+		//glDepthFunc(GL_LESS);
+			
 		modelMat = ident;
 		for (unsigned int i = 0; i < mods.size(); i++)
 		{
+			//绘制物体
+			//glStencilMask(0xFF);
+			//glStencilFunc(GL_ALWAYS, 1, 0xFF);
+
 			//SET MATERIAL -> Shader Program
 			myShader1->use();
-
-			//SET MATERIAL -> Texture
-			//glActiveTexture(GL_TEXTURE3);
-			//glBindTexture(GL_TEXTURE_2D, textureA);
-			//glActiveTexture(GL_TEXTURE5);
-			//glBindTexture(GL_TEXTURE_2D, textureB);
-			//SET MATERIAL -> Unifrom Attributes
-			//myShader1->setInt("ourTextureA", 3);//设置shader的两张贴图,读取之前设置的槽位
-			//myShader1->setInt("ourTextureB", 5);
-
 			myShader1->setMat4("viewMat", viewMat);
 			myShader1->setMat4("projMat", projMat);
-
-			//if (sss == 1000) mods.pop_back();
-			//int s = mods.size();
-	
-			//if(i==1) modelMat = glm::translate(glm::mat4(1.0f),glm::vec3(1,2,1));
-			//else modelMat = ident;
-
 			myShader1->setMat4("modelMat", modelMat);
-				
 			mods[i]->Draw(myShader1);
 
-			sss += 1;
+			////绘制轮廓线
+			//myShader_outline->use();
+			////
+			//glStencilMask(0x00);
+			//glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+			//myShader_outline->setMat4("viewMat", viewMat);
+			//myShader_outline->setMat4("projMat", projMat);
+			//modelMat = glm::scale(modelMat, { 1.01,1.01,1.01 });
+			//myShader_outline->setMat4("modelMat", modelMat);
+			//mods[i]->Draw(myShader_outline);
+			//glStencilMask(0xFF);
+			//glClear(GL_STENCIL_BUFFER_BIT);
 		}
+		
 
 		grid->Draw(viewMat, projMat);
 		axis->Draw(viewMat, projMat);
+		rPost->use();
+
 
 		cam->setStop();
 		//prepare for next render loop
@@ -459,11 +465,9 @@ void glProgramModel(GLFWwindow* window)
 		//camera
 		cam->updateCamPos();
 		viewMat = cam->GetViewMatrix();
+		//viewMat = qcam->getViewMatrix();
 	}
 #pragma endregion
 
-#pragma region clear
-
-#pragma endregion
 
 }

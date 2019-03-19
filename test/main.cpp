@@ -68,7 +68,7 @@ void testCUDA() {
 }
 
 
-int main(int argc, char *argv[])
+int main2(int argc, char *argv[])
 {
 	//std::cout << "hello cv!" << std::endl;
 	//qDebug() << "hello cv!!";

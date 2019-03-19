@@ -24,8 +24,7 @@ glm::mat4 Camera::GetViewMatrix()
 	if (MODE == MODE_MOVE || MODE == MODE_ZOOM)
 		Target = Position + Forward;
 
-	return glm::lookAt(Position, Target,WorldUp);
-	
+	return glm::lookAt(Position,Target,WorldUp);
 }
 
 void Camera::setStop()
@@ -39,19 +38,15 @@ void Camera::setStop()
 void Camera::updateCamPos()
 {
 	if (MODE != MODE_ROTATE)
-	{
 		Position += Forward * speedZ / (float)20.0;
-	}
-	
+
 	Position -= Right * speedX / (float)40.0;
 	Position -= Up * speedY / (float)40.0;
 
 	float dis = glm::distance(Position, Target);
-
 	if (dis != distance && MODE == MODE_ROTATE)
-	{
 		Position += Forward * (dis - distance);
-	}
+
 }
 
 

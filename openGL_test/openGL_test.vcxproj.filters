@@ -51,6 +51,12 @@
     <ClCompile Include="sceneGrid.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="quatCamera.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="renderPost.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -90,6 +96,12 @@
     <None Include="axis.vert">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="fragmentSource_post.frag">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="vertexSource_post.vert">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="first_window.h">
@@ -126,6 +138,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="sceneGrid.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="quatCamera.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="renderPost.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
