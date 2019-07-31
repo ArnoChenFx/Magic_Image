@@ -1,3 +1,3 @@
 # Magic_Image
 
-C++ framework about node based software
+This is a C++ framework about node based software
