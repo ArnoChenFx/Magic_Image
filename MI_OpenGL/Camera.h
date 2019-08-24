@@ -26,7 +26,6 @@ public:
 	const int MODE_ROTATE = 1;
 	const int MODE_ZOOM = 2;
 	int MODE;
-
 	
 	float globalSpeed = 1 / 15;
 	float speedX = 0;
