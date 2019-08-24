@@ -52,7 +52,7 @@ void OpenGLScene::initialize()
 
 void OpenGLScene::initObjects()
 {
-	defaultShader = std::make_unique<Shader>("vertexSource_textures.vert", "fragmentSource_textures.frag");
+	defaultShader = std::make_unique<Shader>("shader/vertexSource_textures.vert", "shader/fragmentSource_textures.frag");
 	axis = std::make_unique<sceneAxis>();
 	grid = std::make_unique<sceneGrid>();
 	rPost = std::make_unique<renderPost>();

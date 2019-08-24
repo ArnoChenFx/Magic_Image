@@ -19,6 +19,9 @@
       <Extensions>qrc;*</Extensions>
       <ParseFiles>false</ParseFiles>
     </Filter>
+    <Filter Include="shader">
+      <UniqueIdentifier>{f2e44688-feac-4180-af9b-2a72b970e03b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -46,11 +49,6 @@
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
-    <QtRcc Include="Magic_Image.qrc">
-      <Filter>Resource Files</Filter>
-    </QtRcc>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="viewerWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -68,17 +66,22 @@
     <None Include="defalut_config.json">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="vertexSource_textures.vert">
-      <Filter>Resource Files</Filter>
+    <None Include="shader\fragmentSource_post.frag">
+      <Filter>shader</Filter>
     </None>
-    <None Include="fragmentSource_textures.frag">
-      <Filter>Resource Files</Filter>
+    <None Include="shader\fragmentSource_textures.frag">
+      <Filter>shader</Filter>
     </None>
-    <None Include="fragmentSource_post.frag">
-      <Filter>Resource Files</Filter>
+    <None Include="shader\vertexSource_post.vert">
+      <Filter>shader</Filter>
     </None>
-    <None Include="vertexSource_post.vert">
-      <Filter>Resource Files</Filter>
+    <None Include="shader\vertexSource_textures.vert">
+      <Filter>shader</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="Magic_Image.qrc">
+      <Filter>Resource Files</Filter>
+    </QtRcc>
   </ItemGroup>
 </Project>
